@@ -6,10 +6,10 @@ export default defineConfig({
   server: {
     proxy: {
       // Proxy Anthropic API requests to avoid CORS issues
-      "/api/anthropic": {
-        target: "https://i7dc.com/api",
+      "/v1": {
+        target: "https://api.deepseek.com/v1",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/anthropic/, ""),
+        rewrite: (path) => path.replace(/^\/v1/, ""),
         secure: false,
         configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, _res) => {

@@ -7,8 +7,8 @@ import * as restartComponent from "./actions/restart-component/plugin";
 import * as scaleComponentMemory from "./actions/scale-component-memory/plugin";
 
 // Import prompt skills
-import rainbondCoreSkill from "./prompt/rainbond-core/skill.md?raw";
-import diagnoseServiceSkill from "./prompt/diagnose-service/skill.md?raw";
+import rainbondCoreSkill from "./prompt/rainbond-core/SKILL.md?raw";
+import diagnoseServiceSkill from "./prompt/diagnose-service/SKILL.md?raw";
 import deployApplicationSkill from "./prompt/deploy-application/skill.md?raw";
 import performanceOptimizationSkill from "./prompt/performance-optimization/skill.md?raw";
 import securityBestPracticesSkill from "./prompt/security-best-practices/skill.md?raw";
