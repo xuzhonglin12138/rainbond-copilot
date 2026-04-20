@@ -15,6 +15,7 @@ import { ReflectionEngine } from "../reflection";
 import { SubAgentCoordinator } from "../agents";
 import { ContextBuilder } from "../context";
 import { WorkspaceManager } from "../workspace/workspace-manager";
+import type { RequestActor } from "../shared/types";
 import {
   buildActiveMemoryPrompt,
   extractComponentName,
@@ -33,10 +34,14 @@ export interface RuntimeEvent {
 export interface EnhancedRuntimeConfig {
   sessionId: string;
   workspaceDir: string;
+  actor?: RequestActor;
+  enableWorkspace?: boolean;
   enableMemory?: boolean;
   enableGoals?: boolean;
   enableReflection?: boolean;
   enableSubAgents?: boolean;
+  skillRegistry?: SkillRegistry;
+  llmClient?: OpenAIClient | CustomAnthropicClient | null;
   onApprovalRequest?: (approval: {
     approvalId: string;
     skillId: string;
@@ -46,9 +51,9 @@ export interface EnhancedRuntimeConfig {
 }
 
 export class EnhancedAgentRuntime {
-  private registry = new SkillRegistry("src/skills");
+  private registry: SkillRegistry;
   private approvalManager = new ApprovalManager();
-  private llmClient: OpenAIClient | CustomAnthropicClient | null = null;
+  private llmClient: OpenAIClient | CustomAnthropicClient | null;
   private systemPrompt: string = "";
   private initialized = false;
 
@@ -61,6 +66,9 @@ export class EnhancedAgentRuntime {
   private workspaceManager?: WorkspaceManager;
 
   constructor(private config: EnhancedRuntimeConfig) {
+    this.registry = config.skillRegistry ?? new SkillRegistry("src/skills");
+    this.llmClient = config.llmClient ?? null;
+
     // Initialize enhanced components based on config
     if (config.enableMemory) {
       this.memoryManager = new MemoryManager(
@@ -85,7 +93,9 @@ export class EnhancedAgentRuntime {
       this.subAgentCoordinator = new SubAgentCoordinator(this.goalManager);
     }
 
-    this.workspaceManager = new WorkspaceManager(config.workspaceDir);
+    if (config.enableWorkspace ?? true) {
+      this.workspaceManager = new WorkspaceManager(config.workspaceDir);
+    }
   }
 
   async initialize(): Promise<void> {
@@ -103,13 +113,15 @@ export class EnhancedAgentRuntime {
       }
 
       try {
-        const llmConfig = getLLMConfig();
+        if (!this.llmClient) {
+          const llmConfig = getLLMConfig();
 
-        // Create appropriate client based on provider
-        if (llmConfig.provider === "anthropic") {
-          this.llmClient = new CustomAnthropicClient(llmConfig);
-        } else {
-          this.llmClient = new OpenAIClient(llmConfig);
+          // Create appropriate client based on provider
+          if (llmConfig.provider === "anthropic") {
+            this.llmClient = new CustomAnthropicClient(llmConfig);
+          } else {
+            this.llmClient = new OpenAIClient(llmConfig);
+          }
         }
       } catch (error) {
         console.warn("Failed to initialize LLM client:", error);

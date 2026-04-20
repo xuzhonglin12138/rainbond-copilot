@@ -82,3 +82,15 @@ export const drawerEventSchema = z.discriminatedUnion("type", [
 ]);
 
 export type DrawerEvent = z.infer<typeof drawerEventSchema>;
+
+export const publicCopilotEventSchema = z.object({
+  type: z.string(),
+  tenantId: z.string(),
+  sessionId: z.string(),
+  runId: z.string(),
+  sequence: z.number().int().nonnegative(),
+  timestamp: z.string(),
+  data: z.record(z.unknown()),
+});
+
+export type PublicCopilotEvent = z.infer<typeof publicCopilotEventSchema>;

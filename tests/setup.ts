@@ -1,8 +1,12 @@
 import "@testing-library/jest-dom";
 
 // Mock scrollIntoView for tests
-Element.prototype.scrollIntoView = () => {};
+if (typeof Element !== "undefined") {
+  Element.prototype.scrollIntoView = () => {};
+}
 
 afterEach(() => {
-  localStorage.clear();
+  if (typeof localStorage !== "undefined") {
+    localStorage.clear();
+  }
 });
