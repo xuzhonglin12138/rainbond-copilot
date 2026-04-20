@@ -1,4 +1,4 @@
-import { createInMemoryEventStore, } from "../stores/event-store";
+import { createInMemoryEventStore, } from "../stores/event-store.js";
 function streamKey(tenantId, runId) {
     return `${tenantId}:${runId}`;
 }

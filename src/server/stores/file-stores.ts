@@ -1,8 +1,8 @@
-import type { ApprovalRecord, ApprovalStore } from "./approval-store";
-import type { EventRecord, EventStore } from "./event-store";
-import { readJsonArray, resolveStoreFile, writeJsonArray } from "./file-store-utils";
-import type { RunRecord, RunStore } from "./run-store";
-import type { SessionRecord, SessionStore } from "./session-store";
+import type { ApprovalRecord, ApprovalStore } from "./approval-store.js";
+import type { EventRecord, EventStore } from "./event-store.js";
+import { readJsonArray, resolveStoreFile, writeJsonArray } from "./file-store-utils.js";
+import type { RunRecord, RunStore } from "./run-store.js";
+import type { SessionRecord, SessionStore } from "./session-store.js";
 
 export class FileSessionStore implements SessionStore {
   private readonly filePath: string;

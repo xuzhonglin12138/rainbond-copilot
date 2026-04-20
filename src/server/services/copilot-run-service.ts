@@ -1,10 +1,10 @@
-import type { RequestActor } from "../../shared/types";
+import type { RequestActor } from "../../shared/types.js";
 import {
   createRunRecord,
   type RunRecord,
   type RunStore,
-} from "../stores/run-store";
-import type { SessionStore } from "../stores/session-store";
+} from "../stores/run-store.js";
+import type { SessionStore } from "../stores/session-store.js";
 
 export interface CreateRunInput {
   actor: RequestActor;

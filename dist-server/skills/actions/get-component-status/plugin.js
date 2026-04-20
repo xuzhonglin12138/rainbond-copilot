@@ -1,4 +1,4 @@
-import { MockActionAdapter } from "../../../adapters/mock/mock-action-adapter";
+import { MockActionAdapter } from "../../../adapters/mock/mock-action-adapter.js";
 export const name = "Get Component Status";
 export const description = "Get the current status of a Rainbond component";
 export const risk = "low";

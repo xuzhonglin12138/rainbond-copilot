@@ -1,5 +1,5 @@
-import { WorldState } from "./world-state";
-import type { ActionAdapter } from "../../skills/types";
+import { WorldState } from "./world-state.js";
+import type { ActionAdapter } from "../../skills/types.js";
 
 export class MockActionAdapter implements ActionAdapter {
   private world = new WorldState();

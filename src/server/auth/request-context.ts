@@ -1,4 +1,4 @@
-import type { RequestActor } from "../../shared/types";
+import type { RequestActor } from "../../shared/types.js";
 
 type HeaderValue = string | string[] | undefined;
 type HeaderMap = Record<string, HeaderValue>;

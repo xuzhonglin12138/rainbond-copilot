@@ -1,4 +1,4 @@
-import { MockActionAdapter } from "../../../adapters/mock/mock-action-adapter";
+import { MockActionAdapter } from "../../../adapters/mock/mock-action-adapter.js";
 export const name = "Restart Component";
 export const description = "Restart a Rainbond component (potentially disruptive)";
 export const risk = "high";

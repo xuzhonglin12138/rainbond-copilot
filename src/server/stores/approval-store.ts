@@ -1,4 +1,4 @@
-import type { ApprovalStatus, RiskLevel } from "../../shared/types";
+import type { ApprovalStatus, RiskLevel } from "../../shared/types.js";
 
 export interface ApprovalRecord {
   approvalId: string;

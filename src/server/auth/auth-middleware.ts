@@ -1,5 +1,5 @@
-import type { RequestActor } from "../../shared/types";
-import { parseRequestActor } from "./request-context";
+import type { RequestActor } from "../../shared/types.js";
+import { parseRequestActor } from "./request-context.js";
 
 export interface RequestWithHeaders {
   headers: Record<string, string | string[] | undefined>;

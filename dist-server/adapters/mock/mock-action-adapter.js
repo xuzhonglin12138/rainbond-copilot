@@ -1,4 +1,4 @@
-import { WorldState } from "./world-state";
+import { WorldState } from "./world-state.js";
 export class MockActionAdapter {
     constructor() {
         this.world = new WorldState();

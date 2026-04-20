@@ -1,4 +1,4 @@
-import { createApprovalRecord, } from "../stores/approval-store";
+import { createApprovalRecord, } from "../stores/approval-store.js";
 export class CopilotApprovalService {
     constructor(deps) {
         this.deps = deps;

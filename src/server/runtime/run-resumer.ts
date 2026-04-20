@@ -1,4 +1,4 @@
-import type { ApprovalRecord } from "../stores/approval-store";
+import type { ApprovalRecord } from "../stores/approval-store.js";
 
 export interface ResumeRunInput {
   tenantId: string;

@@ -1,32 +1,32 @@
 import http, { type IncomingMessage, type ServerResponse } from "node:http";
 import { URL } from "node:url";
-import { withRequestActor } from "./auth/auth-middleware";
-import { createServerConfig, type ServerConfig } from "./config/server-config";
-import { createCopilotController } from "./controllers/copilot-controller";
-import { createSseBroker } from "./events/sse-broker";
-import { createInMemoryRunResumer } from "./runtime/run-resumer";
+import { withRequestActor } from "./auth/auth-middleware.js";
+import { createServerConfig, type ServerConfig } from "./config/server-config.js";
+import { createCopilotController } from "./controllers/copilot-controller.js";
+import { createSseBroker } from "./events/sse-broker.js";
+import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
 import {
   createInMemoryApprovalStore,
   type ApprovalStore,
-} from "./stores/approval-store";
+} from "./stores/approval-store.js";
 import {
   createInMemoryEventStore,
   type EventStore,
-} from "./stores/event-store";
+} from "./stores/event-store.js";
 import {
   FileApprovalStore,
   FileEventStore,
   FileRunStore,
   FileSessionStore,
-} from "./stores/file-stores";
+} from "./stores/file-stores.js";
 import {
   createInMemoryRunStore,
   type RunStore,
-} from "./stores/run-store";
+} from "./stores/run-store.js";
 import {
   createInMemorySessionStore,
   type SessionStore,
-} from "./stores/session-store";
+} from "./stores/session-store.js";
 
 interface CopilotStores {
   sessionStore: SessionStore;

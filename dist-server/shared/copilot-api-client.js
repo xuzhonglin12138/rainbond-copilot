@@ -1,4 +1,4 @@
-import { publicCopilotEventSchema } from "./contracts";
+import { publicCopilotEventSchema } from "./contracts.js";
 function trimTrailingSlash(input) {
     return input.endsWith("/") ? input.slice(0, -1) : input;
 }

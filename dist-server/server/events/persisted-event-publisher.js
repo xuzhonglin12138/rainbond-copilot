@@ -1,5 +1,5 @@
-import { publicCopilotEventSchema, } from "../../shared/contracts";
-import { createEventRecord } from "../stores/event-store";
+import { publicCopilotEventSchema, } from "../../shared/contracts.js";
+import { createEventRecord } from "../stores/event-store.js";
 export class PersistedEventPublisher {
     constructor(broker) {
         this.broker = broker;

@@ -1,13 +1,13 @@
-import type { RequestActor, ApprovalStatus, RiskLevel } from "../../shared/types";
-import { PersistedEventPublisher } from "../events/persisted-event-publisher";
-import type { SseBroker } from "../events/sse-broker";
+import type { RequestActor, ApprovalStatus, RiskLevel } from "../../shared/types.js";
+import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
+import type { SseBroker } from "../events/sse-broker.js";
 import {
   createApprovalRecord,
   type ApprovalRecord,
   type ApprovalStore,
-} from "../stores/approval-store";
-import type { RunStore } from "../stores/run-store";
-import type { RunResumer } from "../runtime/run-resumer";
+} from "../stores/approval-store.js";
+import type { RunStore } from "../stores/run-store.js";
+import type { RunResumer } from "../runtime/run-resumer.js";
 
 export interface CopilotApprovalServiceDeps {
   approvalStore: ApprovalStore;

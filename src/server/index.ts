@@ -1,7 +1,8 @@
-import { createServerConfig } from "./config/server-config";
-import { createCopilotApiServer } from "./http";
+import { fileURLToPath } from "node:url";
+import { createServerConfig } from "./config/server-config.js";
+import { createCopilotApiServer } from "./http.js";
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const config = createServerConfig();
   const server = createCopilotApiServer({ config });
   server.listen(config.port, config.host, () => {
@@ -11,5 +12,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   });
 }
 
-export { createCopilotApiServer } from "./http";
-export { createServerConfig } from "./config/server-config";
+export { createCopilotApiServer } from "./http.js";
+export { createServerConfig } from "./config/server-config.js";

@@ -1,4 +1,4 @@
-import { createSessionRecord, } from "../stores/session-store";
+import { createSessionRecord, } from "../stores/session-store.js";
 export class CopilotSessionService {
     constructor(sessionStore) {
         this.sessionStore = sessionStore;

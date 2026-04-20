@@ -1,0 +1,26 @@
+[
+  {
+    "runId": "run_1776682080178",
+    "tenantId": "jabrm8l6",
+    "sessionId": "cs_1776682080165",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-20T10:48:00.178Z"
+  },
+  {
+    "runId": "run_1776682112019",
+    "tenantId": "jabrm8l6",
+    "sessionId": "cs_1776682111999",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-20T10:48:32.019Z"
+  },
+  {
+    "runId": "run_1776682184002",
+    "tenantId": "jabrm8l6",
+    "sessionId": "cs_1776682183981",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-20T10:49:44.002Z"
+  }
+]

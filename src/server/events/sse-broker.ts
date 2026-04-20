@@ -2,7 +2,7 @@ import {
   createInMemoryEventStore,
   type EventRecord,
   type EventStore,
-} from "../stores/event-store";
+} from "../stores/event-store.js";
 
 type Subscriber = (event: EventRecord) => void | Promise<void>;
 

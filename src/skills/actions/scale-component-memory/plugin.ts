@@ -1,4 +1,4 @@
-import { MockActionAdapter } from "../../../adapters/mock/mock-action-adapter";
+import { MockActionAdapter } from "../../../adapters/mock/mock-action-adapter.js";
 
 export const name = "Scale Component Memory";
 export const description = "Scale the memory allocation of a Rainbond component";

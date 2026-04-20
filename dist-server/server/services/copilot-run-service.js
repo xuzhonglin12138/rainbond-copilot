@@ -1,4 +1,4 @@
-import { createRunRecord, } from "../stores/run-store";
+import { createRunRecord, } from "../stores/run-store.js";
 export class CopilotRunService {
     constructor(runStore, sessionStore) {
         this.runStore = runStore;

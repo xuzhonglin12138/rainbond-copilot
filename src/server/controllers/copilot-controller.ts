@@ -1,31 +1,31 @@
-import type { RequestActor } from "../../shared/types";
-import { PersistedEventPublisher } from "../events/persisted-event-publisher";
-import { createSseBroker, type SseBroker } from "../events/sse-broker";
-import { copilotRoutes } from "../routes/copilot-routes";
+import type { RequestActor } from "../../shared/types.js";
+import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
+import { createSseBroker, type SseBroker } from "../events/sse-broker.js";
+import { copilotRoutes } from "../routes/copilot-routes.js";
 import {
   createInMemoryRunResumer,
   type RunResumer,
-} from "../runtime/run-resumer";
-import { ServerRunExecutor } from "../runtime/server-run-executor";
-import { CopilotApprovalService } from "../services/copilot-approval-service";
+} from "../runtime/run-resumer.js";
+import { ServerRunExecutor } from "../runtime/server-run-executor.js";
+import { CopilotApprovalService } from "../services/copilot-approval-service.js";
 import {
   createInMemoryApprovalStore,
   type ApprovalStore,
-} from "../stores/approval-store";
-import { createInMemoryEventStore } from "../stores/event-store";
+} from "../stores/approval-store.js";
+import { createInMemoryEventStore } from "../stores/event-store.js";
 import {
   createInMemoryRunStore,
   type RunStore,
-} from "../stores/run-store";
+} from "../stores/run-store.js";
 import {
   createInMemorySessionStore,
   type SessionStore,
-} from "../stores/session-store";
+} from "../stores/session-store.js";
 import {
   CopilotSessionService,
   type CreateSessionInput,
-} from "../services/copilot-session-service";
-import { CopilotRunService } from "../services/copilot-run-service";
+} from "../services/copilot-session-service.js";
+import { CopilotRunService } from "../services/copilot-run-service.js";
 
 interface ControllerDeps {
   sessionStore?: SessionStore;

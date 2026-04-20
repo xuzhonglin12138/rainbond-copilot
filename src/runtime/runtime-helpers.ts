@@ -1,4 +1,4 @@
-import type { MemorySearchResult } from "../memory/types";
+import type { MemorySearchResult } from "../memory/types.js";
 
 export function extractComponentName(input: string): string {
   const normalized = input.toLowerCase();

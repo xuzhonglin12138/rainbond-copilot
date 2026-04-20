@@ -1,9 +1,9 @@
 import {
   publicCopilotEventSchema,
   type PublicCopilotEvent,
-} from "../../shared/contracts";
-import { createEventRecord } from "../stores/event-store";
-import type { SseBroker } from "./sse-broker";
+} from "../../shared/contracts.js";
+import { createEventRecord } from "../stores/event-store.js";
+import type { SseBroker } from "./sse-broker.js";
 
 export interface PublishCopilotEventInput {
   type: string;

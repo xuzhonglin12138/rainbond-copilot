@@ -1,4 +1,4 @@
-import { parseRequestActor } from "./request-context";
+import { parseRequestActor } from "./request-context.js";
 export function getRequestActor(request) {
     return parseRequestActor(request.headers);
 }

@@ -1,9 +1,9 @@
-import type { RequestActor } from "../../shared/types";
+import type { RequestActor } from "../../shared/types.js";
 import {
   createSessionRecord,
   type SessionRecord,
   type SessionStore,
-} from "../stores/session-store";
+} from "../stores/session-store.js";
 
 export interface CreateSessionInput {
   actor: RequestActor;

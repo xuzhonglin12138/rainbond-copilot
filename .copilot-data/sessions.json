@@ -1,0 +1,32 @@
+[
+  {
+    "sessionId": "cs_1776682080165",
+    "tenantId": "jabrm8l6",
+    "userId": "1",
+    "sourceSystem": "rainbond-ui",
+    "status": "active",
+    "createdAt": "2026-04-20T10:48:00.165Z",
+    "updatedAt": "2026-04-20T10:48:00.179Z",
+    "latestRunId": "run_1776682080178"
+  },
+  {
+    "sessionId": "cs_1776682111999",
+    "tenantId": "jabrm8l6",
+    "userId": "1",
+    "sourceSystem": "rainbond-ui",
+    "status": "active",
+    "createdAt": "2026-04-20T10:48:31.999Z",
+    "updatedAt": "2026-04-20T10:48:32.020Z",
+    "latestRunId": "run_1776682112019"
+  },
+  {
+    "sessionId": "cs_1776682183981",
+    "tenantId": "jabrm8l6",
+    "userId": "1",
+    "sourceSystem": "rainbond-ui",
+    "status": "active",
+    "createdAt": "2026-04-20T10:49:43.981Z",
+    "updatedAt": "2026-04-20T10:49:44.003Z",
+    "latestRunId": "run_1776682184002"
+  }
+]

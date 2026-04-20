@@ -1,7 +1,7 @@
-import * as getComponentLogs from "../../skills/actions/get-component-logs/plugin";
-import * as getComponentStatus from "../../skills/actions/get-component-status/plugin";
-import * as restartComponent from "../../skills/actions/restart-component/plugin";
-import * as scaleComponentMemory from "../../skills/actions/scale-component-memory/plugin";
+import * as getComponentLogs from "../../skills/actions/get-component-logs/plugin.js";
+import * as getComponentStatus from "../../skills/actions/get-component-status/plugin.js";
+import * as restartComponent from "../../skills/actions/restart-component/plugin.js";
+import * as scaleComponentMemory from "../../skills/actions/scale-component-memory/plugin.js";
 function createActionSkill(id, plugin) {
     return {
         id,

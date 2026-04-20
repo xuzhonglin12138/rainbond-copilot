@@ -1,5 +1,5 @@
-import { extractComponentName, shouldInspectLogs, summarizeLogs, } from "../../runtime/runtime-helpers";
-import { createServerActionSkills } from "./server-action-skills";
+import { extractComponentName, shouldInspectLogs, summarizeLogs, } from "../../runtime/runtime-helpers.js";
+import { createServerActionSkills } from "./server-action-skills.js";
 export class ServerRunExecutor {
     constructor(deps) {
         this.deps = deps;

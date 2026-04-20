@@ -1,15 +1,15 @@
 import http from "node:http";
 import { URL } from "node:url";
-import { withRequestActor } from "./auth/auth-middleware";
-import { createServerConfig } from "./config/server-config";
-import { createCopilotController } from "./controllers/copilot-controller";
-import { createSseBroker } from "./events/sse-broker";
-import { createInMemoryRunResumer } from "./runtime/run-resumer";
-import { createInMemoryApprovalStore, } from "./stores/approval-store";
-import { createInMemoryEventStore, } from "./stores/event-store";
-import { FileApprovalStore, FileEventStore, FileRunStore, FileSessionStore, } from "./stores/file-stores";
-import { createInMemoryRunStore, } from "./stores/run-store";
-import { createInMemorySessionStore, } from "./stores/session-store";
+import { withRequestActor } from "./auth/auth-middleware.js";
+import { createServerConfig } from "./config/server-config.js";
+import { createCopilotController } from "./controllers/copilot-controller.js";
+import { createSseBroker } from "./events/sse-broker.js";
+import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
+import { createInMemoryApprovalStore, } from "./stores/approval-store.js";
+import { createInMemoryEventStore, } from "./stores/event-store.js";
+import { FileApprovalStore, FileEventStore, FileRunStore, FileSessionStore, } from "./stores/file-stores.js";
+import { createInMemoryRunStore, } from "./stores/run-store.js";
+import { createInMemorySessionStore, } from "./stores/session-store.js";
 function json(response, statusCode, payload) {
     response.writeHead(statusCode, {
         "Content-Type": "application/json; charset=utf-8",

@@ -1,4 +1,4 @@
-import { readJsonArray, resolveStoreFile, writeJsonArray } from "./file-store-utils";
+import { readJsonArray, resolveStoreFile, writeJsonArray } from "./file-store-utils.js";
 export class FileSessionStore {
     constructor(dataDir) {
         this.filePath = resolveStoreFile(dataDir, "sessions");

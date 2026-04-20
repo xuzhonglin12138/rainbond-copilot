@@ -1,13 +1,13 @@
-import type { RequestActor, RiskLevel } from "../../shared/types";
-import type { ActionSkill } from "../../skills/types";
+import type { RequestActor, RiskLevel } from "../../shared/types.js";
+import type { ActionSkill } from "../../skills/types.js";
 import {
   extractComponentName,
   shouldInspectLogs,
   summarizeLogs,
-} from "../../runtime/runtime-helpers";
-import { PersistedEventPublisher } from "../events/persisted-event-publisher";
-import type { SseBroker } from "../events/sse-broker";
-import { createServerActionSkills } from "./server-action-skills";
+} from "../../runtime/runtime-helpers.js";
+import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
+import type { SseBroker } from "../events/sse-broker.js";
+import { createServerActionSkills } from "./server-action-skills.js";
 
 export interface PlannedServerAction {
   requiresApproval: boolean;

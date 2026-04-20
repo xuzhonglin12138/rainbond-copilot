@@ -1,4 +1,4 @@
-import { publicCopilotEventSchema, type PublicCopilotEvent } from "./contracts";
+import { publicCopilotEventSchema, type PublicCopilotEvent } from "./contracts.js";
 
 export interface CopilotApiActor {
   tenantId: string;
