@@ -102,10 +102,6 @@ describe("copilot api server", () => {
     const baseUrl = `http://127.0.0.1:${address.port}`;
     const headers = {
       "content-type": "application/json",
-      "x-copilot-tenant-id": "t_123",
-      "x-copilot-user-id": "u_456",
-      "x-copilot-username": "alice",
-      "x-copilot-source-system": "ops-console",
     };
 
     try {
@@ -165,7 +161,28 @@ describe("copilot api server", () => {
 
       expect(approvalPayload.data.status).toBe("approved");
 
-      const resumedEvents = await readSseEvents(reader, 3, "approval resume");
+      const resumedResponse = await fetchWithTimeout(
+        `${baseUrl}/api/v1/copilot/sessions/${sessionId}/runs/${runId}/events?after_sequence=3`,
+        {
+          headers: {
+            ...headers,
+            accept: "text/event-stream",
+          },
+        },
+        "resume SSE stream"
+      );
+      openResponses.push(resumedResponse);
+
+      const resumedReader = resumedResponse.body?.getReader();
+      if (!resumedReader) {
+        throw new Error("Resumed SSE response body is not readable");
+      }
+
+      const resumedEvents = await readSseEvents(
+        resumedReader,
+        3,
+        "approval resume"
+      );
       expect(resumedEvents.map((event) => event.type)).toEqual([
         "approval.resolved",
         "chat.message",

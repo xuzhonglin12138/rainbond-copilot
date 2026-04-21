@@ -6,6 +6,7 @@ import {
   createInMemoryRunResumer,
   type RunResumer,
 } from "../runtime/run-resumer.js";
+import { ServerLlmExecutor, type ServerChatClient } from "../runtime/server-llm-executor.js";
 import { ServerRunExecutor } from "../runtime/server-run-executor.js";
 import { CopilotApprovalService } from "../services/copilot-approval-service.js";
 import {
@@ -33,6 +34,7 @@ interface ControllerDeps {
   approvalStore?: ApprovalStore;
   broker?: SseBroker;
   runResumer?: RunResumer;
+  llmClient?: ServerChatClient | null;
 }
 
 interface CreateSessionRequest {
@@ -87,6 +89,11 @@ export function createCopilotController(deps: ControllerDeps = {}) {
   const runExecutor = new ServerRunExecutor({
     broker,
     eventPublisher,
+  });
+  const llmExecutor = new ServerLlmExecutor({
+    broker,
+    eventPublisher,
+    llmClient: deps.llmClient,
   });
   const approvalService = new CopilotApprovalService({
     approvalStore,
@@ -221,12 +228,21 @@ export function createCopilotController(deps: ControllerDeps = {}) {
           risk: plan.risk,
         });
       } else {
-        await runExecutor.executeLowRisk({
+        const handledByLlm = await llmExecutor.execute({
           actor: request.actor,
           sessionId: request.params.sessionId,
           runId: run.runId,
           message: request.body.message,
         });
+
+        if (!handledByLlm) {
+          await runExecutor.executeLowRisk({
+            actor: request.actor,
+            sessionId: request.params.sessionId,
+            runId: run.runId,
+            message: request.body.message,
+          });
+        }
       }
 
       return {

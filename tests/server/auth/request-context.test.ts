@@ -19,11 +19,15 @@ describe("parseRequestActor", () => {
     expect(actor.roles).toEqual(["app_admin", "app_operator"]);
   });
 
-  it("throws when required trusted headers are missing", () => {
-    expect(() =>
-      parseRequestActor({
-        "x-copilot-tenant-id": "t_123",
-      })
-    ).toThrow("Missing trusted Copilot actor headers");
+  it("falls back to a local default actor when copilot headers are missing", () => {
+    const actor = parseRequestActor({});
+
+    expect(actor).toMatchObject({
+      tenantId: "local-default",
+      userId: "local-user",
+      username: "local-user",
+      sourceSystem: "local-client",
+      roles: [],
+    });
   });
 });

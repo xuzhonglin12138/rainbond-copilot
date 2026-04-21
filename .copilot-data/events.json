@@ -481,5 +481,2308 @@
       }
     },
     "createdAt": "2026-04-20T10:49:44.008Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:26:48.548Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.548Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:26:48.551Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.551Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:26:48.552Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.552Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:26:48.553Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.553Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:26:48.554Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.554Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:26:48.555Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.555Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738408533",
+    "runId": "run_1776738408546",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738408533",
+      "runId": "run_1776738408546",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:26:48.555Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:26:48.555Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:34:32.995Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:34:32.995Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:34:32.996Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:34:32.996Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:34:32.998Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:34:32.998Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:34:32.999Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:34:32.999Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:34:33.001Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:34:33.001Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:34:33.002Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:34:33.002Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738872971",
+    "runId": "run_1776738872993",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738872971",
+      "runId": "run_1776738872993",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:34:33.003Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:34:33.003Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:36:34.874Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.874Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:36:34.875Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.875Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:36:34.876Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.876Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:36:34.878Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.878Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:36:34.879Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.879Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:36:34.879Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.879Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776738994847",
+    "runId": "run_1776738994872",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776738994847",
+      "runId": "run_1776738994872",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:36:34.880Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:36:34.880Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:37:25.725Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.725Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:37:25.727Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.727Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:37:25.728Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.728Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:37:25.730Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.730Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:37:25.732Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.732Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:37:25.733Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.733Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739045698",
+    "runId": "run_1776739045724",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739045698",
+      "runId": "run_1776739045724",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:37:25.735Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:37:25.735Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:47:00.182Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.182Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:47:00.185Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.185Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:47:00.187Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.187Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:47:00.188Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.188Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:47:00.189Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.189Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:47:00.190Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.190Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739620180",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739620180",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:47:00.191Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:00.191Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:47:19.658Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.658Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:47:19.660Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.660Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:47:19.662Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.662Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:47:19.665Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.665Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:47:19.666Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.666Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:47:19.668Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.668Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739639656",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739639656",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:47:19.670Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:19.670Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:47:31.123Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.123Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:47:31.126Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.126Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:47:31.127Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.127Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:47:31.130Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.130Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:47:31.132Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.132Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:47:31.134Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.134Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739620166",
+    "runId": "run_1776739651122",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739620166",
+      "runId": "run_1776739651122",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:47:31.136Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:47:31.136Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:53:11.380Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.380Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:53:11.383Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.383Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:53:11.384Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.384Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:53:11.386Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.386Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:53:11.387Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.387Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:53:11.388Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.388Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776739991378",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776739991378",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:53:11.390Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:53:11.390Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 1,
+      "timestamp": "2026-04-21T02:53:46.094Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.094Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 2,
+      "timestamp": "2026-04-21T02:53:46.096Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.096Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 3,
+      "timestamp": "2026-04-21T02:53:46.099Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.099Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 4,
+      "timestamp": "2026-04-21T02:53:46.100Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.100Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 5,
+      "timestamp": "2026-04-21T02:53:46.102Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.102Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 6,
+      "timestamp": "2026-04-21T02:53:46.103Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.103Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776739991367",
+    "runId": "run_1776740026093",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776739991367",
+      "runId": "run_1776740026093",
+      "sequence": 7,
+      "timestamp": "2026-04-21T02:53:46.105Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T02:53:46.105Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:11:55.820Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.820Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:11:55.825Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.825Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:11:55.827Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.827Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 4,
+      "timestamp": "2026-04-21T03:11:55.828Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.828Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 5,
+      "timestamp": "2026-04-21T03:11:55.830Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.830Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 6,
+      "timestamp": "2026-04-21T03:11:55.831Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.831Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741115818",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741115818",
+      "sequence": 7,
+      "timestamp": "2026-04-21T03:11:55.832Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:11:55.832Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:12:09.823Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.823Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:12:09.826Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.826Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:12:09.828Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.828Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 4,
+      "timestamp": "2026-04-21T03:12:09.830Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.830Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 5,
+      "timestamp": "2026-04-21T03:12:09.832Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.832Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 6,
+      "timestamp": "2026-04-21T03:12:09.834Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.834Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741115799",
+    "runId": "run_1776741129821",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741115799",
+      "runId": "run_1776741129821",
+      "sequence": 7,
+      "timestamp": "2026-04-21T03:12:09.836Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:12:09.836Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:13:15.761Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.761Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:13:15.765Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.765Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:13:15.766Z",
+      "data": {
+        "tool_name": "Get Component Status",
+        "input": {
+          "name": "frontend-ui"
+        },
+        "output": {
+          "name": "frontend-ui",
+          "status": "abnormal",
+          "memory": 512
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.766Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 4,
+      "timestamp": "2026-04-21T03:13:15.768Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.768Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 5,
+      "timestamp": "2026-04-21T03:13:15.769Z",
+      "data": {
+        "tool_name": "Get Component Logs",
+        "input": {
+          "name": "frontend-ui",
+          "lines": 20
+        },
+        "output": {
+          "name": "frontend-ui",
+          "logs": [
+            "[2024-01-01 10:00:00] Starting frontend-ui...",
+            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
+            "[2024-01-01 10:00:06] Process exited with code 137"
+          ]
+        }
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.769Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 6,
+      "timestamp": "2026-04-21T03:13:15.770Z",
+      "data": {
+        "role": "assistant",
+        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.770Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741195759",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741195759",
+      "sequence": 7,
+      "timestamp": "2026-04-21T03:13:15.772Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:13:15.772Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741607116",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741607116",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:20:07.120Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:20:07.120Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741623984",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741623984",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:20:23.986Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:20:23.986Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741690057",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741690057",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:21:30.058Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:21:30.058Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776741732538",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776741732538",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:22:12.542Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:22:12.542Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742219956",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742219956",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:30:19.963Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:30:19.963Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742219956",
+    "sequence": 2,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742219956",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:30:32.125Z",
+      "data": {
+        "role": "assistant",
+        "content": "你好！我是 Rainbond Copilot，您的专业云原生应用管理助手。\n\n我可以帮助您：\n\n**🔧 日常管理**\n- 查看组件状态和运行情况\n- 检查应用日志，排查问题\n- 管理组件的启动、停止和重启\n- 调整资源配置（CPU、内存）\n\n**🚀 故障排查**\n- 诊断组件启动失败、异常运行\n- 分析内存溢出(OOM)问题\n- 解决服务访问问题\n- 优化性能问题\n\n**📊 状态监控**\n- 获取实时的组件状态\n- 查看详细的运行日志\n- 监控资源使用情况\n\n请随时告诉我您需要什么帮助，比如：\n- \"请帮我查看 frontend-ui 组件的状态\"\n- \"backend-api 启动失败了，看看日志\"\n- \"我的应用内存使用很高，怎么优化？\"\n\n今天有什么我可以为您做的吗？"
+      }
+    },
+    "createdAt": "2026-04-21T03:30:32.125Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742219956",
+    "sequence": 3,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742219956",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:30:32.128Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:30:32.128Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742263556",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742263556",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:31:03.558Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:03.558Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742263556",
+    "sequence": 2,
+    "eventType": "approval.requested",
+    "payload": {
+      "type": "approval.requested",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742263556",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:31:03.563Z",
+      "data": {
+        "approval_id": "ap_1776742263561",
+        "skill_id": "scale-component-memory",
+        "description": "执行高风险操作前需要确认：我的应用内存使用很高，怎么优化",
+        "risk": "medium"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:03.563Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742263556",
+    "sequence": 3,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742263556",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:31:03.566Z",
+      "data": {
+        "status": "waiting_approval"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:03.566Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742263556",
+    "sequence": 4,
+    "eventType": "approval.resolved",
+    "payload": {
+      "type": "approval.resolved",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742263556",
+      "sequence": 4,
+      "timestamp": "2026-04-21T03:31:11.822Z",
+      "data": {
+        "approval_id": "ap_1776742263561",
+        "status": "approved",
+        "resolved_by": "local-user",
+        "comment": ""
+      }
+    },
+    "createdAt": "2026-04-21T03:31:11.822Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742263556",
+    "sequence": 5,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742263556",
+      "sequence": 5,
+      "timestamp": "2026-04-21T03:31:11.827Z",
+      "data": {
+        "role": "assistant",
+        "content": "已根据审批结果继续执行 scale-component-memory。"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:11.827Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742263556",
+    "sequence": 6,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742263556",
+      "sequence": 6,
+      "timestamp": "2026-04-21T03:31:11.829Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:11.829Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742290750",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742290750",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:31:30.751Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:30.751Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742290750",
+    "sequence": 2,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742290750",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:31:43.973Z",
+      "data": {
+        "role": "assistant",
+        "content": "你好！我是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n我能为您提供以下帮助：\n\n## 主要能力\n- **应用管理**：帮助您部署、配置和管理 Rainbond 上的应用和组件\n- **故障排查**：诊断组件启动失败、性能问题、服务不可用等常见问题\n- **运维操作**：查看组件状态、日志，协助重启、扩容等操作（需要时通过审批流程）\n- **最佳实践**：提供 Rainbond 使用建议和架构指导\n\n## 我能做什么？\n- 直接回答 Rainbond 相关问题\n- 通过工具查看组件状态和日志\n- 协助分析故障原因并提供解决方案\n- 指导您完成部署和配置操作\n\n请告诉我您需要什么帮助？比如：\n- 某个组件无法启动\n- 服务访问异常\n- 需要查看应用状态\n- 想要部署新的应用\n- 其他 Rainbond 相关的问题\n\n我会根据情况结合工具使用为您提供专业、清晰的解答。"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:43.973Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742290750",
+    "sequence": 3,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742290750",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:31:43.977Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:31:43.977Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742729579",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742729579",
+      "sequence": 1,
+      "timestamp": "2026-04-21T03:38:49.582Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-21T03:38:49.582Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742729579",
+    "sequence": 2,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742729579",
+      "sequence": 2,
+      "timestamp": "2026-04-21T03:39:03.373Z",
+      "data": {
+        "role": "assistant",
+        "content": "你好！我是 Rainbond Copilot，你的 Rainbond 云原生应用管理平台助手。\n\n我可以帮助你：\n1. **查看和管理组件状态** - 快速了解组件的运行状态和资源使用情况\n2. **查看组件日志** - 分析故障原因和运行情况\n3. **重启组件** - 解决服务异常或应用配置更新\n4. **调整组件资源** - 扩容内存解决 OOM 等问题\n5. **回答技术问题** - 关于 Rainbond 部署、配置、运维的各种疑问\n\n请告诉我你需要什么帮助？比如：\n- \"我的 frontend-ui 组件状态异常，帮我查看一下\"\n- \"查看 backend-api 最近 100 行日志\"\n- \"数据库服务经常 OOM，需要扩容内存\"\n- \"如何配置 Rainbond 中的服务发现？\"\n\n你可以直接告诉我**组件的名称**和具体需求，我会使用相应的工具来协助你解决问题。"
+      }
+    },
+    "createdAt": "2026-04-21T03:39:03.373Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776741195743",
+    "runId": "run_1776742729579",
+    "sequence": 3,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776741195743",
+      "runId": "run_1776742729579",
+      "sequence": 3,
+      "timestamp": "2026-04-21T03:39:03.377Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-21T03:39:03.377Z"
   }
 ]

@@ -3,6 +3,9 @@ function trimTrailingSlash(input) {
     return input.endsWith("/") ? input.slice(0, -1) : input;
 }
 export function buildCopilotActorHeaders(actor) {
+    if (!actor) {
+        return {};
+    }
     const headers = {
         "x-copilot-tenant-id": actor.tenantId,
         "x-copilot-user-id": actor.userId,
@@ -95,7 +98,7 @@ export async function readCopilotSseStream(response) {
         if (done) {
             break;
         }
-        buffer += decoder.decode(value, { stream: true });
+        buffer += decoder.decode(value, { stream: true }).replace(/\r/g, "");
         let boundaryIndex = buffer.indexOf("\n\n");
         while (boundaryIndex >= 0) {
             const rawEvent = buffer.slice(0, boundaryIndex);

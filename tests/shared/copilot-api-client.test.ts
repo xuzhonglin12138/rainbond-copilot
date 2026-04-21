@@ -58,6 +58,44 @@ describe("copilot api client", () => {
     );
   });
 
+  it("can create requests without copilot actor headers", async () => {
+    const fetchImpl = vi.fn(async () => {
+      return new Response(
+        JSON.stringify({
+          data: {
+            session_id: "cs_123",
+            tenant_id: "local-default",
+            status: "active",
+          },
+        }),
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+        }
+      );
+    });
+
+    const client = createCopilotApiClient({
+      baseUrl: "http://127.0.0.1:8787",
+      fetchImpl,
+    });
+
+    await client.createSession({});
+
+    expect(fetchImpl).toHaveBeenCalledWith(
+      "http://127.0.0.1:8787/api/v1/copilot/sessions",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "content-type": "application/json",
+        }),
+      })
+    );
+
+    expect(fetchImpl.mock.calls[0][1].headers["x-copilot-tenant-id"]).toBeUndefined();
+  });
+
   it("parses SSE messages into typed public events", async () => {
     const encoder = new TextEncoder();
     const response = new Response(
@@ -108,5 +146,9 @@ describe("copilot api client", () => {
       "x-copilot-username": "alice",
       "x-copilot-source-system": "ops-console",
     });
+  });
+
+  it("returns empty headers when actor is omitted", () => {
+    expect(buildCopilotActorHeaders()).toEqual({});
   });
 });

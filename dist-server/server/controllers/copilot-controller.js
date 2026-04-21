@@ -2,6 +2,7 @@ import { PersistedEventPublisher } from "../events/persisted-event-publisher.js"
 import { createSseBroker } from "../events/sse-broker.js";
 import { copilotRoutes } from "../routes/copilot-routes.js";
 import { createInMemoryRunResumer, } from "../runtime/run-resumer.js";
+import { ServerLlmExecutor } from "../runtime/server-llm-executor.js";
 import { ServerRunExecutor } from "../runtime/server-run-executor.js";
 import { CopilotApprovalService } from "../services/copilot-approval-service.js";
 import { createInMemoryApprovalStore, } from "../stores/approval-store.js";
@@ -22,6 +23,11 @@ export function createCopilotController(deps = {}) {
     const runExecutor = new ServerRunExecutor({
         broker,
         eventPublisher,
+    });
+    const llmExecutor = new ServerLlmExecutor({
+        broker,
+        eventPublisher,
+        llmClient: deps.llmClient,
     });
     const approvalService = new CopilotApprovalService({
         approvalStore,
@@ -126,12 +132,20 @@ export function createCopilotController(deps = {}) {
                 });
             }
             else {
-                await runExecutor.executeLowRisk({
+                const handledByLlm = await llmExecutor.execute({
                     actor: request.actor,
                     sessionId: request.params.sessionId,
                     runId: run.runId,
                     message: request.body.message,
                 });
+                if (!handledByLlm) {
+                    await runExecutor.executeLowRisk({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        message: request.body.message,
+                    });
+                }
             }
             return {
                 data: {

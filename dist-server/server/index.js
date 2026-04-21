@@ -1,7 +1,9 @@
 import { fileURLToPath } from "node:url";
+import { loadServerEnv } from "./config/load-server-env.js";
 import { createServerConfig } from "./config/server-config.js";
 import { createCopilotApiServer } from "./http.js";
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+    loadServerEnv();
     const config = createServerConfig();
     const server = createCopilotApiServer({ config });
     server.listen(config.port, config.host, () => {

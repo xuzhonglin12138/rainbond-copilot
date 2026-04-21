@@ -48,6 +48,12 @@ function formatSseEvent(event) {
     const payload = event;
     return `event: ${payload.type}\ndata: ${JSON.stringify(event)}\n\n`;
 }
+function isTerminalCopilotEvent(event) {
+    return (event &&
+        event.type === "run.status" &&
+        event.data &&
+        ["done", "error", "waiting_approval", "cancelled"].includes(event.data.status));
+}
 export function createCopilotApiServer(options = {}) {
     const config = {
         ...createServerConfig(options.env),
@@ -133,6 +139,10 @@ export function createCopilotApiServer(options = {}) {
                 });
                 for (const event of replay.events) {
                     response.write(formatSseEvent(event));
+                }
+                if (replay.events.some(isTerminalCopilotEvent)) {
+                    response.end();
+                    return;
                 }
                 const unsubscribe = broker.subscribe(eventsMatch[2], actor.tenantId, (event) => {
                     response.write(formatSseEvent(event.payload));

@@ -1,3 +1,10 @@
+const DEFAULT_REQUEST_ACTOR = {
+    tenantId: "local-default",
+    userId: "local-user",
+    username: "local-user",
+    sourceSystem: "local-client",
+    roles: [],
+};
 function readHeader(headers, name) {
     const value = headers[name];
     if (Array.isArray(value)) {
@@ -15,20 +22,23 @@ function parseRoles(rawRoles) {
         .filter(Boolean);
 }
 export function parseRequestActor(headers) {
-    const tenantId = readHeader(headers, "x-copilot-tenant-id");
-    const userId = readHeader(headers, "x-copilot-user-id");
-    const username = readHeader(headers, "x-copilot-username");
-    const sourceSystem = readHeader(headers, "x-copilot-source-system");
-    if (!tenantId || !userId || !username || !sourceSystem) {
-        throw new Error("Missing trusted Copilot actor headers");
-    }
+    const tenantId = readHeader(headers, "x-copilot-tenant-id") ||
+        readHeader(headers, "x-team-name") ||
+        DEFAULT_REQUEST_ACTOR.tenantId;
+    const userId = readHeader(headers, "x-copilot-user-id") || DEFAULT_REQUEST_ACTOR.userId;
+    const username = readHeader(headers, "x-copilot-username") || DEFAULT_REQUEST_ACTOR.username;
+    const sourceSystem = readHeader(headers, "x-copilot-source-system") ||
+        DEFAULT_REQUEST_ACTOR.sourceSystem;
     return {
         tenantId,
         userId,
         username,
         sourceSystem,
         roles: parseRoles(readHeader(headers, "x-copilot-roles")),
-        displayName: readHeader(headers, "x-copilot-display-name") || undefined,
-        tenantName: readHeader(headers, "x-copilot-tenant-name") || undefined,
+        displayName: readHeader(headers, "x-copilot-display-name") ||
+            DEFAULT_REQUEST_ACTOR.displayName,
+        tenantName: readHeader(headers, "x-copilot-tenant-name") ||
+            readHeader(headers, "x-team-name") ||
+            DEFAULT_REQUEST_ACTOR.tenantName,
     };
 }

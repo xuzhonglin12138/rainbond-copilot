@@ -4,7 +4,7 @@ import type {
   ChatMessage,
   ToolDefinition,
   ChatCompletionResponse,
-} from "./types";
+} from "./types.js";
 
 export class OpenAIClient {
   private client: OpenAI;

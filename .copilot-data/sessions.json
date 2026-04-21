@@ -28,5 +28,85 @@
     "createdAt": "2026-04-20T10:49:43.981Z",
     "updatedAt": "2026-04-20T10:49:44.003Z",
     "latestRunId": "run_1776682184002"
+  },
+  {
+    "sessionId": "cs_1776738408533",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T02:26:48.533Z",
+    "updatedAt": "2026-04-21T02:26:48.547Z",
+    "latestRunId": "run_1776738408546"
+  },
+  {
+    "sessionId": "cs_1776738872971",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T02:34:32.971Z",
+    "updatedAt": "2026-04-21T02:34:32.994Z",
+    "latestRunId": "run_1776738872993"
+  },
+  {
+    "sessionId": "cs_1776738994847",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T02:36:34.847Z",
+    "updatedAt": "2026-04-21T02:36:34.873Z",
+    "latestRunId": "run_1776738994872"
+  },
+  {
+    "sessionId": "cs_1776739045698",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T02:37:25.698Z",
+    "updatedAt": "2026-04-21T02:37:25.725Z",
+    "latestRunId": "run_1776739045724"
+  },
+  {
+    "sessionId": "cs_1776739620166",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T02:47:00.166Z",
+    "updatedAt": "2026-04-21T02:47:31.123Z",
+    "latestRunId": "run_1776739651122"
+  },
+  {
+    "sessionId": "cs_1776739991367",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T02:53:11.367Z",
+    "updatedAt": "2026-04-21T02:53:46.094Z",
+    "latestRunId": "run_1776740026093"
+  },
+  {
+    "sessionId": "cs_1776741115799",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T03:11:55.799Z",
+    "updatedAt": "2026-04-21T03:12:09.822Z",
+    "latestRunId": "run_1776741129821"
+  },
+  {
+    "sessionId": "cs_1776741195743",
+    "tenantId": "local-default",
+    "userId": "local-user",
+    "sourceSystem": "local-client",
+    "status": "active",
+    "createdAt": "2026-04-21T03:13:15.743Z",
+    "updatedAt": "2026-04-21T03:38:49.581Z",
+    "latestRunId": "run_1776742729579"
   }
 ]

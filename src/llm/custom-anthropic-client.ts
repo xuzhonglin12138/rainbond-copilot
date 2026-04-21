@@ -3,7 +3,7 @@ import type {
   ChatMessage,
   ToolDefinition,
   ChatCompletionResponse,
-} from "./types";
+} from "./types.js";
 
 export class CustomAnthropicClient {
   private config: LLMConfig;

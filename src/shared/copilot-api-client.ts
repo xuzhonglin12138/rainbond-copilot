@@ -12,7 +12,7 @@ export interface CopilotApiActor {
 
 export interface CreateCopilotApiClientOptions {
   baseUrl: string;
-  actor: CopilotApiActor;
+  actor?: CopilotApiActor;
   fetchImpl?: typeof fetch;
 }
 
@@ -23,8 +23,12 @@ function trimTrailingSlash(input: string): string {
 }
 
 export function buildCopilotActorHeaders(
-  actor: CopilotApiActor
+  actor?: CopilotApiActor
 ): Record<string, string> {
+  if (!actor) {
+    return {};
+  }
+
   const headers: Record<string, string> = {
     "x-copilot-tenant-id": actor.tenantId,
     "x-copilot-user-id": actor.userId,
@@ -200,7 +204,7 @@ export async function readCopilotSseStream(
       break;
     }
 
-    buffer += decoder.decode(value, { stream: true });
+    buffer += decoder.decode(value, { stream: true }).replace(/\r/g, "");
 
     let boundaryIndex = buffer.indexOf("\n\n");
     while (boundaryIndex >= 0) {

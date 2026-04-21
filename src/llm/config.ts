@@ -1,4 +1,8 @@
-import type { LLMConfig } from "./types";
+import type { LLMConfig } from "./types.js";
+
+type ViteLikeImportMeta = ImportMeta & {
+  env?: Record<string, string | undefined>;
+};
 
 // Detect environment and use appropriate env variable access
 function getEnv(key: string): string | undefined {
@@ -14,8 +18,9 @@ function getEnv(key: string): string | undefined {
   }
 
   // Browser environment (Vite)
-  if (typeof import.meta !== "undefined" && import.meta.env) {
-    return import.meta.env[`VITE_${key}`];
+  const viteMeta = import.meta as ViteLikeImportMeta;
+  if (viteMeta && viteMeta.env) {
+    return viteMeta.env[`VITE_${key}`];
   }
   // Node environment (tests)
   if (typeof process !== "undefined" && process.env) {
@@ -25,18 +30,34 @@ function getEnv(key: string): string | undefined {
 }
 
 export function getLLMConfig(): LLMConfig {
-  // Try Anthropic first
-  let apiKey = getEnv("ANTHROPIC_API_KEY");
-  let model = getEnv("ANTHROPIC_MODEL") || "claude-3-5-sonnet-20241022";
-  let baseURL = getEnv("ANTHROPIC_BASE_URL");
-  let provider: "anthropic" | "openai" = "anthropic";
+  const openaiApiKey =
+    getEnv("OPENAI_API_KEY") || getEnv("VITE_OPENAI_API_KEY");
+  const openaiModel =
+    getEnv("OPENAI_MODEL") || getEnv("VITE_OPENAI_MODEL") || "gpt-4o-mini";
+  const openaiBaseURL =
+    getEnv("OPENAI_BASE_URL") || getEnv("VITE_OPENAI_BASE_URL");
 
-  // Fallback to OpenAI if Anthropic not configured
-  if (!apiKey) {
-    apiKey = getEnv("OPENAI_API_KEY");
-    model = getEnv("OPENAI_MODEL") || "gpt-4o-mini";
-    baseURL = getEnv("OPENAI_BASE_URL");
+  const anthropicApiKey =
+    getEnv("ANTHROPIC_API_KEY") || getEnv("ANTHROPIC_AUTH_TOKEN");
+  const anthropicModel =
+    getEnv("ANTHROPIC_MODEL") || "claude-3-5-sonnet-20241022";
+  const anthropicBaseURL = getEnv("ANTHROPIC_BASE_URL");
+
+  let apiKey: string | undefined;
+  let model: string;
+  let baseURL: string | undefined;
+  let provider: "anthropic" | "openai";
+
+  if (openaiApiKey) {
+    apiKey = openaiApiKey;
+    model = openaiModel;
+    baseURL = openaiBaseURL;
     provider = "openai";
+  } else {
+    apiKey = anthropicApiKey;
+    model = anthropicModel;
+    baseURL = anthropicBaseURL;
+    provider = "anthropic";
   }
 
   // Convert relative URL to absolute URL in browser environment
