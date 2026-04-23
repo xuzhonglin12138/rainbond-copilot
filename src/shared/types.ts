@@ -3,6 +3,7 @@ export type RunId = string;
 export type ApprovalId = string;
 export type RiskLevel = "low" | "medium" | "high";
 export type ApprovalStatus = "pending" | "approved" | "rejected";
+export type AuthMode = "user_jwt" | "internal" | "trusted_headers";
 
 export interface RequestActor {
   tenantId: string;
@@ -10,22 +11,11 @@ export interface RequestActor {
   username: string;
   sourceSystem: string;
   roles: string[];
+  authMode?: AuthMode;
+  authorization?: string;
+  cookie?: string;
+  regionName?: string;
   displayName?: string;
   tenantName?: string;
-}
-
-export interface Session {
-  sessionId: SessionId;
-  transcriptIds: string[];
-  pendingApprovals: ApprovalId[];
-  openTasks: string[];
-}
-
-export interface ApprovalRequest {
-  approvalId: ApprovalId;
-  runId: RunId;
-  skillId: string;
-  description: string;
-  risk: RiskLevel;
-  status: ApprovalStatus;
+  enterpriseId?: string;
 }

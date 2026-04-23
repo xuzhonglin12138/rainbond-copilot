@@ -1,10 +1,13 @@
 import http from "node:http";
 import { URL } from "node:url";
-import { withRequestActor } from "./auth/auth-middleware.js";
+import { resolveRequestActor, } from "./auth/auth-middleware.js";
+import { AuthSubjectResolver } from "./auth/auth-subject-resolver.js";
 import { createServerConfig } from "./config/server-config.js";
 import { createCopilotController } from "./controllers/copilot-controller.js";
 import { createSseBroker } from "./events/sse-broker.js";
+import { RainbondMcpClient } from "./integrations/rainbond-mcp/client.js";
 import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
+import { SessionScopedRainbondActionAdapter } from "./runtime/session-scoped-action-adapter.js";
 import { createInMemoryApprovalStore, } from "./stores/approval-store.js";
 import { createInMemoryEventStore, } from "./stores/event-store.js";
 import { FileApprovalStore, FileEventStore, FileRunStore, FileSessionStore, } from "./stores/file-stores.js";
@@ -54,6 +57,18 @@ function isTerminalCopilotEvent(event) {
         event.data &&
         ["done", "error", "waiting_approval", "cancelled"].includes(event.data.status));
 }
+function readSessionRegionName(session) {
+    if (!session || !session.context) {
+        return undefined;
+    }
+    if (typeof session.context.regionName === "string") {
+        return session.context.regionName;
+    }
+    if (typeof session.context.region_name === "string") {
+        return session.context.region_name;
+    }
+    return undefined;
+}
 export function createCopilotApiServer(options = {}) {
     const config = {
         ...createServerConfig(options.env),
@@ -61,12 +76,64 @@ export function createCopilotApiServer(options = {}) {
     };
     const stores = createStores(config);
     const broker = createSseBroker(stores.eventStore);
+    const authSubjectResolver = options.authSubjectResolver ||
+        new AuthSubjectResolver(new RainbondMcpClient({
+            baseUrl: config.consoleBaseUrl,
+        }));
+    const createInitializedMcpClient = async ({ actor, sessionId, }) => {
+        const session = await stores.sessionStore.getById(sessionId, actor.tenantId);
+        if (!session || session.userId !== actor.userId) {
+            throw new Error("Session not found");
+        }
+        if (!actor.authorization) {
+            throw new Error("Authorization is required for Rainbond MCP actions");
+        }
+        if (!actor.cookie) {
+            throw new Error("Cookie is required for Rainbond MCP actions");
+        }
+        const client = new RainbondMcpClient({
+            baseUrl: config.consoleBaseUrl,
+        });
+        await client.initialize({
+            authorization: actor.authorization,
+            cookie: actor.cookie,
+            teamName: session.teamName || actor.tenantName || actor.tenantId,
+            regionName: readSessionRegionName(session) || actor.regionName,
+        });
+        return { client, session };
+    };
     const controller = createCopilotController({
         sessionStore: stores.sessionStore,
         runStore: stores.runStore,
         approvalStore: stores.approvalStore,
         broker,
         runResumer: createInMemoryRunResumer(),
+        actionAdapterFactory: async ({ actor, sessionId }) => {
+            const { client, session } = await createInitializedMcpClient({
+                actor,
+                sessionId,
+            });
+            return new SessionScopedRainbondActionAdapter(client, {
+                actor,
+                sessionContext: session.context,
+                lastVerifiedScopeSignature: session.lastVerifiedScopeSignature,
+                verifiedScope: session.verifiedScope,
+            });
+        },
+        workflowToolClientFactory: async ({ actor, sessionId }) => {
+            const { client } = await createInitializedMcpClient({
+                actor,
+                sessionId,
+            });
+            return client;
+        },
+        queryToolClientFactory: async ({ actor, sessionId }) => {
+            const { client } = await createInitializedMcpClient({
+                actor,
+                sessionId,
+            });
+            return client;
+        },
     });
     const server = http.createServer(async (request, response) => {
         if (!request.url) {
@@ -80,9 +147,9 @@ export function createCopilotApiServer(options = {}) {
         }
         let actor;
         try {
-            actor = withRequestActor({
+            actor = (await resolveRequestActor({
                 headers: request.headers,
-            }).actor;
+            }, authSubjectResolver)).actor;
         }
         catch (error) {
             json(response, 401, {

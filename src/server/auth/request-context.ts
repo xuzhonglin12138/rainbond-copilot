@@ -5,8 +5,8 @@ type HeaderMap = Record<string, HeaderValue>;
 
 const DEFAULT_REQUEST_ACTOR: RequestActor = {
   tenantId: "local-default",
-  userId: "local-user",
-  username: "local-user",
+  userId: "",
+  username: "",
   sourceSystem: "local-client",
   roles: [],
 };
@@ -33,14 +33,19 @@ function parseRoles(rawRoles: string): string[] {
 }
 
 export function parseRequestActor(headers: HeaderMap): RequestActor {
+  const authorization = readHeader(headers, "authorization");
+  const cookie = readHeader(headers, "cookie");
   const tenantId =
     readHeader(headers, "x-copilot-tenant-id") ||
     readHeader(headers, "x-team-name") ||
     DEFAULT_REQUEST_ACTOR.tenantId;
-  const userId =
-    readHeader(headers, "x-copilot-user-id") || DEFAULT_REQUEST_ACTOR.userId;
-  const username =
-    readHeader(headers, "x-copilot-username") || DEFAULT_REQUEST_ACTOR.username;
+  const isBrowserAuthTransport = !!(authorization || cookie);
+  const userId = isBrowserAuthTransport
+    ? DEFAULT_REQUEST_ACTOR.userId
+    : readHeader(headers, "x-copilot-user-id") || DEFAULT_REQUEST_ACTOR.userId;
+  const username = isBrowserAuthTransport
+    ? DEFAULT_REQUEST_ACTOR.username
+    : readHeader(headers, "x-copilot-username") || DEFAULT_REQUEST_ACTOR.username;
   const sourceSystem =
     readHeader(headers, "x-copilot-source-system") ||
     DEFAULT_REQUEST_ACTOR.sourceSystem;
@@ -50,6 +55,14 @@ export function parseRequestActor(headers: HeaderMap): RequestActor {
     userId,
     username,
     sourceSystem,
+    authMode: isBrowserAuthTransport
+      ? undefined
+      : userId && username
+        ? "trusted_headers"
+        : undefined,
+    authorization: authorization || undefined,
+    cookie: cookie || undefined,
+    regionName: readHeader(headers, "x-region-name") || undefined,
     roles: parseRoles(readHeader(headers, "x-copilot-roles")),
     displayName:
       readHeader(headers, "x-copilot-display-name") ||

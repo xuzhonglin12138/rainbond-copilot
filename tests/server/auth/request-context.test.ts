@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { parseRequestActor } from "../../../src/server/auth/request-context";
 
 describe("parseRequestActor", () => {
-  it("extracts trusted tenant and user identity from headers", () => {
+  it("extracts tenant and user identity when trusted copilot headers are used without browser JWT mode", () => {
     const actor = parseRequestActor({
       "x-copilot-tenant-id": "t_123",
       "x-copilot-user-id": "u_456",
@@ -19,15 +19,22 @@ describe("parseRequestActor", () => {
     expect(actor.roles).toEqual(["app_admin", "app_operator"]);
   });
 
-  it("falls back to a local default actor when copilot headers are missing", () => {
-    const actor = parseRequestActor({});
+  it("leaves user identity unresolved in browser JWT mode even if routing headers exist", () => {
+    const actor = parseRequestActor({
+      authorization: "GRJWT token",
+      cookie: "token=jwt-token; sessionid=abc",
+      "x-team-name": "team-a",
+      "x-region-name": "region-a",
+    });
 
     expect(actor).toMatchObject({
-      tenantId: "local-default",
-      userId: "local-user",
-      username: "local-user",
+      tenantId: "team-a",
+      userId: "",
+      username: "",
       sourceSystem: "local-client",
       roles: [],
+      authorization: "GRJWT token",
+      cookie: "token=jwt-token; sessionid=abc",
     });
   });
 });

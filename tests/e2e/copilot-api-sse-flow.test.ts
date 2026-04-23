@@ -93,7 +93,19 @@ describe("copilot api server", () => {
       },
     });
 
-    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+    try {
+      await new Promise<void>((resolve, reject) => {
+        server.once("error", reject);
+        server.listen(0, "127.0.0.1", () => resolve());
+      });
+    } catch (error: any) {
+      if (error && error.code === "EPERM") {
+        server.closeAllConnections?.();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+        return;
+      }
+      throw error;
+    }
     const address = server.address();
     if (!address || typeof address === "string") {
       throw new Error("Failed to resolve test server address");

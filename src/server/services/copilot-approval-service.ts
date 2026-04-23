@@ -1,4 +1,5 @@
 import type { RequestActor, ApprovalStatus, RiskLevel } from "../../shared/types.js";
+import { createServerId } from "../utils/id.js";
 import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
 import type { SseBroker } from "../events/sse-broker.js";
 import {
@@ -45,7 +46,7 @@ export class CopilotApprovalService {
     }
 
     const approval = createApprovalRecord({
-      approvalId: `ap_${Date.now()}`,
+      approvalId: createServerId("ap"),
       tenantId: input.actor.tenantId,
       sessionId: input.sessionId,
       runId: input.runId,
@@ -101,6 +102,10 @@ export class CopilotApprovalService {
     );
 
     if (!approval) {
+      throw new Error("Approval not found");
+    }
+
+    if (approval.requestedBy !== input.actor.userId) {
       throw new Error("Approval not found");
     }
 

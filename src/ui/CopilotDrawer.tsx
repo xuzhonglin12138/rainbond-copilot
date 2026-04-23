@@ -250,7 +250,7 @@ export function CopilotDrawer({
         <div className="flex items-end space-x-2 bg-gray-50 border border-gray-300 rounded-lg p-1 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
           <textarea
             className="flex-1 bg-transparent border-none focus:ring-0 resize-none text-sm p-2 max-h-32 min-h-[40px] outline-none"
-            placeholder="输入命令，例如: 我的前端应用 frontend-ui 怎么打不开了？"
+            placeholder="输入请求，例如：帮我检查当前应用状态"
             value={inputValue}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={(e) => {
@@ -271,12 +271,15 @@ export function CopilotDrawer({
         <div className="mt-2 flex space-x-2 overflow-x-auto pb-1">
           <span
             className="shrink-0 text-[10px] bg-gray-100 text-gray-500 px-2 py-1 rounded-full cursor-pointer hover:bg-gray-200"
-            onClick={() => onInputChange("我的前端应用 frontend-ui 怎么打不开了？")}
+            onClick={() => onInputChange("帮我检查当前应用状态")}
           >
-            排查 frontend-ui 故障
+            检查当前应用
           </span>
-          <span className="shrink-0 text-[10px] bg-gray-100 text-gray-500 px-2 py-1 rounded-full cursor-pointer hover:bg-gray-200">
-            帮我部署一个 Redis
+          <span
+            className="shrink-0 text-[10px] bg-gray-100 text-gray-500 px-2 py-1 rounded-full cursor-pointer hover:bg-gray-200"
+            onClick={() => onInputChange("你能做什么，有哪些流程？")}
+          >
+            查看可执行流程
           </span>
         </div>
       </div>

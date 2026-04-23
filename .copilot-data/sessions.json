@@ -1,112 +1,92 @@
 [
   {
-    "sessionId": "cs_1776682080165",
-    "tenantId": "jabrm8l6",
-    "userId": "1",
-    "sourceSystem": "rainbond-ui",
-    "status": "active",
-    "createdAt": "2026-04-20T10:48:00.165Z",
-    "updatedAt": "2026-04-20T10:48:00.179Z",
-    "latestRunId": "run_1776682080178"
-  },
-  {
-    "sessionId": "cs_1776682111999",
-    "tenantId": "jabrm8l6",
-    "userId": "1",
-    "sourceSystem": "rainbond-ui",
-    "status": "active",
-    "createdAt": "2026-04-20T10:48:31.999Z",
-    "updatedAt": "2026-04-20T10:48:32.020Z",
-    "latestRunId": "run_1776682112019"
-  },
-  {
-    "sessionId": "cs_1776682183981",
-    "tenantId": "jabrm8l6",
-    "userId": "1",
-    "sourceSystem": "rainbond-ui",
-    "status": "active",
-    "createdAt": "2026-04-20T10:49:43.981Z",
-    "updatedAt": "2026-04-20T10:49:44.003Z",
-    "latestRunId": "run_1776682184002"
-  },
-  {
-    "sessionId": "cs_1776738408533",
+    "sessionId": "cs_1776931396572_1",
     "tenantId": "local-default",
-    "userId": "local-user",
+    "userId": 1,
+    "username": "admin",
     "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "68",
+      "app_name": "68",
+      "component_id": "grd4620d",
+      "component_source": "query",
+      "page": "/team/default/region/rainbond/apps/68/overview",
+      "resource": {
+        "type": "component",
+        "id": "grd4620d",
+        "name": "grd4620d"
+      }
+    },
+    "contextSignature": "default|rainbond|68|grd4620d|candidate",
     "status": "active",
-    "createdAt": "2026-04-21T02:26:48.533Z",
-    "updatedAt": "2026-04-21T02:26:48.547Z",
-    "latestRunId": "run_1776738408546"
+    "createdAt": "2026-04-23T08:03:16.572Z",
+    "updatedAt": "2026-04-23T08:19:10.098Z",
+    "latestRunId": "run_1776932350097_1"
   },
   {
-    "sessionId": "cs_1776738872971",
+    "sessionId": "cs_1776932383308_1",
     "tenantId": "local-default",
-    "userId": "local-user",
+    "userId": 1,
+    "username": "admin",
     "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "68",
+      "app_name": "68",
+      "component_id": "grd4620d",
+      "component_source": "query",
+      "page": "/team/default/region/rainbond/apps/68/overview",
+      "resource": {
+        "type": "component",
+        "id": "grd4620d",
+        "name": "grd4620d"
+      }
+    },
+    "contextSignature": "default|rainbond|68|grd4620d|candidate",
     "status": "active",
-    "createdAt": "2026-04-21T02:34:32.971Z",
-    "updatedAt": "2026-04-21T02:34:32.994Z",
-    "latestRunId": "run_1776738872993"
+    "createdAt": "2026-04-23T08:19:43.308Z",
+    "updatedAt": "2026-04-23T08:19:43.427Z",
+    "latestRunId": "run_1776932383426_2"
   },
   {
-    "sessionId": "cs_1776738994847",
+    "sessionId": "cs_1776932822049_1",
     "tenantId": "local-default",
-    "userId": "local-user",
+    "userId": 1,
+    "username": "admin",
     "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "enterprise",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "",
+      "region_name": "",
+      "app_id": "",
+      "app_name": "",
+      "component_id": "",
+      "component_source": "",
+      "page": "/enterprise/8948f3fcf66e0cd91bf1045e8ca4a965/index",
+      "resource": {
+        "type": "page",
+        "id": "/enterprise/8948f3fcf66e0cd91bf1045e8ca4a965/index",
+        "name": "/enterprise/8948f3fcf66e0cd91bf1045e8ca4a965/index"
+      }
+    },
+    "contextSignature": "||||candidate",
     "status": "active",
-    "createdAt": "2026-04-21T02:36:34.847Z",
-    "updatedAt": "2026-04-21T02:36:34.873Z",
-    "latestRunId": "run_1776738994872"
-  },
-  {
-    "sessionId": "cs_1776739045698",
-    "tenantId": "local-default",
-    "userId": "local-user",
-    "sourceSystem": "local-client",
-    "status": "active",
-    "createdAt": "2026-04-21T02:37:25.698Z",
-    "updatedAt": "2026-04-21T02:37:25.725Z",
-    "latestRunId": "run_1776739045724"
-  },
-  {
-    "sessionId": "cs_1776739620166",
-    "tenantId": "local-default",
-    "userId": "local-user",
-    "sourceSystem": "local-client",
-    "status": "active",
-    "createdAt": "2026-04-21T02:47:00.166Z",
-    "updatedAt": "2026-04-21T02:47:31.123Z",
-    "latestRunId": "run_1776739651122"
-  },
-  {
-    "sessionId": "cs_1776739991367",
-    "tenantId": "local-default",
-    "userId": "local-user",
-    "sourceSystem": "local-client",
-    "status": "active",
-    "createdAt": "2026-04-21T02:53:11.367Z",
-    "updatedAt": "2026-04-21T02:53:46.094Z",
-    "latestRunId": "run_1776740026093"
-  },
-  {
-    "sessionId": "cs_1776741115799",
-    "tenantId": "local-default",
-    "userId": "local-user",
-    "sourceSystem": "local-client",
-    "status": "active",
-    "createdAt": "2026-04-21T03:11:55.799Z",
-    "updatedAt": "2026-04-21T03:12:09.822Z",
-    "latestRunId": "run_1776741129821"
-  },
-  {
-    "sessionId": "cs_1776741195743",
-    "tenantId": "local-default",
-    "userId": "local-user",
-    "sourceSystem": "local-client",
-    "status": "active",
-    "createdAt": "2026-04-21T03:13:15.743Z",
-    "updatedAt": "2026-04-21T03:38:49.581Z",
-    "latestRunId": "run_1776742729579"
+    "createdAt": "2026-04-23T08:27:02.049Z",
+    "updatedAt": "2026-04-23T08:29:18.708Z",
+    "latestRunId": "run_1776932958707_1"
   }
 ]

@@ -7,5 +7,6 @@ export function createServerConfig(env = process.env) {
         port: Number(env.COPILOT_API_PORT || "8787"),
         storeMode,
         dataDir: env.COPILOT_DATA_DIR || ".copilot-data",
+        consoleBaseUrl: env.COPILOT_CONSOLE_BASE_URL || "http://127.0.0.1:7070",
     };
 }

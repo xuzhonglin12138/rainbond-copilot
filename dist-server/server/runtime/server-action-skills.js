@@ -1,7 +1,3 @@
-import * as getComponentLogs from "../../skills/actions/get-component-logs/plugin.js";
-import * as getComponentStatus from "../../skills/actions/get-component-status/plugin.js";
-import * as restartComponent from "../../skills/actions/restart-component/plugin.js";
-import * as scaleComponentMemory from "../../skills/actions/scale-component-memory/plugin.js";
 function createActionSkill(id, plugin) {
     return {
         id,
@@ -14,11 +10,86 @@ function createActionSkill(id, plugin) {
         execute: plugin.execute,
     };
 }
-export function createServerActionSkills() {
+function requireActionAdapter(adapter) {
+    if (!adapter) {
+        throw new Error("Action adapter is required for server runtime execution");
+    }
+    return adapter;
+}
+export function createServerActionSkills(adapter) {
     return {
-        "get-component-status": createActionSkill("get-component-status", getComponentStatus),
-        "get-component-logs": createActionSkill("get-component-logs", getComponentLogs),
-        "restart-component": createActionSkill("restart-component", restartComponent),
-        "scale-component-memory": createActionSkill("scale-component-memory", scaleComponentMemory),
+        "get-component-status": createActionSkill("get-component-status", {
+            name: "Get Component Status",
+            description: "Get the current status of a Rainbond component",
+            risk: "low",
+            requiresApproval: false,
+            execute: (input) => requireActionAdapter(adapter).getComponentStatus(input),
+        }),
+        "get-component-logs": createActionSkill("get-component-logs", {
+            name: "Get Component Logs",
+            description: "Retrieve recent logs from a Rainbond component",
+            risk: "low",
+            requiresApproval: false,
+            approvalPolicy: {
+                evaluate(input) {
+                    const lines = input.lines ?? 50;
+                    const isSensitiveComponent = /(^|[-_])(db|mysql|redis)([-_]|$)/i.test(input.name);
+                    if (lines >= 200 || isSensitiveComponent) {
+                        return {
+                            requiresApproval: true,
+                            risk: "medium",
+                            reason: `查看 ${input.name} 的 ${lines} 行日志，可能暴露敏感运行细节或带来额外排查负载`,
+                        };
+                    }
+                    return {
+                        requiresApproval: false,
+                        risk: "low",
+                        reason: `查看 ${input.name} 的最近日志`,
+                    };
+                },
+            },
+            execute: (input) => requireActionAdapter(adapter).getComponentLogs(input),
+        }),
+        "restart-component": createActionSkill("restart-component", {
+            name: "Restart Component",
+            description: "Restart a Rainbond component (potentially disruptive)",
+            risk: "high",
+            requiresApproval: true,
+            approvalPolicy: {
+                evaluate(input) {
+                    const isStatefulComponent = /(^|[-_])(db|mysql|redis)([-_]|$)/i.test(input.name);
+                    return {
+                        requiresApproval: true,
+                        risk: "high",
+                        reason: isStatefulComponent
+                            ? `重启 ${input.name}，该组件可能承载有状态服务，存在短时不可用风险`
+                            : `重启 ${input.name}，会导致该组件短时中断`,
+                    };
+                },
+            },
+            execute: (input) => requireActionAdapter(adapter).restartComponent(input),
+        }),
+        "scale-component-memory": createActionSkill("scale-component-memory", {
+            name: "Scale Component Memory",
+            description: "Scale the memory allocation of a Rainbond component",
+            risk: "medium",
+            requiresApproval: true,
+            approvalPolicy: {
+                evaluate(input) {
+                    const isLargeScaleChange = input.memory >= 2048;
+                    const isStatefulComponent = /(^|[-_])(db|mysql|redis)([-_]|$)/i.test(input.name);
+                    return {
+                        requiresApproval: true,
+                        risk: isLargeScaleChange || isStatefulComponent
+                            ? "high"
+                            : "medium",
+                        reason: isLargeScaleChange || isStatefulComponent
+                            ? `将 ${input.name} 的内存调整到 ${input.memory}MB，属于高影响资源变更`
+                            : `将 ${input.name} 的内存调整到 ${input.memory}MB，需要确认资源变更影响`,
+                    };
+                },
+            },
+            execute: (input) => requireActionAdapter(adapter).scaleComponentMemory(input),
+        }),
     };
 }

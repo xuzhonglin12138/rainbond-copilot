@@ -1,112 +1,314 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Layout,
-  Activity,
-  Database,
-  Settings,
-  ChevronRight,
-  Search,
-  Bell,
-  User,
+  Bot,
+  PanelRightOpen,
 } from "lucide-react";
 import { CopilotDrawer, type Message } from "./ui/CopilotDrawer";
-import { TopologyCanvas, type TopologyNode } from "./ui/TopologyCanvas";
-import { InProcessGateway } from "./gateway/in-process-gateway";
-import type { DrawerEvent } from "./shared/contracts";
+import {
+  createCopilotApiClient,
+  readCopilotSseStream,
+  type CopilotApiActor,
+} from "./shared/copilot-api-client";
+import type { PublicCopilotEvent } from "./shared/contracts";
 
-const initialNodes: TopologyNode[] = [
-  { id: "gateway", name: "API Gateway", type: "gateway", status: "running", x: 50, y: 150 },
-  {
-    id: "frontend",
-    name: "前端 UI (frontend-ui)",
-    type: "service",
-    status: "running",
-    x: 250,
-    y: 80,
-  },
-  { id: "backend", name: "核心业务 API", type: "service", status: "running", x: 250, y: 220 },
-  { id: "db", name: "MySQL 数据库", type: "db", status: "running", x: 450, y: 220 },
-];
+type ViteEnvRecord = Record<string, string | undefined>;
+
+interface ApprovalState {
+  approvalId: string;
+  sessionId: string;
+  runId: string;
+  lastSequence: number;
+}
+
+function getBrowserEnv(): ViteEnvRecord {
+  const viteMeta = import.meta as ImportMeta & {
+    env?: ViteEnvRecord;
+  };
+
+  return viteMeta.env || {};
+}
+
+function readCookie(name: string): string {
+  if (typeof document === "undefined") {
+    return "";
+  }
+
+  const cookiePrefix = `${name}=`;
+  const matched = document.cookie
+    .split(";")
+    .map((item) => item.trim())
+    .find((item) => item.startsWith(cookiePrefix));
+
+  if (!matched) {
+    return "";
+  }
+
+  return decodeURIComponent(matched.slice(cookiePrefix.length));
+}
+
+function buildTrustedActor(env: ViteEnvRecord): CopilotApiActor | undefined {
+  const tenantId = env.VITE_COPILOT_TENANT_ID || "";
+  const userId = env.VITE_COPILOT_USER_ID || "";
+  const username = env.VITE_COPILOT_USERNAME || "";
+
+  if (!tenantId || !userId || !username) {
+    return undefined;
+  }
+
+  return {
+    tenantId,
+    userId,
+    username,
+    sourceSystem: env.VITE_COPILOT_SOURCE_SYSTEM || "agent-web",
+    roles: (env.VITE_COPILOT_ROLES || "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean),
+    tenantName: env.VITE_COPILOT_TENANT_NAME || tenantId,
+    displayName: env.VITE_COPILOT_DISPLAY_NAME || undefined,
+  };
+}
+
+function buildSessionContext(env: ViteEnvRecord): Record<string, unknown> {
+  const context: Record<string, unknown> = {};
+
+  if (env.VITE_COPILOT_ENTERPRISE_ID) {
+    context.enterprise_id = env.VITE_COPILOT_ENTERPRISE_ID;
+  }
+  if (env.VITE_COPILOT_TEAM_NAME) {
+    context.team_name = env.VITE_COPILOT_TEAM_NAME;
+  }
+  if (env.VITE_COPILOT_REGION_NAME) {
+    context.region_name = env.VITE_COPILOT_REGION_NAME;
+  }
+  if (env.VITE_COPILOT_APP_ID) {
+    context.app_id = env.VITE_COPILOT_APP_ID;
+  }
+  if (env.VITE_COPILOT_APP_NAME) {
+    context.app_name = env.VITE_COPILOT_APP_NAME;
+  }
+  if (env.VITE_COPILOT_COMPONENT_ID) {
+    context.component_id = env.VITE_COPILOT_COMPONENT_ID;
+  }
+  if (env.VITE_COPILOT_COMPONENT_SOURCE) {
+    context.component_source = env.VITE_COPILOT_COMPONENT_SOURCE;
+  }
+  if (env.VITE_COPILOT_PAGE) {
+    context.page = env.VITE_COPILOT_PAGE;
+  }
+
+  if (Object.keys(context).length > 0) {
+    context.resource = {
+      type: context.component_id ? "component" : context.app_id ? "app" : "page",
+      id: context.component_id || context.app_id || context.page || "",
+      name: context.app_name || context.component_id || context.app_id || context.page || "",
+    };
+  }
+
+  return context;
+}
+
+function createBrowserFetch(env: ViteEnvRecord): typeof fetch {
+  return (input, init = {}) => {
+    const headers = new Headers(init.headers || {});
+    const token = readCookie("token");
+    const teamName = env.VITE_COPILOT_TEAM_NAME || "";
+    const regionName = env.VITE_COPILOT_REGION_NAME || "";
+
+    if (token && !headers.has("Authorization")) {
+      headers.set("Authorization", `GRJWT ${token}`);
+    }
+    if (teamName && !headers.has("X-Team-Name")) {
+      headers.set("X-Team-Name", teamName);
+    }
+    if (regionName && !headers.has("X-Region-Name")) {
+      headers.set("X-Region-Name", regionName);
+    }
+
+    return fetch(input, {
+      ...init,
+      headers,
+      credentials: init.credentials || "include",
+    });
+  };
+}
+
+function buildWorkflowEventMessage(event: PublicCopilotEvent): Message | null {
+  const data = event.data || {};
+
+  if (event.type === "workflow.selected") {
+    return {
+      role: "system",
+      type: "action",
+      content: `进入工作流：${String(data.workflow_name || data.workflow_id || "workflow")}`,
+    };
+  }
+
+  if (event.type === "workflow.stage") {
+    return {
+      role: "system",
+      type: "action",
+      content: `当前阶段：${String(data.workflow_stage || "unknown")}，下一步：${String(data.next_action || "none")}`,
+    };
+  }
+
+  if (event.type === "workflow.completed") {
+    return {
+      role: "system",
+      type: "action",
+      content: `工作流完成：${String(data.workflow_id || "workflow")}`,
+    };
+  }
+
+  return null;
+}
+
+function applyPublicEvents(
+  previousMessages: Message[],
+  previousApprovals: Record<string, ApprovalState>,
+  events: PublicCopilotEvent[]
+): {
+  messages: Message[];
+  approvals: Record<string, ApprovalState>;
+} {
+  const nextMessages = previousMessages.slice();
+  const nextApprovals = { ...previousApprovals };
+
+  for (const event of events) {
+    const data = event.data || {};
+
+    switch (event.type) {
+      case "chat.message":
+        nextMessages.push({
+          role: data.role === "user" ? "user" : "ai",
+          type: "text",
+          content: String(data.content || ""),
+        });
+        break;
+      case "chat.trace":
+        nextMessages.push({
+          role: "system",
+          type: "tool_call",
+          content: `调用工具: ${String(data.tool_name || "tool")}(${JSON.stringify(
+            data.input || {}
+          )})`,
+        });
+        break;
+      case "approval.requested": {
+        const approvalId = String(data.approval_id || "");
+        if (!approvalId) {
+          break;
+        }
+        nextApprovals[approvalId] = {
+          approvalId,
+          sessionId: event.sessionId,
+          runId: event.runId,
+          lastSequence: event.sequence,
+        };
+        nextMessages.push({
+          role: "ai",
+          type: "approval",
+          actionId: approvalId,
+          summary: String(data.description || "待审批操作"),
+          api: `Skill: ${String(data.skill_id || "")}`,
+          status: "pending",
+        });
+        break;
+      }
+      case "approval.resolved": {
+        const approvalId = String(data.approval_id || "");
+        const status = data.status === "approved" ? "approved" : "rejected";
+        nextMessages.forEach((message) => {
+          if (message.actionId === approvalId && message.type === "approval") {
+            message.status = status;
+          }
+        });
+        delete nextApprovals[approvalId];
+        break;
+      }
+      case "workflow.selected":
+      case "workflow.stage":
+      case "workflow.completed": {
+        const workflowMessage = buildWorkflowEventMessage(event);
+        if (workflowMessage) {
+          nextMessages.push(workflowMessage);
+        }
+
+        if (event.type === "workflow.completed") {
+          const structuredResult = data.structured_result as
+            | Record<string, unknown>
+            | undefined;
+          const summary =
+            structuredResult && typeof structuredResult.summary === "string"
+              ? structuredResult.summary
+              : "";
+          if (summary) {
+            nextMessages.push({
+              role: "ai",
+              type: "text",
+              content: summary,
+            });
+          }
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  return {
+    messages: nextMessages,
+    approvals: nextApprovals,
+  };
+}
 
 export default function App() {
+  const env = useMemo(() => getBrowserEnv(), []);
   const [isChatOpen, setIsChatOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "ai",
       type: "text",
       content:
-        "您好！我是 Rainbond Copilot。我可以帮您排查故障、分析日志或管理应用架构。今天有什么可以帮您？",
+        "您好！我是 Rainbond Copilot。我现在通过 server workflow 主链路处理 Rainbond 部署、修复、模板安装、版本中心和交付验证相关流程。",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
-  const [nodes] = useState(initialNodes);
-  const [highlightedNode] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
-  const [gateway] = useState(() => new InProcessGateway());
-  const [sessionId] = useState(() => `session-${Date.now()}`);
+  const [approvalStates, setApprovalStates] = useState<Record<string, ApprovalState>>(
+    {}
+  );
+  const [sessionId, setSessionId] = useState<string>("");
+  const messagesRef = useRef(messages);
+  const approvalsRef = useRef(approvalStates);
+  const client = useMemo(() => {
+    return createCopilotApiClient({
+      baseUrl: env.VITE_COPILOT_API_BASE_URL || "",
+      actor: buildTrustedActor(env),
+      fetchImpl: createBrowserFetch(env),
+    });
+  }, [env]);
+  const sessionContext = useMemo(() => buildSessionContext(env), [env]);
 
-  const convertDrawerEventToMessage = (event: DrawerEvent): Message | null => {
-    switch (event.type) {
-      case "chat.message":
-        return {
-          role: event.role === "assistant" ? "ai" : "user",
-          type: "text",
-          content: event.content,
-        };
-      case "chat.trace":
-        return {
-          role: "system",
-          type: "tool_call",
-          content: `调用工具: ${event.toolName}(${JSON.stringify(event.input)})`,
-        };
-      case "approval.requested":
-        return {
-          role: "ai",
-          type: "approval",
-          actionId: event.approvalId,
-          summary: event.description,
-          api: `Skill: ${event.skillId}`,
-          status: "pending",
-        };
-      case "goal.created":
-        return {
-          role: "system",
-          type: "goal",
-          content: event.description,
-          status: "pending",
-        };
-      case "goal.completed":
-        return {
-          role: "system",
-          type: "goal",
-          content: "",
-          status: "completed",
-        };
-      case "memory.stored":
-        return {
-          role: "system",
-          type: "memory",
-          content: event.content,
-          importance: event.importance,
-        };
-      case "memory.recalled":
-        return {
-          role: "system",
-          type: "memory_recall",
-          content: event.query,
-          relatedEntries: event.entries.map((entry) => entry.content),
-        };
-      case "reflection.insight":
-        return {
-          role: "system",
-          type: "reflection",
-          content: event.insight,
-        };
-      case "run.status":
-        return null;
-      default:
-        return null;
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    approvalsRef.current = approvalStates;
+  }, [approvalStates]);
+
+  const ensureSession = async (): Promise<string> => {
+    if (sessionId) {
+      return sessionId;
     }
+
+    const session = await client.createSession({
+      context: sessionContext,
+    });
+    setSessionId(session.data.session_id);
+    return session.data.session_id;
   };
 
   const handleSendMessage = async () => {
@@ -118,13 +320,23 @@ export default function App() {
     setIsTyping(true);
 
     try {
-      const events = await gateway.handleMessage(sessionId, userMsg);
-      for (const event of events) {
-        const message = convertDrawerEventToMessage(event);
-        if (message) {
-          setMessages((prev) => [...prev, message]);
-        }
-      }
+      const resolvedSessionId = await ensureSession();
+      const run = await client.createMessageRun(resolvedSessionId, {
+        message: userMsg,
+        stream: true,
+      });
+      const response = await client.openEventStream(
+        resolvedSessionId,
+        run.data.run_id
+      );
+      const events = await readCopilotSseStream(response);
+      const applied = applyPublicEvents(
+        messagesRef.current,
+        approvalsRef.current,
+        events
+      );
+      setApprovalStates(applied.approvals);
+      setMessages(applied.messages);
     } catch (error: any) {
       console.error("Error handling message:", error);
       setMessages((prev) => [
@@ -140,27 +352,61 @@ export default function App() {
     }
   };
 
-  const handleApprove = async (actionId: string) => {
+  const resolveApproval = async (
+    actionId: string,
+    decision: "approved" | "rejected"
+  ) => {
+    const approval = approvalStates[actionId];
+
     setMessages((prev) =>
-      prev.map((m) => (m.actionId === actionId ? { ...m, status: "approved" as const } : m))
+      prev.map((message) =>
+        message.actionId === actionId
+          ? {
+              ...message,
+              status: decision,
+            }
+          : message
+      )
     );
+
+    if (!approval) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          type: "text",
+          content: "审批上下文不存在，请刷新后重试。",
+        },
+      ]);
+      return;
+    }
+
     setIsTyping(true);
 
     try {
-      const events = await gateway.handleApproval(sessionId, actionId, true);
-      for (const event of events) {
-        const message = convertDrawerEventToMessage(event);
-        if (message) {
-          setMessages((prev) => [...prev, message]);
-        }
-      }
+      await client.decideApproval(actionId, {
+        decision,
+        comment: decision === "approved" ? "确认执行" : "取消执行",
+      });
+
+      const response = await client.openEventStream(approval.sessionId, approval.runId, {
+        afterSequence: approval.lastSequence,
+      });
+      const events = await readCopilotSseStream(response);
+      const applied = applyPublicEvents(
+        messagesRef.current,
+        approvalsRef.current,
+        events
+      );
+      setApprovalStates(applied.approvals);
+      setMessages(applied.messages);
     } catch (error: any) {
       setMessages((prev) => [
         ...prev,
         {
           role: "ai",
           type: "text",
-          content: `处理审批时出现错误：${error.message}`,
+          content: `处理审批时出现错误：${error.message || error.toString()}`,
         },
       ]);
     } finally {
@@ -168,66 +414,60 @@ export default function App() {
     }
   };
 
-  const handleReject = async (actionId: string) => {
-    setMessages((prev) =>
-      prev.map((m) => (m.actionId === actionId ? { ...m, status: "rejected" as const } : m))
-    );
+  const handleApprove = async (actionId: string) => {
+    await resolveApproval(actionId, "approved");
+  };
 
-    try {
-      const events = await gateway.handleApproval(sessionId, actionId, false);
-      for (const event of events) {
-        const message = convertDrawerEventToMessage(event);
-        if (message) {
-          setMessages((prev) => [...prev, message]);
-        }
-      }
-    } catch (error: any) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "ai",
-          type: "text",
-          content: `处理审批时出现错误：${error.message}`,
-        },
-      ]);
-    }
+  const handleReject = async (actionId: string) => {
+    await resolveApproval(actionId, "rejected");
   };
 
   return (
-    <div className="flex h-screen w-full bg-gray-50 font-sans text-sm overflow-hidden">
-      {/* 左侧导航栏 */}
-      <div className="w-16 bg-gray-900 flex flex-col items-center py-4 space-y-6 text-gray-400">
-        <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-bold">
-          R
-        </div>
-        <Layout className="w-5 h-5 text-white" />
-        <Activity className="w-5 h-5" />
-        <Database className="w-5 h-5" />
-        <Settings className="w-5 h-5" />
-      </div>
-
-      {/* 主内容区 */}
+    <div className="flex h-screen w-full bg-slate-100 font-sans text-sm overflow-hidden">
       <div className="flex-1 flex flex-col relative">
-        {/* 顶部 Header */}
-        <div className="h-14 bg-white border-b flex items-center justify-between px-6">
-          <div className="flex items-center space-x-2 text-gray-600">
-            <span>电商测试团队</span> <ChevronRight className="w-4 h-4" />{" "}
-            <span className="font-semibold text-gray-900">核心交易系统</span>
+        <div className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6">
+          <div className="flex items-center space-x-3 text-slate-700">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+              <Bot className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-semibold text-slate-900">Rainbond Copilot</div>
+              <div className="text-xs text-slate-500">
+                Server workflow mode
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-4 text-gray-500">
-            <Search className="w-4 h-4" />
-            <Bell className="w-4 h-4" />
-            <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4" />
+          <button
+            type="button"
+            className="inline-flex items-center space-x-2 rounded-md border border-slate-200 px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50"
+            onClick={() => setIsChatOpen((value) => !value)}
+          >
+            <PanelRightOpen className="w-3.5 h-3.5" />
+            <span>{isChatOpen ? "隐藏面板" : "打开面板"}</span>
+          </button>
+        </div>
+
+        <div className="flex-1 p-8">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="text-lg font-semibold text-slate-900">
+              已移除 UI Demo 与本地 Mock 拓扑
+            </div>
+            <div className="mt-3 text-sm leading-7 text-slate-600">
+              当前独立前端只作为 Rainbond Copilot 的 API 客户端壳子，所有会话、
+              工作流选择、审批、MCP 调用和结构化结果都通过 server 侧真实主链路返回。
+            </div>
+            <div className="mt-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
+              建议直接在右侧面板发起问题，例如：
+              <div className="mt-3 space-y-2 font-mono text-xs text-slate-700">
+                <div>帮我检查当前应用状态</div>
+                <div>你能做什么，有哪些流程？</div>
+                <div>帮我把当前模板安装到这个应用</div>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* 拓扑图 */}
-        <TopologyCanvas nodes={nodes} highlightedNode={highlightedNode} />
       </div>
 
-      {/* 右侧 Copilot 抽屉 */}
       <CopilotDrawer
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}

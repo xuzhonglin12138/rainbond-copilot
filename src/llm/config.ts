@@ -6,6 +6,10 @@ type ViteLikeImportMeta = ImportMeta & {
 
 // Detect environment and use appropriate env variable access
 function getEnv(key: string): string | undefined {
+  if (typeof window === "undefined" && typeof process !== "undefined" && process.env) {
+    return process.env[key];
+  }
+
   // Vitest runs in a Node context where import.meta.env may still contain
   // browser-side VITE_* values from local development. Prefer explicit
   // process.env in tests so fallback-mode assertions can disable keys reliably.

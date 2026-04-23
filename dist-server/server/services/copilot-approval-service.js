@@ -1,3 +1,4 @@
+import { createServerId } from "../utils/id.js";
 import { createApprovalRecord, } from "../stores/approval-store.js";
 export class CopilotApprovalService {
     constructor(deps) {
@@ -9,7 +10,7 @@ export class CopilotApprovalService {
             throw new Error("Run not found");
         }
         const approval = createApprovalRecord({
-            approvalId: `ap_${Date.now()}`,
+            approvalId: createServerId("ap"),
             tenantId: input.actor.tenantId,
             sessionId: input.sessionId,
             runId: input.runId,
@@ -53,6 +54,9 @@ export class CopilotApprovalService {
     async decide(approvalId, input) {
         const approval = await this.deps.approvalStore.getById(approvalId, input.actor.tenantId);
         if (!approval) {
+            throw new Error("Approval not found");
+        }
+        if (approval.requestedBy !== input.actor.userId) {
             throw new Error("Approval not found");
         }
         const run = await this.deps.runStore.getById(approval.runId, input.actor.tenantId);

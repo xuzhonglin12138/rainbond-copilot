@@ -205,4 +205,76 @@ describe("copilot approval flow", () => {
       data: { status: "cancelled" },
     });
   });
+
+  it("rejects approval decisions from another user in the same tenant", async () => {
+    const owner = {
+      tenantId: "t_123",
+      userId: "u_owner",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+    const otherUser = {
+      tenantId: "t_123",
+      userId: "u_other",
+      username: "bob",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+    const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
+    const approvalStore = createInMemoryApprovalStore();
+    const broker = createSseBroker();
+    const eventPublisher = new PersistedEventPublisher(broker);
+    const runResumer = new InMemoryRunResumer();
+    const approvalService = new CopilotApprovalService({
+      approvalStore,
+      runStore,
+      eventPublisher,
+      broker,
+      runResumer,
+    });
+    const controller = createCopilotController({
+      sessionStore,
+      runStore,
+      approvalStore,
+      broker,
+      runResumer,
+    });
+
+    await sessionStore.create(
+      createSessionRecord({
+        sessionId: "cs_789",
+        tenantId: owner.tenantId,
+        userId: owner.userId,
+        sourceSystem: owner.sourceSystem,
+      })
+    );
+    await runStore.create(
+      createRunRecord({
+        runId: "run_789",
+        tenantId: owner.tenantId,
+        sessionId: "cs_789",
+        messageText: "restart frontend-ui",
+        status: "pending",
+      })
+    );
+
+    const approval = await approvalService.createPendingApproval({
+      actor: owner,
+      sessionId: "cs_789",
+      runId: "run_789",
+      skillId: "restart-component",
+      description: "重启 frontend-ui 会导致短暂中断",
+      risk: "high",
+    });
+
+    await expect(
+      controller.decideApproval({
+        actor: otherUser,
+        params: { approvalId: approval.approvalId },
+        body: { decision: "approved", comment: "越权审批" },
+      })
+    ).rejects.toThrow("Approval not found");
+  });
 });

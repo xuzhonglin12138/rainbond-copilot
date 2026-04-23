@@ -1,10 +1,32 @@
+import type { AuthMode, RiskLevel } from "../../shared/types.js";
+import type { ResolvedExecutionScope } from "../workflows/types.js";
+
 export type SessionRecordStatus = "active" | "archived";
+export type PendingWorkflowActionKind = "mcp_tool" | "action_skill";
+
+export interface PendingWorkflowAction {
+  kind?: PendingWorkflowActionKind;
+  toolName: string;
+  requiresApproval: boolean;
+  risk?: RiskLevel;
+  description?: string;
+  arguments: Record<string, unknown>;
+  followUpActions?: PendingWorkflowAction[];
+}
 
 export interface SessionRecord {
   sessionId: string;
   tenantId: string;
   userId: string;
+  username?: string;
   sourceSystem: string;
+  authMode?: AuthMode;
+  teamName?: string;
+  context?: Record<string, unknown>;
+  contextSignature?: string;
+  lastVerifiedScopeSignature?: string;
+  verifiedScope?: ResolvedExecutionScope;
+  pendingWorkflowAction?: PendingWorkflowAction;
   status: SessionRecordStatus;
   latestRunId?: string;
   createdAt: string;
@@ -15,7 +37,15 @@ export interface CreateSessionRecordInput {
   sessionId: string;
   tenantId: string;
   userId: string;
+  username?: string;
   sourceSystem: string;
+  authMode?: AuthMode;
+  teamName?: string;
+  context?: Record<string, unknown>;
+  contextSignature?: string;
+  lastVerifiedScopeSignature?: string;
+  verifiedScope?: ResolvedExecutionScope;
+  pendingWorkflowAction?: PendingWorkflowAction;
   status?: SessionRecordStatus;
   latestRunId?: string;
   createdAt?: string;
@@ -37,7 +67,15 @@ export function createSessionRecord(
     sessionId: input.sessionId,
     tenantId: input.tenantId,
     userId: input.userId,
+    username: input.username,
     sourceSystem: input.sourceSystem,
+    authMode: input.authMode,
+    teamName: input.teamName,
+    context: input.context,
+    contextSignature: input.contextSignature,
+    lastVerifiedScopeSignature: input.lastVerifiedScopeSignature,
+    verifiedScope: input.verifiedScope,
+    pendingWorkflowAction: input.pendingWorkflowAction,
     status: input.status ?? "active",
     latestRunId: input.latestRunId,
     createdAt: now,

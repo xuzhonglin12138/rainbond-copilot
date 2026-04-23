@@ -5,6 +5,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      "/api/v1/copilot": {
+        target: process.env.VITE_COPILOT_API_PROXY_TARGET || "http://127.0.0.1:8787",
+        changeOrigin: true,
+      },
       // Proxy Anthropic API requests to avoid CORS issues
       "/v1": {
         target: "https://api.deepseek.com/v1",

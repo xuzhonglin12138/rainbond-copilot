@@ -1,10 +1,11 @@
 import type { RequestActor, RiskLevel } from "../../shared/types.js";
-import type { ActionSkill } from "../../skills/types.js";
+import type { ActionSkill } from "./skill-types.js";
 import {
   extractComponentName,
   shouldInspectLogs,
   summarizeLogs,
 } from "../../runtime/runtime-helpers.js";
+import type { ActionAdapter } from "./skill-types.js";
 import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
 import type { SseBroker } from "../events/sse-broker.js";
 import { createServerActionSkills } from "./server-action-skills.js";
@@ -20,13 +21,14 @@ export interface PlannedServerAction {
 interface ServerRunExecutorDeps {
   broker: SseBroker;
   eventPublisher: PersistedEventPublisher;
+  actionAdapter?: ActionAdapter;
 }
 
 export class ServerRunExecutor {
   private readonly skills: Record<string, ActionSkill>;
 
   constructor(private readonly deps: ServerRunExecutorDeps) {
-    this.skills = createServerActionSkills();
+    this.skills = createServerActionSkills(deps.actionAdapter);
   }
 
   plan(message: string): PlannedServerAction {

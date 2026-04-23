@@ -1,2788 +1,1268 @@
 [
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
     "sequence": 1,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
       "sequence": 1,
-      "timestamp": "2026-04-20T10:48:00.179Z",
+      "timestamp": "2026-04-23T08:03:16.687Z",
       "data": {
         "status": "thinking"
       }
     },
-    "createdAt": "2026-04-20T10:48:00.179Z"
+    "createdAt": "2026-04-23T08:03:16.687Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
     "sequence": 2,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
       "sequence": 2,
-      "timestamp": "2026-04-20T10:48:00.182Z",
+      "timestamp": "2026-04-23T08:03:32.445Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_app_detail",
         "input": {
-          "name": "frontend-ui"
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "grd4620d"
         }
       }
     },
-    "createdAt": "2026-04-20T10:48:00.182Z"
+    "createdAt": "2026-04-23T08:03:32.445Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
     "sequence": 3,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
       "sequence": 3,
-      "timestamp": "2026-04-20T10:48:00.184Z",
+      "timestamp": "2026-04-23T08:03:32.550Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_app_detail",
         "input": {
-          "name": "frontend-ui"
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "grd4620d"
         },
         "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ID\": 68, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"group_name\": \"go-dc\", \"region_name\": \"rainbond\", \"is_default\": false, \"order_index\": 0, \"note\": \"\", \"username\": \"admin\", \"governance_mode\": \"KUBERNETES_NATIVE_SERVICE\", \"create_time\": \"2026-04-09 17:20:29\", \"update_time\": \"2026-04-14 16:22:56\", \"app_type\": \"rainbond\", \"app_store_name\": null, \"app_store_url\": null, \"app_template_name\": null, \"version\": null, \"logo\": \"\", \"k8s_app\": \"go-dc\", \"service_count\": 1, \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"running_service_count\": 0, \"status\": \"closed\", \"team_name\": \"default\", \"used_cpu\": 120.0, \"used_memory\": 512, \"app_id\": 68}"
+            }
+          ],
+          "structuredContent": {
+            "ID": 68,
+            "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+            "group_name": "go-dc",
+            "region_name": "rainbond",
+            "is_default": false,
+            "order_index": 0,
+            "note": "",
+            "username": "admin",
+            "governance_mode": "KUBERNETES_NATIVE_SERVICE",
+            "create_time": "2026-04-09 17:20:29",
+            "update_time": "2026-04-14 16:22:56",
+            "app_type": "rainbond",
+            "app_store_name": null,
+            "app_store_url": null,
+            "app_template_name": null,
+            "version": null,
+            "logo": "",
+            "k8s_app": "go-dc",
+            "service_count": 1,
+            "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+            "running_service_count": 0,
+            "status": "closed",
+            "team_name": "default",
+            "used_cpu": 120,
+            "used_memory": 512,
+            "app_id": 68
+          }
         }
       }
     },
-    "createdAt": "2026-04-20T10:48:00.184Z"
+    "createdAt": "2026-04-23T08:03:32.550Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
     "sequence": 4,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
       "sequence": 4,
-      "timestamp": "2026-04-20T10:48:00.184Z",
+      "timestamp": "2026-04-23T08:03:32.552Z",
       "data": {
-        "tool_name": "Get Component Logs",
+        "tool_name": "rainbond_get_component_summary",
         "input": {
-          "name": "frontend-ui",
-          "lines": 20
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "service_id": "grd4620d",
+          "event_limit": 10,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
         }
       }
     },
-    "createdAt": "2026-04-20T10:48:00.184Z"
+    "createdAt": "2026-04-23T08:03:32.552Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
     "sequence": 5,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
       "sequence": 5,
-      "timestamp": "2026-04-20T10:48:00.185Z",
+      "timestamp": "2026-04-23T08:03:32.618Z",
       "data": {
-        "tool_name": "Get Component Logs",
+        "tool_name": "rainbond_get_component_summary",
         "input": {
-          "name": "frontend-ui",
-          "lines": 20
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "service_id": "grd4620d",
+          "event_limit": 10,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
         },
         "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
+          "isError": true,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"status_code\": 404, \"error_code\": 404, \"msg\": \"service not found\", \"msg_show\": \"组件不存在\"}"
+            }
+          ],
+          "structuredContent": {
+            "status_code": 404,
+            "error_code": 404,
+            "msg": "service not found",
+            "msg_show": "组件不存在"
+          }
         }
       }
     },
-    "createdAt": "2026-04-20T10:48:00.185Z"
+    "createdAt": "2026-04-23T08:03:32.618Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
     "sequence": 6,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
+      "sequence": 6,
+      "timestamp": "2026-04-23T08:03:42.519Z",
+      "data": {
+        "tool_name": "rainbond_query_components",
+        "input": {
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "app_id": 68,
+          "team_name": "default",
+          "region_name": "rainbond",
+          "service_id": "grd4620d"
+        }
+      }
+    },
+    "createdAt": "2026-04-23T08:03:42.519Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
+    "sequence": 7,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
+      "sequence": 7,
+      "timestamp": "2026-04-23T08:03:42.618Z",
+      "data": {
+        "tool_name": "rainbond_query_components",
+        "input": {
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "app_id": 68,
+          "team_name": "default",
+          "region_name": "rainbond",
+          "service_id": "grd4620d"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"items\": [{\"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"service_alias\": \"grd4620d\", \"service_cname\": \"proxy\", \"service_region\": \"rainbond\", \"service_source\": \"docker_compose\", \"create_status\": \"complete\", \"app_id\": 68, \"app_name\": \"go-dc\", \"team_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"team_name\": \"default\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"create_time\": \"2026-04-09 17:20:35\", \"update_time\": \"2026-04-14 16:22:56\"}], \"total\": 1, \"page\": 1, \"page_size\": 20}"
+            }
+          ],
+          "structuredContent": {
+            "items": [
+              {
+                "service_id": "abaeec44004243409b1f5a5942d4620d",
+                "service_alias": "grd4620d",
+                "service_cname": "proxy",
+                "service_region": "rainbond",
+                "service_source": "docker_compose",
+                "create_status": "complete",
+                "app_id": 68,
+                "app_name": "go-dc",
+                "team_id": "c724cc2ead764c5c9700d2589a5f6675",
+                "team_name": "default",
+                "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+                "create_time": "2026-04-09 17:20:35",
+                "update_time": "2026-04-14 16:22:56"
+              }
+            ],
+            "total": 1,
+            "page": 1,
+            "page_size": 20
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-23T08:03:42.618Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
+    "sequence": 8,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
+      "sequence": 8,
+      "timestamp": "2026-04-23T08:03:52.897Z",
+      "data": {
+        "tool_name": "rainbond_get_component_summary",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "service_id": "abaeec44004243409b1f5a5942d4620d",
+          "event_limit": 10,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        }
+      }
+    },
+    "createdAt": "2026-04-23T08:03:52.897Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
+    "sequence": 9,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
+      "sequence": 9,
+      "timestamp": "2026-04-23T08:03:53.098Z",
+      "data": {
+        "tool_name": "rainbond_get_component_summary",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "service_id": "abaeec44004243409b1f5a5942d4620d",
+          "event_limit": 10,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"team_name\": \"default\", \"region_name\": \"rainbond\", \"app_id\": 68, \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"service\": {\"ID\": 170, \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_key\": \"0000\", \"service_alias\": \"grd4620d\", \"service_cname\": \"proxy\", \"service_region\": \"rainbond\", \"desc\": \"docker compose application\", \"category\": \"app_publish\", \"service_port\": 0, \"is_web_service\": false, \"version\": \"latest\", \"update_version\": 1, \"image\": \"docker.1ms.run/library/nginx:latest\", \"cmd\": \"\", \"min_node\": 1, \"min_cpu\": 500, \"container_gpu\": 0, \"min_memory\": 512, \"setting\": \"\", \"extend_method\": \"stateless_multiple\", \"env\": \",\", \"inner_port\": 0, \"volume_mount_path\": \"\", \"host_path\": \"/grdata/tenant/c724cc2ead764c5c9700d2589a5f6675/service/abaeec44004243409b1f5a5942d4620d\", \"deploy_version\": \"\", \"code_from\": \"image_manual\", \"git_url\": null, \"create_time\": \"2026-04-09 17:20:35\", \"git_project_id\": 0, \"is_code_upload\": false, \"code_version\": null, \"service_type\": \"application\", \"creater\": 1, \"language\": \"\", \"build_strategy\": \"\", \"protocol\": \"\", \"total_memory\": 128, \"is_service\": false, \"namespace\": \"goodrain\", \"volume_type\": \"shared\", \"port_type\": \"multi_outer\", \"service_origin\": \"assistant\", \"tenant_service_group_id\": 0, \"expired_time\": null, \"open_webhooks\": false, \"service_source\": \"docker_compose\", \"create_status\": \"complete\", \"update_time\": \"2026-04-14 16:22:56\", \"check_uuid\": \"\", \"check_event_id\": \"\", \"docker_cmd\": null, \"secret\": null, \"server_type\": \"git\", \"is_upgrate\": false, \"build_upgrade\": true, \"service_name\": \"\", \"oauth_service_id\": null, \"git_full_name\": null, \"k8s_component_name\": \"proxy\", \"job_strategy\": \"\", \"arch\": null, \"dockerfile\": \"\", \"status\": \"closed\", \"access_infos\": [\"http://grd4620d-80-default.14.103.233.199.nip.io\"]}, \"status\": {\"status\": \"closed\"}, \"resource\": {\"memory\": 0, \"disk\": 0, \"cpu\": 0}, \"ports\": {\"items\": [{\"ID\": 143, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"container_port\": 80, \"mapping_port\": 80, \"lb_mapping_port\": 0, \"protocol\": \"http\", \"port_alias\": \"GRD4620D80\", \"is_inner_service\": true, \"is_outer_service\": true, \"k8s_service_name\": \"proxy\", \"name\": null}], \"total\": 1}, \"envs\": {\"items\": [{\"ID\": 1771, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"container_port\": 80, \"name\": \"连接地址\", \"attr_name\": \"GRD4620D80_HOST\", \"attr_value\": \"proxy\", \"is_change\": false, \"scope\": \"outer\", \"create_time\": \"2026-04-09 17:20:35\"}, {\"ID\": 1772, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"container_port\": 80, \"name\": \"端口\", \"attr_name\": \"GRD4620D80_PORT\", \"attr_value\": \"80\", \"is_change\": false, \"scope\": \"outer\", \"create_time\": \"2026-04-09 17:20:35\"}], \"total\": 2}, \"build_envs\": {\"items\": [], \"total\": 0}, \"volumes\": {\"items\": [{\"ID\": 25, \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"category\": \"app_publish\", \"host_path\": \"/grdata/tenant/c724cc2ead764c5c9700d2589a5f6675/service/abaeec44004243409b1f5a5942d4620d/cache/docker-compose/033e49be-e3ca-43d5-904f-354a6cb014db/proxy/nginx.conf:/etc/nginx/conf.d/default.conf\", \"volume_type\": \"local-path\", \"volume_path\": \"/cache/docker-compose/033e49be-e3ca-43d5-904f-354a6cb014db/proxy/nginx.conf:/etc/nginx/conf.d/default.conf\", \"volume_name\": \"GRD4620D_1\", \"volume_capacity\": 0, \"volume_provider_name\": \"\", \"access_mode\": \"RWX\", \"share_policy\": \"exclusive\", \"backup_policy\": \"exclusive\", \"reclaim_policy\": \"exclusive\", \"allow_expansion\": false, \"mode\": null, \"status\": \"not_bound\"}], \"total\": 1}, \"mnts\": {\"items\": [], \"total\": 0}, \"probe\": null, \"autoscaler_rules\": {\"items\": [], \"total\": 0}, \"recent_events\": {\"items\": [{\"create_time\": \"2026-04-14T16:22:56+08:00\", \"event_id\": \"5a3eeeace23d44529819ffb1d3c4bc72\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"abaeec44004243409b1f5a5942d4620d\", \"request_body\": \"{\\\"operator\\\": \\\"admin\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\"}\", \"user_name\": \"admin\", \"start_time\": \"2026-04-14T16:22:56+08:00\", \"end_time\": \"2026-04-14T16:23:01+08:00\", \"opt_type\": \"stop-service\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"stop service grd4620d success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-09T17:20:46+08:00\", \"event_id\": \"48a99fb6fb7e46acb48a6d8f1b0a71d9\", \"tenant_id\": \"\", \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"target\": \"service\", \"target_id\": \"abaeec44004243409b1f5a5942d4620d\", \"request_body\": \"\", \"user_name\": \"\", \"start_time\": \"2026-04-09T17:20:46+08:00\", \"end_time\": \"2026-04-09T17:20:46+08:00\", \"opt_type\": \"upgrade\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"Start service grd4620d success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-09T17:20:39+08:00\", \"event_id\": \"a624ea29bbd542ca9219c627a2ce0255\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"abaeec44004243409b1f5a5942d4620d\", \"request_body\": \"{\\\"action\\\": \\\"upgrade\\\", \\\"envs\\\": {\\\"PROC_ENV\\\": \\\"{}\\\"}, \\\"kind\\\": \\\"build_from_image\\\", \\\"arch\\\": \\\"amd64\\\", \\\"operator\\\": \\\"admin\\\", \\\"configs\\\": null, \\\"service_id\\\": \\\"abaeec44004243409b1f5a5942d4620d\\\", \\\"image_info\\\": {\\\"image_url\\\": \\\"docker.1ms.run/library/nginx:latest\\\", \\\"cmd\\\": \\\"\\\", \\\"vm_image_source\\\": null}}\", \"user_name\": \"admin\", \"start_time\": \"2026-04-09T17:20:39+08:00\", \"end_time\": \"2026-04-09T17:20:46+08:00\", \"opt_type\": \"build-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"Build success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-09T17:20:39+08:00\", \"event_id\": \"38c214d501334033bf308d596531661e\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"abaeec44004243409b1f5a5942d4620d\", \"request_body\": \"{\\\"tenant_id\\\": \\\"c724cc2ead764c5c9700d2589a5f6675\\\", \\\"component_id\\\": \\\"abaeec44004243409b1f5a5942d4620d\\\", \\\"name\\\": \\\"affinity\\\", \\\"save_type\\\": \\\"yaml\\\", \\\"attribute_value\\\": \\\"nodeAffinity:\\\\n  requiredDuringSchedulingIgnoredDuringExecution:\\\\n    nodeSelectorTerms:\\\\n    - matchExpressions:\\\\n      - key: kubernetes.io/arch\\\\n        operator: In\\\\n        values:\\\\n        - amd64\\\\n\\\"}\", \"user_name\": \"\", \"start_time\": \"2026-04-09T17:20:39+08:00\", \"end_time\": \"2026-04-09T17:20:39+08:00\", \"opt_type\": \"create-component-k8s-attributes\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"\", \"reason\": \"\"}, {\"create_time\": \"2026-04-09T17:20:39+08:00\", \"event_id\": \"7e95082ded344d079d72be1e17c17d9f\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"abaeec44004243409b1f5a5942d4620d\", \"request_body\": \"{\\\"tenant_id\\\": \\\"c724cc2ead764c5c9700d2589a5f6675\\\", \\\"service_id\\\": \\\"abaeec44004243409b1f5a5942d4620d\\\", \\\"service_key\\\": \\\"0000\\\", \\\"comment\\\": \\\"docker compose application\\\", \\\"image_name\\\": \\\"docker.1ms.run/library/nginx:latest\\\", \\\"container_cpu\\\": 500, \\\"container_gpu\\\": 0, \\\"container_memory\\\": 512, \\\"volume_path\\\": \\\"volabaeec4400\\\", \\\"extend_method\\\": \\\"stateless_multiple\\\", \\\"status\\\": 0, \\\"replicas\\\": 1, \\\"service_alias\\\": \\\"grd4620d\\\", \\\"service_version\\\": \\\"latest\\\", \\\"container_env\\\": \\\",\\\", \\\"container_cmd\\\": \\\"\\\", \\\"node_label\\\": \\\"\\\", \\\"deploy_version\\\": \\\"\\\", \\\"domain\\\": \\\"default\\\", \\\"category\\\": \\\"app_publish\\\", \\\"operator\\\": \\\"admin\\\", \\\"service_type\\\": \\\"application\\\", \\\"extend_info\\\": {\\\"ports\\\": [], \\\"envs\\\": []}, \\\"namespace\\\": \\\"goodrain\\\", \\\"code_from\\\": \\\"image_manual\\\", \\\"dep_sids\\\": null, \\\"port_type\\\": \\\"multi_outer\\\", \\\"ports_info\\\": [{\\\"container_port\\\": 80, \\\"mapping_port\\\": 80, \\\"protocol\\\": \\\"http\\\", \\\"port_alias\\\": \\\"GRD4620D80\\\", \\\"is_inner_service\\\": true, \\\"is_outer_service\\\": true, \\\"k8s_service_name\\\": \\\"proxy\\\"}], \\\"envs_info\\\": [{\\\"container_port\\\": 80, \\\"name\\\": \\\"\\\\u8fde\\\\u63a5\\\\u5730\\\\u574\", \"user_name\": \"admin\", \"start_time\": \"2026-04-09T17:20:39+08:00\", \"end_time\": \"2026-04-09T17:20:39+08:00\", \"opt_type\": \"create-service\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"\", \"reason\": \"\"}], \"total\": 5, \"page\": 1, \"page_size\": 10, \"has_next\": false}}"
+            }
+          ],
+          "structuredContent": {
+            "team_name": "default",
+            "region_name": "rainbond",
+            "app_id": 68,
+            "service_id": "abaeec44004243409b1f5a5942d4620d",
+            "service": {
+              "ID": 170,
+              "service_id": "abaeec44004243409b1f5a5942d4620d",
+              "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+              "service_key": "0000",
+              "service_alias": "grd4620d",
+              "service_cname": "proxy",
+              "service_region": "rainbond",
+              "desc": "docker compose application",
+              "category": "app_publish",
+              "service_port": 0,
+              "is_web_service": false,
+              "version": "latest",
+              "update_version": 1,
+              "image": "docker.1ms.run/library/nginx:latest",
+              "cmd": "",
+              "min_node": 1,
+              "min_cpu": 500,
+              "container_gpu": 0,
+              "min_memory": 512,
+              "setting": "",
+              "extend_method": "stateless_multiple",
+              "env": ",",
+              "inner_port": 0,
+              "volume_mount_path": "",
+              "host_path": "/grdata/tenant/c724cc2ead764c5c9700d2589a5f6675/service/abaeec44004243409b1f5a5942d4620d",
+              "deploy_version": "",
+              "code_from": "image_manual",
+              "git_url": null,
+              "create_time": "2026-04-09 17:20:35",
+              "git_project_id": 0,
+              "is_code_upload": false,
+              "code_version": null,
+              "service_type": "application",
+              "creater": 1,
+              "language": "",
+              "build_strategy": "",
+              "protocol": "",
+              "total_memory": 128,
+              "is_service": false,
+              "namespace": "goodrain",
+              "volume_type": "shared",
+              "port_type": "multi_outer",
+              "service_origin": "assistant",
+              "tenant_service_group_id": 0,
+              "expired_time": null,
+              "open_webhooks": false,
+              "service_source": "docker_compose",
+              "create_status": "complete",
+              "update_time": "2026-04-14 16:22:56",
+              "check_uuid": "",
+              "check_event_id": "",
+              "docker_cmd": null,
+              "secret": null,
+              "server_type": "git",
+              "is_upgrate": false,
+              "build_upgrade": true,
+              "service_name": "",
+              "oauth_service_id": null,
+              "git_full_name": null,
+              "k8s_component_name": "proxy",
+              "job_strategy": "",
+              "arch": null,
+              "dockerfile": "",
+              "status": "closed",
+              "access_infos": [
+                "http://grd4620d-80-default.14.103.233.199.nip.io"
+              ]
+            },
+            "status": {
+              "status": "closed"
+            },
+            "resource": {
+              "memory": 0,
+              "disk": 0,
+              "cpu": 0
+            },
+            "ports": {
+              "items": [
+                {
+                  "ID": 143,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "abaeec44004243409b1f5a5942d4620d",
+                  "container_port": 80,
+                  "mapping_port": 80,
+                  "lb_mapping_port": 0,
+                  "protocol": "http",
+                  "port_alias": "GRD4620D80",
+                  "is_inner_service": true,
+                  "is_outer_service": true,
+                  "k8s_service_name": "proxy",
+                  "name": null
+                }
+              ],
+              "total": 1
+            },
+            "envs": {
+              "items": [
+                {
+                  "ID": 1771,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "abaeec44004243409b1f5a5942d4620d",
+                  "container_port": 80,
+                  "name": "连接地址",
+                  "attr_name": "GRD4620D80_HOST",
+                  "attr_value": "proxy",
+                  "is_change": false,
+                  "scope": "outer",
+                  "create_time": "2026-04-09 17:20:35"
+                },
+                {
+                  "ID": 1772,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "abaeec44004243409b1f5a5942d4620d",
+                  "container_port": 80,
+                  "name": "端口",
+                  "attr_name": "GRD4620D80_PORT",
+                  "attr_value": "80",
+                  "is_change": false,
+                  "scope": "outer",
+                  "create_time": "2026-04-09 17:20:35"
+                }
+              ],
+              "total": 2
+            },
+            "build_envs": {
+              "items": [],
+              "total": 0
+            },
+            "volumes": {
+              "items": [
+                {
+                  "ID": 25,
+                  "service_id": "abaeec44004243409b1f5a5942d4620d",
+                  "category": "app_publish",
+                  "host_path": "/grdata/tenant/c724cc2ead764c5c9700d2589a5f6675/service/abaeec44004243409b1f5a5942d4620d/cache/docker-compose/033e49be-e3ca-43d5-904f-354a6cb014db/proxy/nginx.conf:/etc/nginx/conf.d/default.conf",
+                  "volume_type": "local-path",
+                  "volume_path": "/cache/docker-compose/033e49be-e3ca-43d5-904f-354a6cb014db/proxy/nginx.conf:/etc/nginx/conf.d/default.conf",
+                  "volume_name": "GRD4620D_1",
+                  "volume_capacity": 0,
+                  "volume_provider_name": "",
+                  "access_mode": "RWX",
+                  "share_policy": "exclusive",
+                  "backup_policy": "exclusive",
+                  "reclaim_policy": "exclusive",
+                  "allow_expansion": false,
+                  "mode": null,
+                  "status": "not_bound"
+                }
+              ],
+              "total": 1
+            },
+            "mnts": {
+              "items": [],
+              "total": 0
+            },
+            "probe": null,
+            "autoscaler_rules": {
+              "items": [],
+              "total": 0
+            },
+            "recent_events": {
+              "items": [
+                {
+                  "create_time": "2026-04-14T16:22:56+08:00",
+                  "event_id": "5a3eeeace23d44529819ffb1d3c4bc72",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "abaeec44004243409b1f5a5942d4620d",
+                  "request_body": "{\"operator\": \"admin\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\"}",
+                  "user_name": "admin",
+                  "start_time": "2026-04-14T16:22:56+08:00",
+                  "end_time": "2026-04-14T16:23:01+08:00",
+                  "opt_type": "stop-service",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "stop service grd4620d success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-09T17:20:46+08:00",
+                  "event_id": "48a99fb6fb7e46acb48a6d8f1b0a71d9",
+                  "tenant_id": "",
+                  "service_id": "abaeec44004243409b1f5a5942d4620d",
+                  "target": "service",
+                  "target_id": "abaeec44004243409b1f5a5942d4620d",
+                  "request_body": "",
+                  "user_name": "",
+                  "start_time": "2026-04-09T17:20:46+08:00",
+                  "end_time": "2026-04-09T17:20:46+08:00",
+                  "opt_type": "upgrade",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "Start service grd4620d success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-09T17:20:39+08:00",
+                  "event_id": "a624ea29bbd542ca9219c627a2ce0255",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "abaeec44004243409b1f5a5942d4620d",
+                  "request_body": "{\"action\": \"upgrade\", \"envs\": {\"PROC_ENV\": \"{}\"}, \"kind\": \"build_from_image\", \"arch\": \"amd64\", \"operator\": \"admin\", \"configs\": null, \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"image_info\": {\"image_url\": \"docker.1ms.run/library/nginx:latest\", \"cmd\": \"\", \"vm_image_source\": null}}",
+                  "user_name": "admin",
+                  "start_time": "2026-04-09T17:20:39+08:00",
+                  "end_time": "2026-04-09T17:20:46+08:00",
+                  "opt_type": "build-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "Build success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-09T17:20:39+08:00",
+                  "event_id": "38c214d501334033bf308d596531661e",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "abaeec44004243409b1f5a5942d4620d",
+                  "request_body": "{\"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"component_id\": \"abaeec44004243409b1f5a5942d4620d\", \"name\": \"affinity\", \"save_type\": \"yaml\", \"attribute_value\": \"nodeAffinity:\\n  requiredDuringSchedulingIgnoredDuringExecution:\\n    nodeSelectorTerms:\\n    - matchExpressions:\\n      - key: kubernetes.io/arch\\n        operator: In\\n        values:\\n        - amd64\\n\"}",
+                  "user_name": "",
+                  "start_time": "2026-04-09T17:20:39+08:00",
+                  "end_time": "2026-04-09T17:20:39+08:00",
+                  "opt_type": "create-component-k8s-attributes",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-09T17:20:39+08:00",
+                  "event_id": "7e95082ded344d079d72be1e17c17d9f",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "abaeec44004243409b1f5a5942d4620d",
+                  "request_body": "{\"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"abaeec44004243409b1f5a5942d4620d\", \"service_key\": \"0000\", \"comment\": \"docker compose application\", \"image_name\": \"docker.1ms.run/library/nginx:latest\", \"container_cpu\": 500, \"container_gpu\": 0, \"container_memory\": 512, \"volume_path\": \"volabaeec4400\", \"extend_method\": \"stateless_multiple\", \"status\": 0, \"replicas\": 1, \"service_alias\": \"grd4620d\", \"service_version\": \"latest\", \"container_env\": \",\", \"container_cmd\": \"\", \"node_label\": \"\", \"deploy_version\": \"\", \"domain\": \"default\", \"category\": \"app_publish\", \"operator\": \"admin\", \"service_type\": \"application\", \"extend_info\": {\"ports\": [], \"envs\": []}, \"namespace\": \"goodrain\", \"code_from\": \"image_manual\", \"dep_sids\": null, \"port_type\": \"multi_outer\", \"ports_info\": [{\"container_port\": 80, \"mapping_port\": 80, \"protocol\": \"http\", \"port_alias\": \"GRD4620D80\", \"is_inner_service\": true, \"is_outer_service\": true, \"k8s_service_name\": \"proxy\"}], \"envs_info\": [{\"container_port\": 80, \"name\": \"\\u8fde\\u63a5\\u5730\\u574",
+                  "user_name": "admin",
+                  "start_time": "2026-04-09T17:20:39+08:00",
+                  "end_time": "2026-04-09T17:20:39+08:00",
+                  "opt_type": "create-service",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "",
+                  "reason": ""
+                }
+              ],
+              "total": 5,
+              "page": 1,
+              "page_size": 10,
+              "has_next": false
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-23T08:03:53.098Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
+    "sequence": 10,
     "eventType": "chat.message",
     "payload": {
       "type": "chat.message",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
-      "sequence": 6,
-      "timestamp": "2026-04-20T10:48:00.186Z",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
+      "sequence": 10,
+      "timestamp": "2026-04-23T08:04:16.282Z",
       "data": {
         "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+        "content": "grd4620d 当前状态为 closed，当前配置内存 512MB。"
       }
     },
-    "createdAt": "2026-04-20T10:48:00.186Z"
+    "createdAt": "2026-04-23T08:04:16.282Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682080165",
-    "runId": "run_1776682080178",
-    "sequence": 7,
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776931396686_2",
+    "sequence": 11,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682080165",
-      "runId": "run_1776682080178",
-      "sequence": 7,
-      "timestamp": "2026-04-20T10:48:00.186Z",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776931396686_2",
+      "sequence": 11,
+      "timestamp": "2026-04-23T08:04:16.284Z",
       "data": {
         "status": "done"
       }
     },
-    "createdAt": "2026-04-20T10:48:00.186Z"
+    "createdAt": "2026-04-23T08:04:16.284Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776932350097_1",
     "sequence": 1,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776932350097_1",
       "sequence": 1,
-      "timestamp": "2026-04-20T10:48:32.021Z",
+      "timestamp": "2026-04-23T08:19:10.098Z",
       "data": {
         "status": "thinking"
       }
     },
-    "createdAt": "2026-04-20T10:48:32.021Z"
+    "createdAt": "2026-04-23T08:19:10.098Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776932350097_1",
     "sequence": 2,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776932350097_1",
       "sequence": 2,
-      "timestamp": "2026-04-20T10:48:32.022Z",
+      "timestamp": "2026-04-23T08:19:19.661Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_app_detail",
         "input": {
-          "name": "frontend-ui"
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "grd4620d"
         }
       }
     },
-    "createdAt": "2026-04-20T10:48:32.022Z"
+    "createdAt": "2026-04-23T08:19:19.661Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776931396572_1",
+    "runId": "run_1776932350097_1",
     "sequence": 3,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776931396572_1",
+      "runId": "run_1776932350097_1",
       "sequence": 3,
-      "timestamp": "2026-04-20T10:48:32.023Z",
+      "timestamp": "2026-04-23T08:19:19.761Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_app_detail",
         "input": {
-          "name": "frontend-ui"
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "grd4620d"
         },
         "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ID\": 68, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"group_name\": \"go-dc\", \"region_name\": \"rainbond\", \"is_default\": false, \"order_index\": 0, \"note\": \"\", \"username\": \"admin\", \"governance_mode\": \"KUBERNETES_NATIVE_SERVICE\", \"create_time\": \"2026-04-09 17:20:29\", \"update_time\": \"2026-04-14 16:22:56\", \"app_type\": \"rainbond\", \"app_store_name\": null, \"app_store_url\": null, \"app_template_name\": null, \"version\": null, \"logo\": \"\", \"k8s_app\": \"go-dc\", \"service_count\": 1, \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"running_service_count\": 0, \"status\": \"closed\", \"team_name\": \"default\", \"used_cpu\": 120.0, \"used_memory\": 512, \"app_id\": 68}"
+            }
+          ],
+          "structuredContent": {
+            "ID": 68,
+            "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+            "group_name": "go-dc",
+            "region_name": "rainbond",
+            "is_default": false,
+            "order_index": 0,
+            "note": "",
+            "username": "admin",
+            "governance_mode": "KUBERNETES_NATIVE_SERVICE",
+            "create_time": "2026-04-09 17:20:29",
+            "update_time": "2026-04-14 16:22:56",
+            "app_type": "rainbond",
+            "app_store_name": null,
+            "app_store_url": null,
+            "app_template_name": null,
+            "version": null,
+            "logo": "",
+            "k8s_app": "go-dc",
+            "service_count": 1,
+            "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+            "running_service_count": 0,
+            "status": "closed",
+            "team_name": "default",
+            "used_cpu": 120,
+            "used_memory": 512,
+            "app_id": 68
+          }
         }
       }
     },
-    "createdAt": "2026-04-20T10:48:32.023Z"
+    "createdAt": "2026-04-23T08:19:19.761Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
-      "sequence": 4,
-      "timestamp": "2026-04-20T10:48:32.023Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-20T10:48:32.023Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
-      "sequence": 5,
-      "timestamp": "2026-04-20T10:48:32.024Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-20T10:48:32.024Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
-      "sequence": 6,
-      "timestamp": "2026-04-20T10:48:32.025Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-20T10:48:32.025Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682111999",
-    "runId": "run_1776682112019",
-    "sequence": 7,
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932383308_1",
+    "runId": "run_1776932383426_2",
+    "sequence": 1,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682111999",
-      "runId": "run_1776682112019",
-      "sequence": 7,
-      "timestamp": "2026-04-20T10:48:32.025Z",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932383308_1",
+      "runId": "run_1776932383426_2",
+      "sequence": 1,
+      "timestamp": "2026-04-23T08:19:43.428Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-23T08:19:43.428Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932383308_1",
+    "runId": "run_1776932383426_2",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932383308_1",
+      "runId": "run_1776932383426_2",
+      "sequence": 2,
+      "timestamp": "2026-04-23T08:19:49.130Z",
+      "data": {
+        "tool_name": "rainbond_get_current_user",
+        "input": {
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "service_id": "grd4620d"
+        }
+      }
+    },
+    "createdAt": "2026-04-23T08:19:49.130Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932383308_1",
+    "runId": "run_1776932383426_2",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932383308_1",
+      "runId": "run_1776932383426_2",
+      "sequence": 3,
+      "timestamp": "2026-04-23T08:19:49.237Z",
+      "data": {
+        "tool_name": "rainbond_get_current_user",
+        "input": {
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 68,
+          "service_id": "grd4620d"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"user_id\": 1, \"nick_name\": \"admin\", \"real_name\": \"\", \"email\": \"admin@admin.com\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"is_enterprise_admin\": true}"
+            }
+          ],
+          "structuredContent": {
+            "user_id": 1,
+            "nick_name": "admin",
+            "real_name": "",
+            "email": "admin@admin.com",
+            "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+            "is_enterprise_admin": true
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-23T08:19:49.237Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932383308_1",
+    "runId": "run_1776932383426_2",
+    "sequence": 4,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932383308_1",
+      "runId": "run_1776932383426_2",
+      "sequence": 4,
+      "timestamp": "2026-04-23T08:19:59.105Z",
+      "data": {
+        "role": "assistant",
+        "content": "当前登录用户是 admin，邮箱 admin@admin.com，企业 ID 8948f3fcf66e0cd91bf1045e8ca4a965，当前具有企业管理员权限。"
+      }
+    },
+    "createdAt": "2026-04-23T08:19:59.105Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932383308_1",
+    "runId": "run_1776932383426_2",
+    "sequence": 5,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932383308_1",
+      "runId": "run_1776932383426_2",
+      "sequence": 5,
+      "timestamp": "2026-04-23T08:19:59.105Z",
       "data": {
         "status": "done"
       }
     },
-    "createdAt": "2026-04-20T10:48:32.025Z"
+    "createdAt": "2026-04-23T08:19:59.105Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932822191_2",
     "sequence": 1,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932822191_2",
       "sequence": 1,
-      "timestamp": "2026-04-20T10:49:44.003Z",
+      "timestamp": "2026-04-23T08:27:02.192Z",
       "data": {
         "status": "thinking"
       }
     },
-    "createdAt": "2026-04-20T10:49:44.003Z"
+    "createdAt": "2026-04-23T08:27:02.192Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932822191_2",
     "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
-      "sequence": 2,
-      "timestamp": "2026-04-20T10:49:44.004Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-20T10:49:44.004Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
-      "sequence": 3,
-      "timestamp": "2026-04-20T10:49:44.005Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-20T10:49:44.005Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
-      "sequence": 4,
-      "timestamp": "2026-04-20T10:49:44.006Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-20T10:49:44.006Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
-      "sequence": 5,
-      "timestamp": "2026-04-20T10:49:44.007Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-20T10:49:44.007Z"
-  },
-  {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
-    "sequence": 6,
     "eventType": "chat.message",
     "payload": {
       "type": "chat.message",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
-      "sequence": 6,
-      "timestamp": "2026-04-20T10:49:44.007Z",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932822191_2",
+      "sequence": 2,
+      "timestamp": "2026-04-23T08:27:06.618Z",
       "data": {
         "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+        "content": "你好！👋 我是 **Rainbond Copilot**，很高兴为你服务！\n\n我能够帮助你完成以下事情：\n\n### 🔍 查询与诊断\n- 查看应用和组件的运行状态\n- 获取组件日志，排查故障\n- 查看集群节点信息\n- 监控资源使用情况\n\n### ⚙️ 运维管理\n- 重启组件（需审批）\n- 调整组件内存配置（需审批）\n- 查看应用版本和升级记录\n\n### 📋 信息查询\n- 获取应用和组件的详细信息\n- 查看构建源配置\n- 查询组件事件\n\n**当前上下文：**\n- 团队：`jabrm8l6`\n- 集群：`rainbond`\n\n有什么我可以帮你的吗？比如查看某个组件的状态、排查故障，或者了解 Rainbond 的使用方法，都可以告诉我！😊"
       }
     },
-    "createdAt": "2026-04-20T10:49:44.007Z"
+    "createdAt": "2026-04-23T08:27:06.618Z"
   },
   {
-    "tenantId": "jabrm8l6",
-    "sessionId": "cs_1776682183981",
-    "runId": "run_1776682184002",
-    "sequence": 7,
+    "tenantId": "local-default",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932822191_2",
+    "sequence": 3,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
-      "tenantId": "jabrm8l6",
-      "sessionId": "cs_1776682183981",
-      "runId": "run_1776682184002",
-      "sequence": 7,
-      "timestamp": "2026-04-20T10:49:44.008Z",
+      "tenantId": "local-default",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932822191_2",
+      "sequence": 3,
+      "timestamp": "2026-04-23T08:27:06.620Z",
       "data": {
         "status": "done"
       }
     },
-    "createdAt": "2026-04-20T10:49:44.008Z"
+    "createdAt": "2026-04-23T08:27:06.620Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932859174_3",
     "sequence": 1,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932859174_3",
       "sequence": 1,
-      "timestamp": "2026-04-21T02:26:48.548Z",
+      "timestamp": "2026-04-23T08:27:39.176Z",
       "data": {
         "status": "thinking"
       }
     },
-    "createdAt": "2026-04-21T02:26:48.548Z"
+    "createdAt": "2026-04-23T08:27:39.176Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932859174_3",
     "sequence": 2,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932859174_3",
       "sequence": 2,
-      "timestamp": "2026-04-21T02:26:48.551Z",
+      "timestamp": "2026-04-23T08:27:41.519Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_current_user",
         "input": {
-          "name": "frontend-ui"
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "local-default"
         }
       }
     },
-    "createdAt": "2026-04-21T02:26:48.551Z"
+    "createdAt": "2026-04-23T08:27:41.519Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932859174_3",
     "sequence": 3,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932859174_3",
       "sequence": 3,
-      "timestamp": "2026-04-21T02:26:48.552Z",
+      "timestamp": "2026-04-23T08:27:41.622Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_current_user",
         "input": {
-          "name": "frontend-ui"
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "local-default"
         },
         "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"user_id\": 1, \"nick_name\": \"admin\", \"real_name\": \"\", \"email\": \"admin@admin.com\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"is_enterprise_admin\": true}"
+            }
+          ],
+          "structuredContent": {
+            "user_id": 1,
+            "nick_name": "admin",
+            "real_name": "",
+            "email": "admin@admin.com",
+            "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+            "is_enterprise_admin": true
+          }
         }
       }
     },
-    "createdAt": "2026-04-21T02:26:48.552Z"
+    "createdAt": "2026-04-23T08:27:41.622Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932859174_3",
     "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:26:48.553Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:26:48.553Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:26:48.554Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:26:48.554Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
-    "sequence": 6,
     "eventType": "chat.message",
     "payload": {
       "type": "chat.message",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:26:48.555Z",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932859174_3",
+      "sequence": 4,
+      "timestamp": "2026-04-23T08:27:46.556Z",
       "data": {
         "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+        "content": "当前已获取到您的企业信息，以下是详细内容：\n\n---\n\n## 👤 当前用户与企业信息\n\n| 项目 | 内容 |\n|------|------|\n| **用户昵称** | `admin` |\n| **用户邮箱** | `admin@admin.com` |\n| **企业 ID** | `8948f3fcf66e0cd91bf1045e8ca4a965` |\n| **是否为企业管理员** | ✅ 是 |\n\n---\n\n**说明**：您当前以企业管理员身份登录，拥有企业下的完整管理权限，可以查看和管理团队、集群、应用等资源。\n\n如果您需要进一步查询以下信息，可以告诉我：\n- 查看企业下的 **团队列表**\n- 查看企业下的 **集群（Region）列表**\n- 查看企业下的 **应用列表**\n- 查看 **应用市场** 或 **本地应用模板**\n\n基于本次查询结果：\n当前登录用户是 admin，邮箱 admin@admin.com，企业 ID 8948f3fcf66e0cd91bf1045e8ca4a965，当前具有企业管理员权限。"
       }
     },
-    "createdAt": "2026-04-21T02:26:48.555Z"
+    "createdAt": "2026-04-23T08:27:46.556Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738408533",
-    "runId": "run_1776738408546",
-    "sequence": 7,
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932859174_3",
+    "sequence": 5,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738408533",
-      "runId": "run_1776738408546",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:26:48.555Z",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932859174_3",
+      "sequence": 5,
+      "timestamp": "2026-04-23T08:27:46.560Z",
       "data": {
         "status": "done"
       }
     },
-    "createdAt": "2026-04-21T02:26:48.555Z"
+    "createdAt": "2026-04-23T08:27:46.560Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 1,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 1,
-      "timestamp": "2026-04-21T02:34:32.995Z",
+      "timestamp": "2026-04-23T08:29:18.708Z",
       "data": {
         "status": "thinking"
       }
     },
-    "createdAt": "2026-04-21T02:34:32.995Z"
+    "createdAt": "2026-04-23T08:29:18.708Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 2,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 2,
-      "timestamp": "2026-04-21T02:34:32.996Z",
+      "timestamp": "2026-04-23T08:29:22.196Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_current_user",
         "input": {
-          "name": "frontend-ui"
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "local-default"
         }
       }
     },
-    "createdAt": "2026-04-21T02:34:32.996Z"
+    "createdAt": "2026-04-23T08:29:22.196Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 3,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 3,
-      "timestamp": "2026-04-21T02:34:32.998Z",
+      "timestamp": "2026-04-23T08:29:22.285Z",
       "data": {
-        "tool_name": "Get Component Status",
+        "tool_name": "rainbond_get_current_user",
         "input": {
-          "name": "frontend-ui"
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "local-default"
         },
         "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"user_id\": 1, \"nick_name\": \"admin\", \"real_name\": \"\", \"email\": \"admin@admin.com\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"is_enterprise_admin\": true}"
+            }
+          ],
+          "structuredContent": {
+            "user_id": 1,
+            "nick_name": "admin",
+            "real_name": "",
+            "email": "admin@admin.com",
+            "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+            "is_enterprise_admin": true
+          }
         }
       }
     },
-    "createdAt": "2026-04-21T02:34:32.998Z"
+    "createdAt": "2026-04-23T08:29:22.285Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 4,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 4,
-      "timestamp": "2026-04-21T02:34:32.999Z",
+      "timestamp": "2026-04-23T08:29:22.287Z",
       "data": {
-        "tool_name": "Get Component Logs",
+        "tool_name": "rainbond_query_regions",
         "input": {
-          "name": "frontend-ui",
-          "lines": 20
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "local-default"
         }
       }
     },
-    "createdAt": "2026-04-21T02:34:32.999Z"
+    "createdAt": "2026-04-23T08:29:22.287Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 5,
     "eventType": "chat.trace",
     "payload": {
       "type": "chat.trace",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 5,
-      "timestamp": "2026-04-21T02:34:33.001Z",
+      "timestamp": "2026-04-23T08:29:22.374Z",
       "data": {
-        "tool_name": "Get Component Logs",
+        "tool_name": "rainbond_query_regions",
         "input": {
-          "name": "frontend-ui",
-          "lines": 20
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "team_name": "local-default"
         },
         "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"items\": [{\"region_id\": \"571e7c01bd234305a6f09e846d362e22\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"enterprise_alias\": \"好雨科技\", \"region_name\": \"rainbond\", \"region_alias\": \"默认集群\", \"region_type\": [], \"url\": \"https://14.103.233.199:8443\", \"token\": null, \"wsurl\": \"ws://14.103.233.199:6060\", \"httpdomain\": \"14.103.233.199.nip.io\", \"tcpdomain\": \"14.103.233.199\", \"scope\": \"default\", \"ssl_ca_cert\": \"-----BEGIN CERTIFICATE-----\\n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\\nyVKCK/45Y6I2QBwFu0jBnXhIcF6XpD1yhNTd5H0=\\n-----END CERTIFICATE-----\\n\", \"cert_file\": \"-----BEGIN CERTIFICATE-----\\n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\\no2nrfZ+V2OVN4dRECTF+9DZiuc/NIWY0SDhz\\n-----END CERTIFICATE-----\\n\", \"key_file\": \"-----BEGIN RSA PRIVATE KEY-----\\n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\\n-----END RSA PRIVATE KEY-----\\n\", \"status\": \"1\", \"desc\": \"这是mcp修改的简介名称\", \"provider\": null, \"provider_cluster_id\": null, \"total_memory\": 16011, \"used_memory\": 5120, \"total_cpu\": 8, \"used_cpu\": 2.7, \"total_disk\": 98.12952041625977, \"used_disk\": 71.40623092651367, \"rbd_version\": \"b'0416103-9aa3b95-2026-04-16-02'\", \"health_status\": \"ok\", \"resource_proxy_status\": true, \"k8s_version\": \"1.30.4+rke2r1\", \"all_nodes\": 1, \"pods\": {}, \"run_pod_number\": 15, \"node_ready\": 1, \"services_status\": {\"running\": 15}, \"arch\": \"dict_keys(['amd64'])\", \"create_time\": \"2026-03-26 15:49:37\"}], \"total\": 1, \"page\": 1, \"page_size\": 20}"
+            }
+          ],
+          "structuredContent": {
+            "items": [
+              {
+                "region_id": "571e7c01bd234305a6f09e846d362e22",
+                "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+                "enterprise_alias": "好雨科技",
+                "region_name": "rainbond",
+                "region_alias": "默认集群",
+                "region_type": [],
+                "url": "https://14.103.233.199:8443",
+                "token": null,
+                "wsurl": "ws://14.103.233.199:6060",
+                "httpdomain": "14.103.233.199.nip.io",
+                "tcpdomain": "14.103.233.199",
+                "scope": "default",
+                "ssl_ca_cert": "-----BEGIN CERTIFICATE-----\nMIIFuTCCA6GgAwIBAgICB+MwDQYJKoZIhvcNAQELBQAwbTELMAkGA1UEBhMCQ04x\nEDAOBgNVBAgTB0JlaWppbmcxEDAOBgNVBAcTB0JlaWppbmcxEDAOBgNVBAkTB0Jl\naWppbmcxDzANBgNVBBETBjAwMDAwMDEXMBUGA1UEChMOR29vZHJhaW4sIElOQy4w\nIBcNMjYwMzI2MDc0ODIzWhgPMjEyNTAzMjYwNzQ4MjNaMG0xCzAJBgNVBAYTAkNO\nMRAwDgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMRAwDgYDVQQJEwdC\nZWlqaW5nMQ8wDQYDVQQREwYwMDAwMDAxFzAVBgNVBAoTDkdvb2RyYWluLCBJTkMu\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAq8kOnR7U+RQAuRJbBtaa\n6Yykj7APB0YU2EOsTtAOD0JtGblwHTJjQN1sNSi0K+dB+PGuujIEQI9ZgKyrtV66\nmWL5xVPy+1axyh8TCtzuwtR4XmzTpf3biYbujm12huy4IHWwHH9k+pnty1dCNi78\n/PeTLRDaPyBBXwkzF1CQTcqJAvCuAYXjTr6zMMS1fQysQp1aQ5p2p3pXio3o+Nye\n2+EfAV9PnOBxP8Ah7O6TTek/BUwpXT47mhuRJLdKkWp/1Gd3ACOfk1Ay96O1tMdu\nfkoYfjf7Ic8fYyUR0t9vK7/R51h8Clx1r+vxOydI37Gd1CwkRfPMOzbrfTfp/WNP\nnRqU+Zu38L68fDzHdcqAqvy9PLUGRxHusMp/eK50L1ymC76EFMScdm4GGcSy/Y8o\nIP9uX036u48fLYakFXeJCW7illTtyZVatRXQ1LCJl2AfJhYUC2DSbf9x4OXwlIA9\npfZbCRjRlN+iwgVOo1cfglXGUwJ3exGoTLNAx9T4Swu6nZxF6j6hrFDV7WWnMltA\nx/tQvr/zV5zwlGzha9kmyHezUNI1VLJMeT2263IdEsm01qwvxmvJvN3SNvmoz2tM\nd5kCVj1AtvhY8ejHvGpLuMupyeWM/E2GCT83qxT8Da21k/TiPGjfHAErRM7T6i4j\nVNSWGqVPuVhhG5TMzdbhxMECAwEAAaNhMF8wDgYDVR0PAQH/BAQDAgKEMB0GA1Ud\nJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1Ud\nDgQWBBQXVT2jUO0KqhJ1/YwqLo6bN4AL9zANBgkqhkiG9w0BAQsFAAOCAgEAPQpF\n7H5LxBbRfSipwJ8H3a720Ook2Z2NtqX2Sjkj3cc2UBKyhNgTIPI7EZCS5LXfzSBF\nxJgm4C9ckVO+TXGDpb+g+mTvbkxqeC0pgkfp4PAs9KL8vuVuh5Hf3cFDa6236Kaz\ntlfdqY7qPcPTuvvd41AkMUc3IFGSvOXPQA6gkdCHn0QIEiC9EMSTi1/VrNoqHJ7r\n4K7Km0aDPYlpH4hUpdPI5cp8azwOREfVegKJqIbOGPA27Nr7AFAllkRtgwcbTDB4\nlTzutCHeziL2HDAM+4/fRLY/BpQ7TFXWUzydsOOP9bHnnfO34QxmrDw/WTVS9WSo\nFqnZjwfyyZcOXfuaa9vcgtbaKzz2AY3nKljEjzpDpAA7KNixVfHnctlUv/s5NQd3\nUBYPL4P4dJbEOMSx9ftNoy6821vdqNwT4yZ+7TleBePtPt0d0AujstRol0/YiZTP\nIkHaWwVVjG26i4RcZfIiwGuK1IfDRar9NqA+sKQ4BuTKN5ptV1kcRIhiaZdFzjWK\nBOh9CJa0QrQuAB0F2X4Nbrkw1OWan/j8I8tG8sIyff2ItpEI/V9NGuYS5WmugiGb\n8K4CEspkYG2hKQ0D/JiLEX4hohSVky1LF4dZQRQKncTCjNA9/ksscgZmLdmlZSen\nyVKCK/45Y6I2QBwFu0jBnXhIcF6XpD1yhNTd5H0=\n-----END CERTIFICATE-----\n",
+                "cert_file": "-----BEGIN CERTIFICATE-----\nMIIFtzCCA5+gAwIBAgICB+MwDQYJKoZIhvcNAQELBQAwbTELMAkGA1UEBhMCQ04x\nEDAOBgNVBAgTB0JlaWppbmcxEDAOBgNVBAcTB0JlaWppbmcxEDAOBgNVBAkTB0Jl\naWppbmcxDzANBgNVBBETBjAwMDAwMDEXMBUGA1UEChMOR29vZHJhaW4sIElOQy4w\nIBcNMjYwMzI2MDc0ODMwWhgPMjEyNTAzMjYwNzQ4MzBaMG0xCzAJBgNVBAYTAkNO\nMRAwDgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMRAwDgYDVQQJEwdC\nZWlqaW5nMQ8wDQYDVQQREwYwMDAwMDAxFzAVBgNVBAoTDkdvb2RyYWluLCBJTkMu\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxUC3V6t21GIbXqW/IWCX\nPDj8Kp+4ijoPgpPFX9bUrBz0E1ApTgjSNw8QqMWJ1l0BJIdwOFgVqLL6lISJMKCu\nY0kSaXsEU0FDhKlCjQqGbTGKPFVLHl9sWaeNNyspAlHq/MosFWIo9sqTIVLmVRHM\n7g94sBslCH7rPXr9DymDIkTcvwYtI4eogEdYjJbRGFoHlmdqcSXEu355hcU/GJ3I\nkQ3EXJLwbZgpoyWRYQBOreJd3BujGcrOE3/eJZKBmy9NutJizIs3UI/XBEFXIJHD\nKV0nDSUom6BNlbtvpKa6wKHFUqSaCxGvWc2PR1kBjuYuuCDT9JbuBNksEfhvAw9p\nzmgiIj2+DK+Uqo6XZOz4Uwjpjxiiu/UTz0S79ggqfgPg6KGUx4dkd1CcAQrz++2F\ntUHVMveV2KraD/O35+jE61M74QQPmcbF+DHKsZK6RfNiwLHRPMLgqWBGXVapyEK5\n0yCbbPMUI0fNP+VUU+ugtxAfA0K73f/suRNwNX0TKSgVepcBSI30IggKAQqYN/vN\nhdSqxN0G0LEyPrIqlhwK88U5xl9yRlrFe48WhpeeALloG3aog44kxQ05i+NWM52E\nR/ChilkeU8jC554KkjO3SsoMBgJGGbrSsEsykg8kBKn/z1bG8BFw/oYjARC6NoIT\nNm6zhaAJ8CJCULJSkL/RsA0CAwEAAaNfMF0wDgYDVR0PAQH/BAQDAgeAMB0GA1Ud\nJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAOBgNVHQ4EBwQFAQIDBAYwHAYDVR0R\nBBUwE4ILcmJkLWFwaS1hcGmHBA5n6ccwDQYJKoZIhvcNAQELBQADggIBAIG9e6Fz\nq8ngA8octSGXnQONVDa6cbaTqCP3B2aGnwgqGS2oJ0DefO71uk+f6nuRkv1au1c0\nYjiAulviagFZsqYBr8rSO4kr8r25rmnGI5J6LJ39E3qvdZJWpEY1fpRTUnDhYJdl\nzCombeDoIj3x1so7wnl+TljIOG+b8OVkKpsjQI5hI0nrLjzQGBd175L/h3E2oJ/4\nbJsBgdE+h6KyUPCgxb0iinlA69Uqzx91bdce7FvsnMJ7RzGB+CIVOZWkMkJjcZeh\njbLSRR7H8BcqoIrho2Gba2gd2931J0dDevDZPfX2y/CBdhFi6C9zKi9wMh2zed24\n/g6uImk6TVinHWAPnaFtNAxIotnaxqNN29wI7Wh+3PMlIH74sZ+K571W1wdYYnAe\nTi7+zRPf2Q0fRx0IKPSNqfR3TLnbXbbLUcAolb5LI35eT5dkMXQKm2lTYwYmgGME\nAxsUhm3wT1thmuF1+I6mwemWu29fMdUVLGNZ7NkDtpdW8xYnC0RaqAFdLSD4FocM\ndWnDlDeRFghAYe9a7choSsjhEbhiSOv8cHVEpFKkEBhjNMTEdmwmAmp/9s8ZiX9b\nUl4FZVSYsEnzbVZo8HkeETQL153yzfaCkUXAqWwAwrZdaw1DSuGCgOOwXlXFKOnC\no2nrfZ+V2OVN4dRECTF+9DZiuc/NIWY0SDhz\n-----END CERTIFICATE-----\n",
+                "key_file": "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\n",
+                "status": "1",
+                "desc": "这是mcp修改的简介名称",
+                "provider": null,
+                "provider_cluster_id": null,
+                "total_memory": 16011,
+                "used_memory": 5120,
+                "total_cpu": 8,
+                "used_cpu": 2.7,
+                "total_disk": 98.12952041625977,
+                "used_disk": 71.40623092651367,
+                "rbd_version": "0416103-9aa3b95-2026-04-16-02",
+                "health_status": "ok",
+                "resource_proxy_status": true,
+                "k8s_version": "1.30.4+rke2r1",
+                "all_nodes": 1,
+                "pods": {},
+                "run_pod_number": 15,
+                "node_ready": 1,
+                "services_status": {
+                  "running": 15
+                },
+                "arch": [
+                  "amd64"
+                ],
+                "create_time": "2026-03-26 15:49:37"
+              }
+            ],
+            "total": 1,
+            "page": 1,
+            "page_size": 20
+          }
         }
       }
     },
-    "createdAt": "2026-04-21T02:34:33.001Z"
+    "createdAt": "2026-04-23T08:29:22.374Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 6,
     "eventType": "chat.message",
     "payload": {
       "type": "chat.message",
       "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 6,
-      "timestamp": "2026-04-21T02:34:33.002Z",
+      "timestamp": "2026-04-23T08:29:33.791Z",
       "data": {
         "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
+        "content": "当前集群的信息非常清晰，以下是完整的集群概况：\n\n---\n\n## 📊 当前集群信息总览\n\n| 项目 | 内容 |\n|------|------|\n| **集群名称** | `rainbond`（默认集群） |\n| **集群别名** | 默认集群 |\n| **状态** | ✅ 正常（`ok`） |\n| **Kubernetes 版本** | `1.30.4+rke2r1` |\n| **Rainbond 版本** | `0416103-9aa3b95-2026-04-16-02` |\n| **架构** | `amd64` |\n| **API 地址** | `https://14.103.233.199:8443` |\n| **HTTP 泛域名** | `14.103.233.199.nip.io` |\n\n---\n\n### 💻 资源使用情况\n\n| 资源类型 | 总量 | 已使用 | 使用率 |\n|---------|:---:|:-----:|:-----:|\n| **CPU** | 8 核 | 2.7 核 | **33.8%** |\n| **内存** | 16,011 MB | 5,120 MB | **32.0%** |\n| **磁盘** | 98.13 GB | 71.41 GB | **72.8%** |\n\n### 🖥️ 节点信息\n\n| 项目 | 数值 |\n|------|:----:|\n| 节点总数 | **1** 个 |\n| 就绪节点 | **1** 个 |\n| 运行中的 Pod | **15** 个 |\n| 运行中的服务 | **15** 个 |\n\n---\n\n### ✅ 健康状态\n- **集群健康**：`ok`，运行正常\n- **资源代理**：已启用\n- **节点**：全部就绪，无异常节点\n\n**简要分析**：当前集群为单节点集群，资源整体充裕，CPU 和内存使用率均在合理范围（约 30%），磁盘使用率相对较高（约 73%），后续可关注磁盘空间增长情况。集群和所有服务均正常运行。\n\n如果您想进一步查看集群节点详情或 Rainbond 平台组件的运行状态，请告诉我！\n\n基于本次查询结果：\n当前登录用户是 admin，邮箱 admin@admin.com，企业 ID 8948f3fcf66e0cd91bf1045e8ca4a965，当前具有企业管理员权限。\n已查询rainbond_query_regions，当前返回 1 条记录，前几项包括：默认集群。"
       }
     },
-    "createdAt": "2026-04-21T02:34:33.002Z"
+    "createdAt": "2026-04-23T08:29:33.791Z"
   },
   {
     "tenantId": "local-default",
-    "sessionId": "cs_1776738872971",
-    "runId": "run_1776738872993",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738872971",
-      "runId": "run_1776738872993",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:34:33.003Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:34:33.003Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:36:34.874Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.874Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:36:34.875Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.875Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:36:34.876Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.876Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:36:34.878Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.878Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:36:34.879Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.879Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:36:34.879Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.879Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776738994847",
-    "runId": "run_1776738994872",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776738994847",
-      "runId": "run_1776738994872",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:36:34.880Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:36:34.880Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:37:25.725Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.725Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:37:25.727Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.727Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:37:25.728Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.728Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:37:25.730Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.730Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:37:25.732Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.732Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:37:25.733Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.733Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739045698",
-    "runId": "run_1776739045724",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739045698",
-      "runId": "run_1776739045724",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:37:25.735Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:37:25.735Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:47:00.182Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:00.182Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:47:00.185Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:00.185Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:47:00.187Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:00.187Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:47:00.188Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:00.188Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:47:00.189Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:00.189Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:47:00.190Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:00.190Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739620180",
+    "sessionId": "cs_1776932822049_1",
+    "runId": "run_1776932958707_1",
     "sequence": 7,
     "eventType": "run.status",
     "payload": {
       "type": "run.status",
       "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739620180",
+      "sessionId": "cs_1776932822049_1",
+      "runId": "run_1776932958707_1",
       "sequence": 7,
-      "timestamp": "2026-04-21T02:47:00.191Z",
+      "timestamp": "2026-04-23T08:29:33.795Z",
       "data": {
         "status": "done"
       }
     },
-    "createdAt": "2026-04-21T02:47:00.191Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:47:19.658Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.658Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:47:19.660Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.660Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:47:19.662Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.662Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:47:19.665Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.665Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:47:19.666Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.666Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:47:19.668Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.668Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739639656",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739639656",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:47:19.670Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:19.670Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:47:31.123Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.123Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:47:31.126Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.126Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:47:31.127Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.127Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:47:31.130Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.130Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:47:31.132Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.132Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:47:31.134Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.134Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739620166",
-    "runId": "run_1776739651122",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739620166",
-      "runId": "run_1776739651122",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:47:31.136Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:47:31.136Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:53:11.380Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.380Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:53:11.383Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.383Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:53:11.384Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.384Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:53:11.386Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.386Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:53:11.387Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.387Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:53:11.388Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.388Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776739991378",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776739991378",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:53:11.390Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:53:11.390Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 1,
-      "timestamp": "2026-04-21T02:53:46.094Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.094Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 2,
-      "timestamp": "2026-04-21T02:53:46.096Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.096Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 3,
-      "timestamp": "2026-04-21T02:53:46.099Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.099Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 4,
-      "timestamp": "2026-04-21T02:53:46.100Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.100Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 5,
-      "timestamp": "2026-04-21T02:53:46.102Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.102Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 6,
-      "timestamp": "2026-04-21T02:53:46.103Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.103Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776739991367",
-    "runId": "run_1776740026093",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776739991367",
-      "runId": "run_1776740026093",
-      "sequence": 7,
-      "timestamp": "2026-04-21T02:53:46.105Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T02:53:46.105Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:11:55.820Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.820Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:11:55.825Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.825Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:11:55.827Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.827Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 4,
-      "timestamp": "2026-04-21T03:11:55.828Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.828Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 5,
-      "timestamp": "2026-04-21T03:11:55.830Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.830Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 6,
-      "timestamp": "2026-04-21T03:11:55.831Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.831Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741115818",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741115818",
-      "sequence": 7,
-      "timestamp": "2026-04-21T03:11:55.832Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:11:55.832Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:12:09.823Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.823Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:12:09.826Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.826Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:12:09.828Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.828Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 4,
-      "timestamp": "2026-04-21T03:12:09.830Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.830Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 5,
-      "timestamp": "2026-04-21T03:12:09.832Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.832Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 6,
-      "timestamp": "2026-04-21T03:12:09.834Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.834Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741115799",
-    "runId": "run_1776741129821",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741115799",
-      "runId": "run_1776741129821",
-      "sequence": 7,
-      "timestamp": "2026-04-21T03:12:09.836Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:12:09.836Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:13:15.761Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.761Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 2,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:13:15.765Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.765Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 3,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:13:15.766Z",
-      "data": {
-        "tool_name": "Get Component Status",
-        "input": {
-          "name": "frontend-ui"
-        },
-        "output": {
-          "name": "frontend-ui",
-          "status": "abnormal",
-          "memory": 512
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.766Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 4,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 4,
-      "timestamp": "2026-04-21T03:13:15.768Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.768Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 5,
-    "eventType": "chat.trace",
-    "payload": {
-      "type": "chat.trace",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 5,
-      "timestamp": "2026-04-21T03:13:15.769Z",
-      "data": {
-        "tool_name": "Get Component Logs",
-        "input": {
-          "name": "frontend-ui",
-          "lines": 20
-        },
-        "output": {
-          "name": "frontend-ui",
-          "logs": [
-            "[2024-01-01 10:00:00] Starting frontend-ui...",
-            "[2024-01-01 10:00:05] FATAL: JavaScript heap out of memory",
-            "[2024-01-01 10:00:06] Process exited with code 137"
-          ]
-        }
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.769Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 6,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 6,
-      "timestamp": "2026-04-21T03:13:15.770Z",
-      "data": {
-        "role": "assistant",
-        "content": "frontend-ui 当前状态为 abnormal，配置内存 512MB。\n最近日志显示疑似内存不足，建议优先评估扩容内存或排查异常流量。"
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.770Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741195759",
-    "sequence": 7,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741195759",
-      "sequence": 7,
-      "timestamp": "2026-04-21T03:13:15.772Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:13:15.772Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741607116",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741607116",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:20:07.120Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:20:07.120Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741623984",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741623984",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:20:23.986Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:20:23.986Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741690057",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741690057",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:21:30.058Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:21:30.058Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776741732538",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776741732538",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:22:12.542Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:22:12.542Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742219956",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742219956",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:30:19.963Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:30:19.963Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742219956",
-    "sequence": 2,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742219956",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:30:32.125Z",
-      "data": {
-        "role": "assistant",
-        "content": "你好！我是 Rainbond Copilot，您的专业云原生应用管理助手。\n\n我可以帮助您：\n\n**🔧 日常管理**\n- 查看组件状态和运行情况\n- 检查应用日志，排查问题\n- 管理组件的启动、停止和重启\n- 调整资源配置（CPU、内存）\n\n**🚀 故障排查**\n- 诊断组件启动失败、异常运行\n- 分析内存溢出(OOM)问题\n- 解决服务访问问题\n- 优化性能问题\n\n**📊 状态监控**\n- 获取实时的组件状态\n- 查看详细的运行日志\n- 监控资源使用情况\n\n请随时告诉我您需要什么帮助，比如：\n- \"请帮我查看 frontend-ui 组件的状态\"\n- \"backend-api 启动失败了，看看日志\"\n- \"我的应用内存使用很高，怎么优化？\"\n\n今天有什么我可以为您做的吗？"
-      }
-    },
-    "createdAt": "2026-04-21T03:30:32.125Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742219956",
-    "sequence": 3,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742219956",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:30:32.128Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:30:32.128Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742263556",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742263556",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:31:03.558Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:03.558Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742263556",
-    "sequence": 2,
-    "eventType": "approval.requested",
-    "payload": {
-      "type": "approval.requested",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742263556",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:31:03.563Z",
-      "data": {
-        "approval_id": "ap_1776742263561",
-        "skill_id": "scale-component-memory",
-        "description": "执行高风险操作前需要确认：我的应用内存使用很高，怎么优化",
-        "risk": "medium"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:03.563Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742263556",
-    "sequence": 3,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742263556",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:31:03.566Z",
-      "data": {
-        "status": "waiting_approval"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:03.566Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742263556",
-    "sequence": 4,
-    "eventType": "approval.resolved",
-    "payload": {
-      "type": "approval.resolved",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742263556",
-      "sequence": 4,
-      "timestamp": "2026-04-21T03:31:11.822Z",
-      "data": {
-        "approval_id": "ap_1776742263561",
-        "status": "approved",
-        "resolved_by": "local-user",
-        "comment": ""
-      }
-    },
-    "createdAt": "2026-04-21T03:31:11.822Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742263556",
-    "sequence": 5,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742263556",
-      "sequence": 5,
-      "timestamp": "2026-04-21T03:31:11.827Z",
-      "data": {
-        "role": "assistant",
-        "content": "已根据审批结果继续执行 scale-component-memory。"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:11.827Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742263556",
-    "sequence": 6,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742263556",
-      "sequence": 6,
-      "timestamp": "2026-04-21T03:31:11.829Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:11.829Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742290750",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742290750",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:31:30.751Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:30.751Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742290750",
-    "sequence": 2,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742290750",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:31:43.973Z",
-      "data": {
-        "role": "assistant",
-        "content": "你好！我是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n我能为您提供以下帮助：\n\n## 主要能力\n- **应用管理**：帮助您部署、配置和管理 Rainbond 上的应用和组件\n- **故障排查**：诊断组件启动失败、性能问题、服务不可用等常见问题\n- **运维操作**：查看组件状态、日志，协助重启、扩容等操作（需要时通过审批流程）\n- **最佳实践**：提供 Rainbond 使用建议和架构指导\n\n## 我能做什么？\n- 直接回答 Rainbond 相关问题\n- 通过工具查看组件状态和日志\n- 协助分析故障原因并提供解决方案\n- 指导您完成部署和配置操作\n\n请告诉我您需要什么帮助？比如：\n- 某个组件无法启动\n- 服务访问异常\n- 需要查看应用状态\n- 想要部署新的应用\n- 其他 Rainbond 相关的问题\n\n我会根据情况结合工具使用为您提供专业、清晰的解答。"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:43.973Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742290750",
-    "sequence": 3,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742290750",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:31:43.977Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:31:43.977Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742729579",
-    "sequence": 1,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742729579",
-      "sequence": 1,
-      "timestamp": "2026-04-21T03:38:49.582Z",
-      "data": {
-        "status": "thinking"
-      }
-    },
-    "createdAt": "2026-04-21T03:38:49.582Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742729579",
-    "sequence": 2,
-    "eventType": "chat.message",
-    "payload": {
-      "type": "chat.message",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742729579",
-      "sequence": 2,
-      "timestamp": "2026-04-21T03:39:03.373Z",
-      "data": {
-        "role": "assistant",
-        "content": "你好！我是 Rainbond Copilot，你的 Rainbond 云原生应用管理平台助手。\n\n我可以帮助你：\n1. **查看和管理组件状态** - 快速了解组件的运行状态和资源使用情况\n2. **查看组件日志** - 分析故障原因和运行情况\n3. **重启组件** - 解决服务异常或应用配置更新\n4. **调整组件资源** - 扩容内存解决 OOM 等问题\n5. **回答技术问题** - 关于 Rainbond 部署、配置、运维的各种疑问\n\n请告诉我你需要什么帮助？比如：\n- \"我的 frontend-ui 组件状态异常，帮我查看一下\"\n- \"查看 backend-api 最近 100 行日志\"\n- \"数据库服务经常 OOM，需要扩容内存\"\n- \"如何配置 Rainbond 中的服务发现？\"\n\n你可以直接告诉我**组件的名称**和具体需求，我会使用相应的工具来协助你解决问题。"
-      }
-    },
-    "createdAt": "2026-04-21T03:39:03.373Z"
-  },
-  {
-    "tenantId": "local-default",
-    "sessionId": "cs_1776741195743",
-    "runId": "run_1776742729579",
-    "sequence": 3,
-    "eventType": "run.status",
-    "payload": {
-      "type": "run.status",
-      "tenantId": "local-default",
-      "sessionId": "cs_1776741195743",
-      "runId": "run_1776742729579",
-      "sequence": 3,
-      "timestamp": "2026-04-21T03:39:03.377Z",
-      "data": {
-        "status": "done"
-      }
-    },
-    "createdAt": "2026-04-21T03:39:03.377Z"
+    "createdAt": "2026-04-23T08:29:33.795Z"
   }
 ]

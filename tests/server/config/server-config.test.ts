@@ -9,11 +9,13 @@ describe("server config", () => {
       COPILOT_API_PORT: "8899",
       COPILOT_STORE_MODE: "file",
       COPILOT_DATA_DIR: ".copilot-data",
+      COPILOT_CONSOLE_BASE_URL: "http://127.0.0.1:7070",
     });
 
     expect(config.host).toBe("127.0.0.1");
     expect(config.port).toBe(8899);
     expect(config.storeMode).toBe("file");
     expect(config.dataDir).toBe(".copilot-data");
+    expect(config.consoleBaseUrl).toBe("http://127.0.0.1:7070");
   });
 });

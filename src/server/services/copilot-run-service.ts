@@ -1,4 +1,5 @@
 import type { RequestActor } from "../../shared/types.js";
+import { createServerId } from "../utils/id.js";
 import {
   createRunRecord,
   type RunRecord,
@@ -24,12 +25,12 @@ export class CopilotRunService {
       input.actor.tenantId
     );
 
-    if (!session) {
+    if (!session || session.userId !== input.actor.userId) {
       throw new Error("Session not found");
     }
 
     const run = createRunRecord({
-      runId: `run_${Date.now()}`,
+      runId: createServerId("run"),
       tenantId: input.actor.tenantId,
       sessionId: input.sessionId,
       messageText: input.message,

@@ -11,12 +11,22 @@ describe("server store contracts", () => {
       sessionId: "cs_123",
       tenantId: "t_123",
       userId: "u_456",
+      username: "alice",
       sourceSystem: "ops-console",
+      authMode: "user_jwt",
+      teamName: "team-a",
+      contextSignature: "team-a|region-a|app-a|component-a|candidate",
     });
 
     expect(session.sessionId).toBe("cs_123");
     expect(session.tenantId).toBe("t_123");
     expect(session.userId).toBe("u_456");
+    expect(session.username).toBe("alice");
+    expect(session.authMode).toBe("user_jwt");
+    expect(session.teamName).toBe("team-a");
+    expect(session.contextSignature).toBe(
+      "team-a|region-a|app-a|component-a|candidate"
+    );
     expect(session.status).toBe("active");
   });
 

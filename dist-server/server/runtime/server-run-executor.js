@@ -3,7 +3,7 @@ import { createServerActionSkills } from "./server-action-skills.js";
 export class ServerRunExecutor {
     constructor(deps) {
         this.deps = deps;
-        this.skills = createServerActionSkills();
+        this.skills = createServerActionSkills(deps.actionAdapter);
     }
     plan(message) {
         const normalized = message.toLowerCase();
