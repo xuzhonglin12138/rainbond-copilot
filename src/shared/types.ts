@@ -2,6 +2,12 @@ export type SessionId = string;
 export type RunId = string;
 export type ApprovalId = string;
 export type RiskLevel = "low" | "medium" | "high";
+export type ApprovalScope =
+  | "enterprise"
+  | "team"
+  | "app"
+  | "component"
+  | "workflow";
 export type ApprovalStatus = "pending" | "approved" | "rejected";
 export type AuthMode = "user_jwt" | "internal" | "trusted_headers";
 

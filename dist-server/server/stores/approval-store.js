@@ -7,6 +7,7 @@ export function createApprovalRecord(input) {
         skillId: input.skillId,
         description: input.description,
         risk: input.risk,
+        scope: input.scope,
         status: input.status ?? "pending",
         requestedBy: input.requestedBy,
         requestedAt: input.requestedAt ?? new Date().toISOString(),

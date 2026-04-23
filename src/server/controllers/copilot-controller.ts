@@ -35,6 +35,7 @@ import type { WorkflowToolClientFactory } from "../workflows/executor.js";
 import { isContinueWorkflowActionPrompt } from "../workflows/executor.js";
 import { buildPendingWorkflowActionCompletion } from "../workflows/pending-action-result.js";
 import type { PendingWorkflowAction } from "../stores/session-store.js";
+import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 
 interface ControllerDeps {
   sessionStore?: SessionStore;
@@ -621,6 +622,9 @@ export function createCopilotController(deps: ControllerDeps = {}) {
       toolName: params.pendingAction.toolName,
       requiresApproval: true,
       risk: params.pendingAction.risk || params.risk,
+      scope:
+        params.pendingAction.scope ||
+        getMutableToolPolicy(params.pendingAction.toolName)?.scope,
       description: params.pendingAction.description || params.description,
       arguments: params.pendingAction.arguments,
       followUpActions: params.pendingAction.followUpActions,
@@ -652,6 +656,7 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         normalizedPendingAction.description ||
         `执行 ${normalizedPendingAction.toolName}`,
       risk: normalizedPendingAction.risk || params.risk,
+      scope: normalizedPendingAction.scope,
     });
   };
 
@@ -702,6 +707,7 @@ export function createCopilotController(deps: ControllerDeps = {}) {
             approval_id: approval.approvalId,
             description: approval.description,
             risk: approval.risk,
+            scope: approval.scope,
           })),
         },
       };

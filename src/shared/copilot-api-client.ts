@@ -110,6 +110,7 @@ export function createCopilotApiClient(options: CreateCopilotApiClientOptions) {
             approval_id: string;
             description: string;
             risk: string;
+            scope?: string;
           }>;
         };
       }>(`/api/v1/copilot/sessions/${sessionId}`);

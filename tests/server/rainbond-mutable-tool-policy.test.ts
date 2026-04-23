@@ -19,6 +19,7 @@ describe("rainbond mutable tool policy", () => {
 
     expect(policy).toMatchObject({
       name: "rainbond_check_yaml_app",
+      scope: "app",
       riskLevel: "low",
       allowDirectExecution: true,
     });
@@ -38,7 +39,10 @@ describe("rainbond mutable tool policy", () => {
 
     expect(decision).toMatchObject({
       requiresApproval: true,
+      scope: "component",
+      scopeLabel: "组件级",
       risk: "high",
+      riskLabel: "危险",
       reason: "删除组件 frontend-ui，该操作可能不可逆",
     });
   });
@@ -50,8 +54,34 @@ describe("rainbond mutable tool policy", () => {
 
     expect(decision).toMatchObject({
       requiresApproval: true,
+      scope: "component",
       risk: "medium",
       reason: "修改组件 backend-api 的环境变量",
+    });
+  });
+
+  it("classifies enterprise write operations with enterprise scope metadata", () => {
+    const policy = getMutableToolPolicy("rainbond_delete_region");
+
+    expect(policy).toMatchObject({
+      name: "rainbond_delete_region",
+      scope: "enterprise",
+      riskLevel: "high",
+      allowDirectExecution: false,
+    });
+
+    expect(
+      evaluateMutableToolApproval("rainbond_update_region", {
+        region_name: "production-region",
+        desc: "agent",
+      })
+    ).toMatchObject({
+      requiresApproval: true,
+      scope: "enterprise",
+      scopeLabel: "企业级",
+      risk: "medium",
+      riskLabel: "警告",
+      reason: "将集群 production-region 的简介修改为 agent",
     });
   });
 

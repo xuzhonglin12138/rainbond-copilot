@@ -1,4 +1,5 @@
 import type { ToolDefinition } from "../../../llm/types.js";
+import type { ApprovalScope } from "../../../shared/types.js";
 import type { McpToolDefinition } from "./types.js";
 import {
   evaluateMutableToolApproval as evaluateMutableToolApprovalFromPolicy,
@@ -9,7 +10,10 @@ import { isReadOnlyMcpToolName } from "./query-tools.js";
 
 export interface MutableToolApprovalDecision {
   requiresApproval: boolean;
+  scope?: ApprovalScope;
+  scopeLabel?: string;
   risk: MutableToolPolicyEntry["riskLevel"];
+  riskLabel?: string;
   reason: string;
 }
 

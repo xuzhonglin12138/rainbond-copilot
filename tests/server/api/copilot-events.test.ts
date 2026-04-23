@@ -290,6 +290,115 @@ describe("copilot event stream", () => {
     );
   });
 
+  it("routes enterprise mutable MCP tool calls into approval flow", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_region_update_1",
+            type: "function",
+            function: {
+              name: "rainbond_update_region",
+              arguments: JSON.stringify({
+                region_name: "rainbond",
+                desc: "agent",
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_query_regions",
+          description: "Query regions.",
+          inputSchema: {
+            type: "object",
+            properties: {},
+          },
+        },
+        {
+          name: "rainbond_update_region",
+          description: "Update cluster metadata.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              region_name: { type: "string" },
+              desc: { type: "string" },
+            },
+            required: ["region_name"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {},
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "demo-team",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          page: "/enterprise/clusters",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "把默认集群的集群简介修改为 agent", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "更新集群 rainbond",
+        risk: "medium",
+        level_label: "警告",
+        scope: "enterprise",
+        scope_label: "企业级",
+      },
+    });
+    expect(queryToolClient.callTool).not.toHaveBeenCalled();
+  });
+
   it("refreshes the server-side session context when a new message carries a more specific context", async () => {
     const llmClient = {
       chat: vi

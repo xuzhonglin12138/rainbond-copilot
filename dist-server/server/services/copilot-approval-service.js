@@ -1,3 +1,4 @@
+import { getApprovalRiskLabel, getApprovalScopeLabel, } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createServerId } from "../utils/id.js";
 import { createApprovalRecord, } from "../stores/approval-store.js";
 export class CopilotApprovalService {
@@ -17,6 +18,7 @@ export class CopilotApprovalService {
             skillId: input.skillId,
             description: input.description,
             risk: input.risk,
+            scope: input.scope,
             requestedBy: input.actor.userId,
         });
         await this.deps.approvalStore.create(approval);
@@ -36,6 +38,9 @@ export class CopilotApprovalService {
                 skill_id: approval.skillId,
                 description: approval.description,
                 risk: approval.risk,
+                level_label: getApprovalRiskLabel(approval.risk),
+                scope: approval.scope,
+                scope_label: getApprovalScopeLabel(approval.scope),
             },
         });
         const waitingSequence = await this.nextSequence(input.runId, input.actor.tenantId);

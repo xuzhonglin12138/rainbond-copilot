@@ -1,4 +1,13 @@
-import type { RequestActor, ApprovalStatus, RiskLevel } from "../../shared/types.js";
+import type {
+  ApprovalScope,
+  RequestActor,
+  ApprovalStatus,
+  RiskLevel,
+} from "../../shared/types.js";
+import {
+  getApprovalRiskLabel,
+  getApprovalScopeLabel,
+} from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createServerId } from "../utils/id.js";
 import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
 import type { SseBroker } from "../events/sse-broker.js";
@@ -25,6 +34,7 @@ export interface CreatePendingApprovalInput {
   skillId: string;
   description: string;
   risk: RiskLevel;
+  scope?: ApprovalScope;
 }
 
 export interface ApprovalDecisionInput {
@@ -53,6 +63,7 @@ export class CopilotApprovalService {
       skillId: input.skillId,
       description: input.description,
       risk: input.risk,
+      scope: input.scope,
       requestedBy: input.actor.userId,
     });
 
@@ -74,6 +85,9 @@ export class CopilotApprovalService {
         skill_id: approval.skillId,
         description: approval.description,
         risk: approval.risk,
+        level_label: getApprovalRiskLabel(approval.risk),
+        scope: approval.scope,
+        scope_label: getApprovalScopeLabel(approval.scope),
       },
     });
 

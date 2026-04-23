@@ -1,4 +1,4 @@
-import type { AuthMode, RiskLevel } from "../../shared/types.js";
+import type { ApprovalScope, AuthMode, RiskLevel } from "../../shared/types.js";
 import type { ResolvedExecutionScope } from "../workflows/types.js";
 
 export type SessionRecordStatus = "active" | "archived";
@@ -9,6 +9,7 @@ export interface PendingWorkflowAction {
   toolName: string;
   requiresApproval: boolean;
   risk?: RiskLevel;
+  scope?: ApprovalScope;
   description?: string;
   arguments: Record<string, unknown>;
   followUpActions?: PendingWorkflowAction[];

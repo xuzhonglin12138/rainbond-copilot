@@ -277,4 +277,72 @@ describe("copilot approval flow", () => {
       })
     ).rejects.toThrow("Approval not found");
   });
+
+  it("derives enterprise scope metadata when re-queuing a pending enterprise action for approval", async () => {
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+    const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
+    const approvalStore = createInMemoryApprovalStore();
+    const broker = createSseBroker();
+    const runResumer = new InMemoryRunResumer();
+    const controller = createCopilotController({
+      sessionStore,
+      runStore,
+      approvalStore,
+      broker,
+      runResumer,
+    });
+
+    await sessionStore.create(
+      createSessionRecord({
+        sessionId: "cs_scope",
+        tenantId: actor.tenantId,
+        userId: actor.userId,
+        sourceSystem: actor.sourceSystem,
+        pendingWorkflowAction: {
+          toolName: "rainbond_delete_region",
+          requiresApproval: true,
+          risk: "high",
+          description: "删除集群 test-region，该操作可能不可逆",
+          arguments: {
+            region_name: "test-region",
+          },
+        },
+      })
+    );
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: "cs_scope" },
+      body: { message: "继续执行", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: { sessionId: "cs_scope", runId: run.data.run_id },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "删除集群 test-region，该操作可能不可逆",
+        risk: "high",
+        level_label: "危险",
+        scope: "enterprise",
+        scope_label: "企业级",
+      },
+    });
+  });
 });

@@ -1,4 +1,8 @@
-import type { ApprovalStatus, RiskLevel } from "../../shared/types.js";
+import type {
+  ApprovalScope,
+  ApprovalStatus,
+  RiskLevel,
+} from "../../shared/types.js";
 
 export interface ApprovalRecord {
   approvalId: string;
@@ -8,6 +12,7 @@ export interface ApprovalRecord {
   skillId: string;
   description: string;
   risk: RiskLevel;
+  scope?: ApprovalScope;
   status: ApprovalStatus;
   requestedBy: string;
   requestedAt: string;
@@ -24,6 +29,7 @@ export interface CreateApprovalRecordInput {
   skillId: string;
   description: string;
   risk: RiskLevel;
+  scope?: ApprovalScope;
   requestedBy: string;
   status?: ApprovalStatus;
   requestedAt?: string;
@@ -53,6 +59,7 @@ export function createApprovalRecord(
     skillId: input.skillId,
     description: input.description,
     risk: input.risk,
+    scope: input.scope,
     status: input.status ?? "pending",
     requestedBy: input.requestedBy,
     requestedAt: input.requestedAt ?? new Date().toISOString(),

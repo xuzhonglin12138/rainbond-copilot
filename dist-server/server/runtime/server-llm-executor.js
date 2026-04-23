@@ -3,6 +3,8 @@ import { getLLMConfig } from "../../llm/config.js";
 import { OpenAIClient } from "../../llm/openai-client.js";
 import { summarizeLogs } from "../../runtime/runtime-helpers.js";
 import { buildReadOnlyMcpToolDefinitions, filterReadOnlyMcpTools, } from "../integrations/rainbond-mcp/query-tools.js";
+import { buildMutableMcpToolDefinitions, evaluateMutableToolApproval, filterMutableMcpTools, isMutableMcpToolName, } from "../integrations/rainbond-mcp/mutable-tools.js";
+import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createServerActionSkills } from "./server-action-skills.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
 export class ServerLlmExecutor {
@@ -112,6 +114,32 @@ export class ServerLlmExecutor {
                     continue;
                 }
                 const enrichedInput = this.enrichQueryToolInput(mcpTool.name, toolInput, params.sessionContext, params.actor);
+                if (isMutableMcpToolName(mcpTool.name)) {
+                    const approvalDecision = evaluateMutableToolApproval(mcpTool.name, enrichedInput);
+                    if (approvalDecision.requiresApproval) {
+                        if (!this.deps.requestApproval) {
+                            throw new Error("requestApproval callback is required for protected MCP tools");
+                        }
+                        await this.deps.requestApproval({
+                            actor: params.actor,
+                            sessionId: params.sessionId,
+                            runId: params.runId,
+                            pendingAction: {
+                                kind: "mcp_tool",
+                                toolName: mcpTool.name,
+                                requiresApproval: true,
+                                risk: approvalDecision.risk,
+                                scope: approvalDecision.scope,
+                                description: approvalDecision.reason,
+                                arguments: enrichedInput,
+                            },
+                            description: approvalDecision.reason,
+                            risk: approvalDecision.risk,
+                            scope: approvalDecision.scope,
+                        });
+                        return true;
+                    }
+                }
                 const mcpCacheKey = this.buildToolCacheKey(toolCall.function.name, enrichedInput);
                 const cachedMcpResult = toolResultCache.get(mcpCacheKey);
                 if (cachedMcpResult) {
@@ -538,8 +566,11 @@ export class ServerLlmExecutor {
             return {
                 client,
                 readOnlyDefinitions: filterReadOnlyMcpTools(tools),
-                mutableDefinitions: [],
-                byName: new Map(filterReadOnlyMcpTools(tools).map((tool) => [tool.name, tool])),
+                mutableDefinitions: this.filterApprovedMutableMcpTools(tools),
+                byName: new Map([
+                    ...filterReadOnlyMcpTools(tools),
+                    ...this.filterApprovedMutableMcpTools(tools),
+                ].map((tool) => [tool.name, tool])),
             };
         }
         catch {
@@ -587,7 +618,14 @@ export class ServerLlmExecutor {
                 },
             })),
             ...buildReadOnlyMcpToolDefinitions(readOnlyTools),
+            ...buildMutableMcpToolDefinitions(mutableTools),
         ];
+    }
+    filterApprovedMutableMcpTools(tools) {
+        return filterMutableMcpTools(tools).filter((tool) => {
+            const policy = getMutableToolPolicy(tool.name);
+            return !!policy && policy.scope === "enterprise";
+        });
     }
     serializeMcpToolResult(output) {
         return {
