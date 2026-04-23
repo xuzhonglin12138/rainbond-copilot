@@ -1,9 +1,67 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
-import { createCopilotController } from "../../../src/server/controllers/copilot-controller";
+import { createCopilotController as createBaseCopilotController } from "../../../src/server/controllers/copilot-controller";
 import { createInMemorySessionStore } from "../../../src/server/stores/session-store";
 
+function createCopilotController(deps: Record<string, unknown> = {}) {
+  return createBaseCopilotController({
+    enableRainbondAppAssistantWorkflow: true,
+    ...deps,
+  });
+}
+
 describe("copilot workflow routing", () => {
+  it("does not auto-route workflow prompts when rainbond app assistant workflow is disabled", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "暂不进入流程，直接按普通对话处理。",
+        finish_reason: "stop",
+      })),
+    };
+
+    const controller = createBaseCopilotController({
+      llmClient,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "134",
+          team_name: "team-a",
+          region_name: "region-a",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "给这个应用创建一个快照", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).toHaveBeenCalled();
+    expect(stream.events.map((event) => event.type)).not.toContain("workflow.selected");
+    expect(stream.events.map((event) => event.type)).not.toContain("workflow.completed");
+  });
+
   it("routes capability-style prompts into the workflow capability summary instead of the legacy llm skill list", async () => {
     const llmClient = {
       chat: vi.fn(async () => ({

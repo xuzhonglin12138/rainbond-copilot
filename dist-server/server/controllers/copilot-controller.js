@@ -172,6 +172,31 @@ function requestsSnapshotCreation(message) {
     }
     return /(创建.*快照|生成.*快照|create.*snapshot)/i.test(normalized);
 }
+function parseSnapshotRollbackVersion(message) {
+    const normalized = (message || "").trim();
+    if (!normalized || !/(回滚|rollback)/i.test(normalized)) {
+        return "";
+    }
+    const matched = normalized.match(/(\d+\.\d+\.\d+|\d+\.\d+)/);
+    if (!matched || !matched[1]) {
+        return "";
+    }
+    return matched[1];
+}
+function findSnapshotVersionId(payload, targetVersion) {
+    if (!payload || !Array.isArray(payload.items) || !targetVersion) {
+        return 0;
+    }
+    const normalizedTarget = String(targetVersion).trim();
+    const matched = payload.items.find((item) => {
+        const version = readContextString(item, "version", "share_version", "snapshot_version");
+        return version === normalizedTarget;
+    });
+    if (!matched) {
+        return 0;
+    }
+    return readContextInt(matched, "version_id", "ID", "id");
+}
 function detectContextualMutationIntent(message, context) {
     const normalized = (message || "").trim();
     if (!normalized || looksLikeMutationQuestion(normalized)) {
@@ -264,6 +289,7 @@ export function createCopilotController(deps = {}) {
         eventPublisher,
         sessionStore,
         workflowToolClientFactory: deps.workflowToolClientFactory,
+        enableRainbondAppAssistantWorkflow: deps.enableRainbondAppAssistantWorkflow,
     });
     const approvalService = new CopilotApprovalService({
         approvalStore,
@@ -531,6 +557,58 @@ export function createCopilotController(deps = {}) {
                         stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
                     },
                 };
+            }
+            const targetSnapshotVersion = parseSnapshotRollbackVersion(request.body.message);
+            if (targetSnapshotVersion) {
+                const teamName = readContextString(session.context, "teamName", "team_name") ||
+                    request.actor.tenantName ||
+                    request.actor.tenantId;
+                const regionName = readContextString(session.context, "regionName", "region_name") ||
+                    request.actor.regionName ||
+                    "";
+                const appId = readContextInt(session.context, "appId", "app_id");
+                if (teamName && regionName && appId) {
+                    const client = await resolvePendingMcpClient({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                    });
+                    const snapshotListResult = await client.callTool("rainbond_list_app_version_snapshots", {
+                        team_name: teamName,
+                        region_name: regionName,
+                        app_id: appId,
+                    });
+                    const versionId = findSnapshotVersionId((snapshotListResult.structuredContent || {}), targetSnapshotVersion);
+                    if (versionId > 0) {
+                        await queuePendingActionApproval({
+                            actor: request.actor,
+                            sessionId: request.params.sessionId,
+                            runId: run.runId,
+                            pendingAction: {
+                                kind: "mcp_tool",
+                                toolName: "rainbond_rollback_app_version_snapshot",
+                                requiresApproval: true,
+                                risk: "high",
+                                scope: "app",
+                                description: `回滚当前应用到快照版本 ${targetSnapshotVersion}`,
+                                arguments: {
+                                    team_name: teamName,
+                                    region_name: regionName,
+                                    app_id: appId,
+                                    version_id: versionId,
+                                },
+                            },
+                            description: `回滚当前应用到快照版本 ${targetSnapshotVersion}`,
+                            risk: "high",
+                        });
+                        return {
+                            data: {
+                                run_id: run.runId,
+                                session_id: run.sessionId,
+                                stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                            },
+                        };
+                    }
+                }
             }
             const handledByWorkflow = await workflowExecutor.execute({
                 actor: request.actor,

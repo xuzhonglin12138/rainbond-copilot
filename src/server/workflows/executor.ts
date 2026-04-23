@@ -13,6 +13,7 @@ interface WorkflowExecutorDeps {
   sessionStore: SessionStore;
   workflowRegistry?: WorkflowRegistry;
   workflowToolClientFactory?: WorkflowToolClientFactory;
+  enableRainbondAppAssistantWorkflow?: boolean;
 }
 
 export interface ExecuteWorkflowParams {
@@ -271,9 +272,12 @@ export function isContinueWorkflowActionPrompt(message: string): boolean {
 
 export class WorkflowExecutor {
   private readonly registry: WorkflowRegistry;
+  private readonly enableRainbondAppAssistantWorkflow: boolean;
 
   constructor(private readonly deps: WorkflowExecutorDeps) {
     this.registry = deps.workflowRegistry || createWorkflowRegistry();
+    this.enableRainbondAppAssistantWorkflow =
+      deps.enableRainbondAppAssistantWorkflow === true;
   }
 
   async execute(params: ExecuteWorkflowParams): Promise<boolean> {
@@ -290,6 +294,10 @@ export class WorkflowExecutor {
       isContinueWorkflowActionPrompt(params.message)
     ) {
       return this.executePendingWorkflowAction(params, session);
+    }
+
+    if (!this.enableRainbondAppAssistantWorkflow) {
+      return false;
     }
 
     if (!isAppAssistantPrompt(params.message)) {

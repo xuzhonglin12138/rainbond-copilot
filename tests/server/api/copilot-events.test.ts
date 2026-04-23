@@ -399,6 +399,533 @@ describe("copilot event stream", () => {
     expect(queryToolClient.callTool).not.toHaveBeenCalled();
   });
 
+  it("routes team-level create_app MCP tool calls into approval flow", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_create_app_1",
+            type: "function",
+            function: {
+              name: "rainbond_create_app",
+              arguments: JSON.stringify({
+                app_name: "agent-demo",
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_get_team_apps",
+          description: "Get team apps.",
+          inputSchema: {
+            type: "object",
+            properties: {},
+          },
+        },
+        {
+          name: "rainbond_create_app",
+          description: "Create application",
+          inputSchema: {
+            type: "object",
+            properties: {
+              app_name: { type: "string" },
+            },
+            required: ["app_name"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {},
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "demo-team",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "demo-team",
+          region_name: "rainbond",
+          page: "/team/demo-team/region/rainbond/index",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "创建一个名为 agent-demo 的应用", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "创建应用 agent-demo",
+        risk: "medium",
+        level_label: "警告",
+        scope: "team",
+        scope_label: "团队级",
+      },
+    });
+    expect(queryToolClient.callTool).not.toHaveBeenCalled();
+  });
+
+  it("executes low-risk app-level mutable MCP tools directly", async () => {
+    const llmClient = {
+      chat: vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: "",
+          tool_calls: [
+            {
+              id: "tool_check_helm_1",
+              type: "function",
+              function: {
+                name: "rainbond_check_helm_app",
+                arguments: JSON.stringify({
+                  repo_name: "bitnami",
+                  chart_name: "nginx",
+                  name: "demo-nginx",
+                  version: "1.0.0",
+                }),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "",
+          finish_reason: "stop",
+        }),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_check_helm_app",
+          description: "Check helm application information before generating template or deployment.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              repo_name: { type: "string" },
+              chart_name: { type: "string" },
+              name: { type: "string" },
+              version: { type: "string" },
+            },
+            required: ["repo_name", "chart_name", "name", "version"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {
+          chart_name: "nginx",
+          name: "demo-nginx",
+          version: "1.0.0",
+          checked: true,
+        },
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "demo-team",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "demo-team",
+          region_name: "rainbond",
+          app_id: "134",
+          page: "/team/demo-team/region/rainbond/apps/134/overview",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "校验这个 Helm 应用参数", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "chat.trace",
+      "chat.trace",
+      "chat.message",
+      "run.status",
+    ]);
+    expect(queryToolClient.callTool).toHaveBeenCalledWith(
+      "rainbond_check_helm_app",
+      expect.objectContaining({
+        repo_name: "bitnami",
+        chart_name: "nginx",
+        name: "demo-nginx",
+        version: "1.0.0",
+        team_name: "demo-team",
+        region_name: "rainbond",
+        app_id: 134,
+      })
+    );
+  });
+
+  it("routes high-risk app-level mutable MCP tools into approval flow", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_delete_app_1",
+            type: "function",
+            function: {
+              name: "rainbond_delete_app",
+              arguments: JSON.stringify({
+                app_id: 134,
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_delete_app",
+          description: "Delete an application.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              app_id: { type: "integer" },
+            },
+            required: ["app_id"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {},
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "demo-team",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "demo-team",
+          region_name: "rainbond",
+          app_id: "134",
+          page: "/team/demo-team/region/rainbond/apps/134/overview",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "删除当前应用", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "删除应用 134，该操作可能不可逆",
+        risk: "high",
+        level_label: "危险",
+        scope: "app",
+        scope_label: "应用级",
+      },
+    });
+    expect(queryToolClient.callTool).not.toHaveBeenCalled();
+  });
+
+  it("routes snapshot rollback requests into approval with the resolved snapshot version id", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => []),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {
+          items: [
+            { version_id: 39, version: "1.0.3" },
+            { version_id: 38, version: "1.0.2" },
+            { version_id: 37, version: "1.0.1" },
+          ],
+          total: 3,
+        },
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "kz5igqh4",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "kz5igqh4",
+          region_name: "rainbond",
+          app_id: "158",
+          page: "/team/kz5igqh4/region/rainbond/apps/158/version",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "回滚到1.0.2的快照版本", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).not.toHaveBeenCalled();
+    expect(queryToolClient.callTool).toHaveBeenCalledWith(
+      "rainbond_list_app_version_snapshots",
+      {
+        team_name: "kz5igqh4",
+        region_name: "rainbond",
+        app_id: 158,
+      }
+    );
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "回滚当前应用到快照版本 1.0.2",
+        risk: "high",
+        level_label: "危险",
+        scope: "app",
+        scope_label: "应用级",
+      },
+    });
+  });
+
+  it("adds a generated k8s_app when creating a new app from a snapshot version", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_snapshot_copy_1",
+            type: "function",
+            function: {
+              name: "rainbond_create_app_from_snapshot_version",
+              arguments: JSON.stringify({
+                source_app_id: 158,
+                version_id: 39,
+                target_app_name: "demo-mcp",
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_create_app_from_snapshot_version",
+          description: "Create a new app directly from a snapshot-generated hidden template.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              source_app_id: { type: "integer" },
+              version_id: { type: "integer" },
+              target_app_name: { type: "string" },
+            },
+            required: ["source_app_id", "version_id", "target_app_name"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {},
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "kz5igqh4",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "kz5igqh4",
+          region_name: "rainbond",
+          app_id: "158",
+          page: "/team/kz5igqh4/region/rainbond/apps/158/version",
+        },
+      },
+    });
+    await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "基于1.0.3版本的快照新建一个demo-mcp的应用", stream: true },
+    });
+
+    const currentSession = await controller.getSession({
+      actor,
+      params: { sessionId: session.data.session_id },
+    });
+    const pendingAction = currentSession.data.pending_workflow_action as any;
+
+    expect(pendingAction).toMatchObject({
+      tool_name: "rainbond_create_app_from_snapshot_version",
+      requires_approval: true,
+      arguments: expect.objectContaining({
+        team_name: "kz5igqh4",
+        region_name: "rainbond",
+        source_app_id: 158,
+        version_id: 39,
+        target_app_name: "demo-mcp",
+      }),
+    });
+    expect(String(pendingAction.arguments.k8s_app)).toMatch(
+      /^demo-mcp-[a-z0-9]{6}$/
+    );
+  });
+
   it("refreshes the server-side session context when a new message carries a more specific context", async () => {
     const llmClient = {
       chat: vi

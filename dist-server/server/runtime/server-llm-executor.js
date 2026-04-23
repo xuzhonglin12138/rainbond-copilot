@@ -7,6 +7,25 @@ import { buildMutableMcpToolDefinitions, evaluateMutableToolApproval, filterMuta
 import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createServerActionSkills } from "./server-action-skills.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
+function normalizeK8sAppNameSeed(value) {
+    const lowered = (value || "").trim().toLowerCase();
+    const replaced = lowered.replace(/[^a-z0-9-]+/g, "-").replace(/-+/g, "-");
+    const trimmed = replaced.replace(/^-+|-+$/g, "");
+    if (!trimmed) {
+        return "app";
+    }
+    if (!/^[a-z]/.test(trimmed)) {
+        return `app-${trimmed}`;
+    }
+    return trimmed;
+}
+function buildGeneratedK8sAppName(value) {
+    const seed = normalizeK8sAppNameSeed(value);
+    const suffix = Date.now().toString(36).slice(-6);
+    const maxSeedLength = 63 - suffix.length - 1;
+    const truncatedSeed = seed.slice(0, maxSeedLength).replace(/-+$/g, "") || "app";
+    return `${truncatedSeed}-${suffix}`;
+}
 export class ServerLlmExecutor {
     constructor(deps) {
         this.deps = deps;
@@ -347,6 +366,13 @@ export class ServerLlmExecutor {
         if (toolName === "rainbond_get_team_apps") {
             delete nextInput.enterprise_id;
         }
+        if (toolName === "rainbond_create_app_from_snapshot_version" &&
+            !nextInput.k8s_app) {
+            const targetAppName = typeof nextInput.target_app_name === "string"
+                ? nextInput.target_app_name
+                : "";
+            nextInput.k8s_app = buildGeneratedK8sAppName(targetAppName || "app");
+        }
         return nextInput;
     }
     mergeAssistantContentWithToolResults(content, synthesizedSummary) {
@@ -622,9 +648,46 @@ export class ServerLlmExecutor {
         ];
     }
     filterApprovedMutableMcpTools(tools) {
+        const allowedAppToolNames = new Set([
+            "rainbond_check_yaml_app",
+            "rainbond_check_helm_app",
+            "rainbond_create_app_upgrade_record",
+            "rainbond_create_app_version_snapshot",
+            "rainbond_init_package_upload",
+            "rainbond_upload_package_file",
+            "rainbond_delete_package_upload",
+            "rainbond_create_app_from_yaml",
+            "rainbond_create_app_share_record",
+            "rainbond_submit_app_share_info",
+            "rainbond_giveup_app_share",
+            "rainbond_delete_app_share_record",
+            "rainbond_create_app_from_snapshot_version",
+            "rainbond_create_gateway_rules",
+            "rainbond_build_helm_app",
+            "rainbond_close_apps",
+            "rainbond_copy_app",
+            "rainbond_delete_app",
+            "rainbond_delete_app_version_snapshot",
+            "rainbond_delete_app_version_rollback_record",
+            "rainbond_execute_app_upgrade_record",
+            "rainbond_deploy_app_upgrade_record",
+            "rainbond_rollback_app_upgrade_record",
+            "rainbond_rollback_app_version_snapshot",
+            "rainbond_start_app_share_event",
+            "rainbond_complete_app_share",
+            "rainbond_install_app_model",
+            "rainbond_install_app_by_market",
+            "rainbond_upgrade_app",
+        ]);
+        const allowedTeamToolNames = new Set(["rainbond_create_app"]);
         return filterMutableMcpTools(tools).filter((tool) => {
             const policy = getMutableToolPolicy(tool.name);
-            return !!policy && policy.scope === "enterprise";
+            if (!policy) {
+                return false;
+            }
+            return (policy.scope === "enterprise" ||
+                allowedAppToolNames.has(tool.name) ||
+                allowedTeamToolNames.has(tool.name));
         });
     }
     serializeMcpToolResult(output) {

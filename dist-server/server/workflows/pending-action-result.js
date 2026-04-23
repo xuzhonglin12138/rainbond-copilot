@@ -143,6 +143,18 @@ export function buildPendingWorkflowActionCompletion(pendingAction, output) {
             }
             break;
         }
+        case "rainbond_rollback_app_version_snapshot": {
+            const version = actionResult?.rollback_record?.version ||
+                actionResult?.version_id ||
+                pendingAction.arguments.version_id;
+            summary = version
+                ? `已发起回滚到快照版本 ${String(version)}。`
+                : "已发起快照回滚操作。";
+            if (version) {
+                subflowData.snapshotVersion = String(version);
+            }
+            break;
+        }
         case "rainbond_operate_app": {
             const action = actionResult?.action ||
                 pendingAction.arguments.action ||

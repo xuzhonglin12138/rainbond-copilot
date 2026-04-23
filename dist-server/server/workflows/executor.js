@@ -186,6 +186,8 @@ export class WorkflowExecutor {
     constructor(deps) {
         this.deps = deps;
         this.registry = deps.workflowRegistry || createWorkflowRegistry();
+        this.enableRainbondAppAssistantWorkflow =
+            deps.enableRainbondAppAssistantWorkflow === true;
     }
     async execute(params) {
         const session = await this.deps.sessionStore.getById(params.sessionId, params.actor.tenantId);
@@ -195,6 +197,9 @@ export class WorkflowExecutor {
         if (session.pendingWorkflowAction &&
             isContinueWorkflowActionPrompt(params.message)) {
             return this.executePendingWorkflowAction(params, session);
+        }
+        if (!this.enableRainbondAppAssistantWorkflow) {
+            return false;
         }
         if (!isAppAssistantPrompt(params.message)) {
             return false;
