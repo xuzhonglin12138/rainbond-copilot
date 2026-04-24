@@ -354,5 +354,38 @@
     "status": "completed",
     "startedAt": "2026-04-24T07:54:03.747Z",
     "finishedAt": "2026-04-24T07:54:35.806Z"
+  },
+  {
+    "runId": "run_1777019657402_1",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "messageText": "查看当前组件的信息",
+    "status": "pending",
+    "startedAt": "2026-04-24T08:34:17.402Z"
+  },
+  {
+    "runId": "run_1777020127276_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "messageText": "帮我添加一个环境变量CC=yy然后创建快照，最后关闭应用",
+    "status": "running",
+    "startedAt": "2026-04-24T08:42:07.276Z"
+  },
+  {
+    "runId": "run_1777020225679_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "messageText": "重新启动这个服务",
+    "status": "running",
+    "startedAt": "2026-04-24T08:43:45.679Z"
+  },
+  {
+    "runId": "run_1777020291152_7",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "messageText": "回滚快照到1.0.1版本",
+    "status": "completed",
+    "startedAt": "2026-04-24T08:44:51.152Z",
+    "finishedAt": "2026-04-24T08:44:53.486Z"
   }
 ]

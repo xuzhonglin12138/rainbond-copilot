@@ -115,12 +115,10 @@ export class ServerLlmExecutor {
                                 arguments: toolInput,
                                 followUpActions,
                             },
-                            continuation: followUpActions.length === 0
-                                ? {
-                                    iteration,
-                                    messages: messages.map((message) => ({ ...message })),
-                                }
-                                : undefined,
+                            continuation: {
+                                iteration,
+                                messages: messages.map((message) => ({ ...message })),
+                            },
                             description: approvalDecision.reason,
                             risk: approvalDecision.risk,
                         });
@@ -182,12 +180,10 @@ export class ServerLlmExecutor {
                                 arguments: resolvedInput,
                                 followUpActions,
                             },
-                            continuation: followUpActions.length === 0
-                                ? {
-                                    iteration,
-                                    messages: messages.map((message) => ({ ...message })),
-                                }
-                                : undefined,
+                            continuation: {
+                                iteration,
+                                messages: messages.map((message) => ({ ...message })),
+                            },
                             description: approvalDecision.reason,
                             risk: approvalDecision.risk,
                             scope: approvalDecision.scope,

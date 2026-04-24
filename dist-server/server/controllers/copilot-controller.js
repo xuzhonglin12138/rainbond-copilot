@@ -542,6 +542,25 @@ export function createCopilotController(deps = {}) {
                 name: pendingAction.toolName,
                 status: output.isError ? "error" : "success",
             });
+            const nextPendingLlmContinuation = currentSession.pendingLlmContinuation && pendingAction.toolCallId
+                ? {
+                    iteration: currentSession.pendingLlmContinuation.iteration,
+                    messages: [
+                        ...currentSession.pendingLlmContinuation.messages.map((message) => ({
+                            ...message,
+                        })),
+                        {
+                            role: "tool",
+                            content: serializeToolResultForContinuation({
+                                pendingAction,
+                                output,
+                            }),
+                            name: pendingAction.toolName,
+                            tool_call_id: pendingAction.toolCallId,
+                        },
+                    ],
+                }
+                : currentSession.pendingLlmContinuation;
             const nextPendingAction = pendingAction.followUpActions?.[0]
                 ? {
                     ...pendingAction.followUpActions[0],
@@ -554,7 +573,7 @@ export function createCopilotController(deps = {}) {
                 await sessionStore.update({
                     ...currentSession,
                     pendingWorkflowAction: nextPendingAction,
-                    pendingLlmContinuation: undefined,
+                    pendingLlmContinuation: nextPendingLlmContinuation,
                 });
                 await eventPublisher.publish({
                     type: "chat.message",
@@ -588,22 +607,8 @@ export function createCopilotController(deps = {}) {
                 return;
             }
             if (!nextPendingAction) {
-                if (currentSession.pendingLlmContinuation &&
+                if (nextPendingLlmContinuation &&
                     pendingAction.toolCallId) {
-                    const continuationMessages = [
-                        ...currentSession.pendingLlmContinuation.messages.map((message) => ({
-                            ...message,
-                        })),
-                        {
-                            role: "tool",
-                            content: serializeToolResultForContinuation({
-                                pendingAction,
-                                output,
-                            }),
-                            name: pendingAction.toolName,
-                            tool_call_id: pendingAction.toolCallId,
-                        },
-                    ];
                     await sessionStore.update({
                         ...currentSession,
                         pendingWorkflowAction: undefined,
@@ -620,8 +625,8 @@ export function createCopilotController(deps = {}) {
                         message: currentRun.messageText,
                         sessionContext: currentSession.context,
                         continuation: {
-                            iteration: currentSession.pendingLlmContinuation.iteration,
-                            messages: continuationMessages,
+                            iteration: nextPendingLlmContinuation.iteration,
+                            messages: nextPendingLlmContinuation.messages,
                         },
                     });
                     if (handledByLlm) {
@@ -683,7 +688,7 @@ export function createCopilotController(deps = {}) {
             currentSession = {
                 ...currentSession,
                 pendingWorkflowAction: nextPendingAction,
-                pendingLlmContinuation: undefined,
+                pendingLlmContinuation: nextPendingLlmContinuation,
             };
             pendingAction = nextPendingAction;
         }

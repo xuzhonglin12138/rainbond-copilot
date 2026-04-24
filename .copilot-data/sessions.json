@@ -742,19 +742,19 @@
       "region_name": "rainbond",
       "app_id": "134",
       "app_name": "134",
-      "component_id": "",
-      "component_source": "",
+      "component_id": "gr71871f",
+      "component_source": "query",
       "page": "/team/default/region/rainbond/apps/134/overview",
       "resource": {
-        "type": "app",
-        "id": "134",
-        "name": "134"
+        "type": "component",
+        "id": "gr71871f",
+        "name": "gr71871f"
       }
     },
-    "contextSignature": "default|rainbond|134||candidate",
+    "contextSignature": "default|rainbond|134|gr71871f|candidate",
     "status": "active",
     "createdAt": "2026-04-24T07:54:03.591Z",
-    "updatedAt": "2026-04-24T07:54:03.748Z",
-    "latestRunId": "run_1777017243747_2"
+    "updatedAt": "2026-04-24T08:44:51.154Z",
+    "latestRunId": "run_1777020291152_7"
   }
 ]

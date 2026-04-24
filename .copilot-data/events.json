@@ -33137,5 +33137,2842 @@
       }
     },
     "createdAt": "2026-04-24T07:54:35.832Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 1,
+      "timestamp": "2026-04-24T08:34:17.405Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-24T08:34:17.405Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 2,
+      "timestamp": "2026-04-24T08:34:29.076Z",
+      "data": {
+        "tool_name": "rainbond_get_component_summary",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:34:29.076Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 3,
+      "timestamp": "2026-04-24T08:34:29.264Z",
+      "data": {
+        "tool_name": "rainbond_get_component_summary",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"team_name\": \"default\", \"region_name\": \"rainbond\", \"app_id\": 134, \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"service\": {\"ID\": 297, \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_key\": \"application\", \"service_alias\": \"gr71871f\", \"service_cname\": \"rainbond-copilot-dev\", \"service_region\": \"rainbond\", \"desc\": \"application info\", \"category\": \"application\", \"service_port\": 0, \"is_web_service\": false, \"version\": \"latest-amd64\", \"update_version\": 1, \"image\": \"\", \"cmd\": \"\", \"min_node\": 1, \"min_cpu\": 500, \"container_gpu\": 0, \"min_memory\": 512, \"setting\": \"\", \"extend_method\": \"stateless_multiple\", \"env\": \"\", \"inner_port\": 5000, \"volume_mount_path\": \"\", \"host_path\": \"\", \"deploy_version\": \"\", \"code_from\": \"\", \"git_url\": \"https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git\", \"create_time\": \"2026-04-24 14:38:54\", \"git_project_id\": 0, \"is_code_upload\": false, \"code_version\": \"main-sse\", \"service_type\": \"application\", \"creater\": 1, \"language\": \"Node.js\", \"build_strategy\": \"cnb\", \"protocol\": \"\", \"total_memory\": 128, \"is_service\": false, \"namespace\": \"goodrain\", \"volume_type\": \"shared\", \"port_type\": \"multi_outer\", \"service_origin\": \"assistant\", \"tenant_service_group_id\": 0, \"expired_time\": null, \"open_webhooks\": false, \"service_source\": \"source_code\", \"create_status\": \"complete\", \"update_time\": \"2026-04-24 14:38:54\", \"check_uuid\": \"2142b072-53d2-4669-990b-7d9951177989\", \"check_event_id\": \"2cd7f61711e5419ab6e54785ec0e7e54\", \"docker_cmd\": null, \"secret\": null, \"server_type\": \"git\", \"is_upgrate\": false, \"build_upgrade\": true, \"service_name\": \"\", \"oauth_service_id\": null, \"git_full_name\": null, \"k8s_component_name\": \"rainbondcopilot\", \"job_strategy\": null, \"arch\": \"amd64\", \"dockerfile\": \"\", \"status\": \"running\", \"access_infos\": [\"http://gr71871f-8080-default.14.103.233.199.nip.io\"]}, \"status\": {\"status\": \"running\"}, \"resource\": {\"memory\": 512, \"disk\": 0, \"cpu\": 500}, \"ports\": {\"items\": [{\"ID\": 244, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 8080, \"mapping_port\": 8080, \"lb_mapping_port\": 0, \"protocol\": \"http\", \"port_alias\": \"GR71871F8080\", \"is_inner_service\": true, \"is_outer_service\": true, \"k8s_service_name\": \"rainbondcopilot\", \"name\": null}], \"total\": 1}, \"envs\": {\"items\": [{\"ID\": 5562, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 8080, \"name\": \"连接地址\", \"attr_name\": \"GR71871F8080_HOST\", \"attr_value\": \"rainbondcopilot\", \"is_change\": false, \"scope\": \"outer\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5563, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 8080, \"name\": \"端口\", \"attr_name\": \"GR71871F8080_PORT\", \"attr_value\": \"8080\", \"is_change\": false, \"scope\": \"outer\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5580, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_LOCK_FILE\", \"attr_value\": \"package-lock.json\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5581, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5582, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_VERSION\", \"attr_value\": \"5.3.4\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5583, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIMES\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5584, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5585, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_BUILD_CMD\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5586, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5587, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_DISPLAY_NAME\", \"attr_value\": \"Vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5588, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIME_TYPE\", \"attr_value\": \"static\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5589, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_NODE_VERSION_SOURCE\", \"attr_value\": \"default\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5590, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5591, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5592, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_BUILD_SCRIPT\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5593, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_VERSION\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5594, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5595, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_SOURCE\", \"attr_value\": \"global\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5596, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5597, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_YARNRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5598, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_ENV\", \"attr_value\": \"production\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5599, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5600, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"\", \"attr_name\": \"VITE_OPENAI_API_KEY\", \"attr_value\": \"sk-06f71534fd5941318ca278135abeee9b\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5601, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"\", \"attr_name\": \"VITE_OPENAI_BASE_URL\", \"attr_value\": \"https://api.deepseek.com/v1\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5602, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"\", \"attr_name\": \"VITE_OPENAI_MODEL\", \"attr_value\": \"deepseek-reasoner\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 6474, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"CC\", \"attr_name\": \"CC\", \"attr_value\": \"ff\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:54:43\"}], \"total\": 26}, \"build_envs\": {\"items\": [{\"ID\": 5580, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_LOCK_FILE\", \"attr_value\": \"package-lock.json\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5581, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5582, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_VERSION\", \"attr_value\": \"5.3.4\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5583, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIMES\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5584, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5585, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_BUILD_CMD\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5586, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5587, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_DISPLAY_NAME\", \"attr_value\": \"Vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5588, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIME_TYPE\", \"attr_value\": \"static\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5589, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_NODE_VERSION_SOURCE\", \"attr_value\": \"default\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5590, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5591, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5592, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_BUILD_SCRIPT\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5593, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_VERSION\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5594, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5595, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_SOURCE\", \"attr_value\": \"global\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5596, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5597, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_YARNRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5598, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_ENV\", \"attr_value\": \"production\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5599, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}], \"total\": 20}, \"volumes\": {\"items\": [], \"total\": 0}, \"mnts\": {\"items\": [], \"total\": 0}, \"probe\": null, \"autoscaler_rules\": {\"items\": [], \"total\": 0}, \"recent_events\": {\"items\": [{\"create_time\": \"2026-04-24T15:54:36+08:00\", \"event_id\": \"5638fe060ffb4aea9c671db71b25be1c\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"{\\\"env_name\\\": \\\"CC\\\", \\\"env_value\\\": \\\"ff\\\", \\\"scope\\\": \\\"inner\\\", \\\"operator\\\": \\\"admin\\\", \\\"tenant_id\\\": \\\"c724cc2ead764c5c9700d2589a5f6675\\\"}\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T15:54:36+08:00\", \"end_time\": \"2026-04-24T15:54:36+08:00\", \"opt_type\": \"update-service-env\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T15:54:27+08:00\", \"event_id\": \"5bf24018ff504ef3b86fa839c2a7b480\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T15:54:27+08:00\", \"end_time\": \"2026-04-24T15:54:27+08:00\", \"opt_type\": \"start-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"Start service gr71871f success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T15:41:52+08:00\", \"event_id\": \"cccb1b0c99ed43eb88a6b44a25b80515\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T15:41:52+08:00\", \"end_time\": \"2026-04-24T15:41:56+08:00\", \"opt_type\": \"stop-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"stop service gr71871f success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T14:54:50+08:00\", \"event_id\": \"085110e3035e40879253d3f605612e68\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T14:54:50+08:00\", \"end_time\": \"2026-04-24T14:54:50+08:00\", \"opt_type\": \"start-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"Start service gr71871f success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T14:54:43+08:00\", \"event_id\": \"a3e634e671d24b31993c89f4c4361ccf\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"{\\\"container_port\\\": 0, \\\"tenant_id\\\": \\\"c724cc2ead764c5c9700d2589a5f6675\\\", \\\"service_id\\\": \\\"b95d57325b9f28721f53ae0f1171871f\\\", \\\"name\\\": \\\"\\\", \\\"attr_name\\\": \\\"CC\\\", \\\"attr_value\\\": \\\"ff\\\", \\\"is_change\\\": true, \\\"scope\\\": \\\"inner\\\", \\\"env_name\\\": \\\"CC\\\", \\\"env_value\\\": \\\"ff\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\", \\\"operator\\\": \\\"admin\\\"}\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T14:54:43+08:00\", \"end_time\": \"2026-04-24T14:54:43+08:00\", \"opt_type\": \"add-service-env\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"\", \"reason\": \"\"}], \"total\": 26, \"page\": 1, \"page_size\": 5, \"has_next\": true}}"
+            }
+          ],
+          "structuredContent": {
+            "team_name": "default",
+            "region_name": "rainbond",
+            "app_id": 134,
+            "service_id": "b95d57325b9f28721f53ae0f1171871f",
+            "service": {
+              "ID": 297,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+              "service_key": "application",
+              "service_alias": "gr71871f",
+              "service_cname": "rainbond-copilot-dev",
+              "service_region": "rainbond",
+              "desc": "application info",
+              "category": "application",
+              "service_port": 0,
+              "is_web_service": false,
+              "version": "latest-amd64",
+              "update_version": 1,
+              "image": "",
+              "cmd": "",
+              "min_node": 1,
+              "min_cpu": 500,
+              "container_gpu": 0,
+              "min_memory": 512,
+              "setting": "",
+              "extend_method": "stateless_multiple",
+              "env": "",
+              "inner_port": 5000,
+              "volume_mount_path": "",
+              "host_path": "",
+              "deploy_version": "",
+              "code_from": "",
+              "git_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git",
+              "create_time": "2026-04-24 14:38:54",
+              "git_project_id": 0,
+              "is_code_upload": false,
+              "code_version": "main-sse",
+              "service_type": "application",
+              "creater": 1,
+              "language": "Node.js",
+              "build_strategy": "cnb",
+              "protocol": "",
+              "total_memory": 128,
+              "is_service": false,
+              "namespace": "goodrain",
+              "volume_type": "shared",
+              "port_type": "multi_outer",
+              "service_origin": "assistant",
+              "tenant_service_group_id": 0,
+              "expired_time": null,
+              "open_webhooks": false,
+              "service_source": "source_code",
+              "create_status": "complete",
+              "update_time": "2026-04-24 14:38:54",
+              "check_uuid": "2142b072-53d2-4669-990b-7d9951177989",
+              "check_event_id": "2cd7f61711e5419ab6e54785ec0e7e54",
+              "docker_cmd": null,
+              "secret": null,
+              "server_type": "git",
+              "is_upgrate": false,
+              "build_upgrade": true,
+              "service_name": "",
+              "oauth_service_id": null,
+              "git_full_name": null,
+              "k8s_component_name": "rainbondcopilot",
+              "job_strategy": null,
+              "arch": "amd64",
+              "dockerfile": "",
+              "status": "running",
+              "access_infos": [
+                "http://gr71871f-8080-default.14.103.233.199.nip.io"
+              ]
+            },
+            "status": {
+              "status": "running"
+            },
+            "resource": {
+              "memory": 512,
+              "disk": 0,
+              "cpu": 500
+            },
+            "ports": {
+              "items": [
+                {
+                  "ID": 244,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 8080,
+                  "mapping_port": 8080,
+                  "lb_mapping_port": 0,
+                  "protocol": "http",
+                  "port_alias": "GR71871F8080",
+                  "is_inner_service": true,
+                  "is_outer_service": true,
+                  "k8s_service_name": "rainbondcopilot",
+                  "name": null
+                }
+              ],
+              "total": 1
+            },
+            "envs": {
+              "items": [
+                {
+                  "ID": 5562,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 8080,
+                  "name": "连接地址",
+                  "attr_name": "GR71871F8080_HOST",
+                  "attr_value": "rainbondcopilot",
+                  "is_change": false,
+                  "scope": "outer",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5563,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 8080,
+                  "name": "端口",
+                  "attr_name": "GR71871F8080_PORT",
+                  "attr_value": "8080",
+                  "is_change": false,
+                  "scope": "outer",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5580,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_LOCK_FILE",
+                  "attr_value": "package-lock.json",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5581,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5582,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_VERSION",
+                  "attr_value": "5.3.4",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5583,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIMES",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5584,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5585,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_BUILD_CMD",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5586,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5587,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_DISPLAY_NAME",
+                  "attr_value": "Vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5588,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIME_TYPE",
+                  "attr_value": "static",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5589,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_NODE_VERSION_SOURCE",
+                  "attr_value": "default",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5590,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5591,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5592,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_BUILD_SCRIPT",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5593,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_VERSION",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5594,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5595,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_SOURCE",
+                  "attr_value": "global",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5596,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5597,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_YARNRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5598,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_ENV",
+                  "attr_value": "production",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5599,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5600,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "",
+                  "attr_name": "VITE_OPENAI_API_KEY",
+                  "attr_value": "sk-06f71534fd5941318ca278135abeee9b",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5601,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "",
+                  "attr_name": "VITE_OPENAI_BASE_URL",
+                  "attr_value": "https://api.deepseek.com/v1",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5602,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "",
+                  "attr_name": "VITE_OPENAI_MODEL",
+                  "attr_value": "deepseek-reasoner",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 6474,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "CC",
+                  "attr_name": "CC",
+                  "attr_value": "ff",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:54:43"
+                }
+              ],
+              "total": 26
+            },
+            "build_envs": {
+              "items": [
+                {
+                  "ID": 5580,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_LOCK_FILE",
+                  "attr_value": "package-lock.json",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5581,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5582,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_VERSION",
+                  "attr_value": "5.3.4",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5583,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIMES",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5584,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5585,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_BUILD_CMD",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5586,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5587,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_DISPLAY_NAME",
+                  "attr_value": "Vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5588,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIME_TYPE",
+                  "attr_value": "static",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5589,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_NODE_VERSION_SOURCE",
+                  "attr_value": "default",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5590,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5591,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5592,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_BUILD_SCRIPT",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5593,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_VERSION",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5594,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5595,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_SOURCE",
+                  "attr_value": "global",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5596,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5597,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_YARNRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5598,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_ENV",
+                  "attr_value": "production",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5599,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                }
+              ],
+              "total": 20
+            },
+            "volumes": {
+              "items": [],
+              "total": 0
+            },
+            "mnts": {
+              "items": [],
+              "total": 0
+            },
+            "probe": null,
+            "autoscaler_rules": {
+              "items": [],
+              "total": 0
+            },
+            "recent_events": {
+              "items": [
+                {
+                  "create_time": "2026-04-24T15:54:36+08:00",
+                  "event_id": "5638fe060ffb4aea9c671db71b25be1c",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "{\"env_name\": \"CC\", \"env_value\": \"ff\", \"scope\": \"inner\", \"operator\": \"admin\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\"}",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T15:54:36+08:00",
+                  "end_time": "2026-04-24T15:54:36+08:00",
+                  "opt_type": "update-service-env",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T15:54:27+08:00",
+                  "event_id": "5bf24018ff504ef3b86fa839c2a7b480",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T15:54:27+08:00",
+                  "end_time": "2026-04-24T15:54:27+08:00",
+                  "opt_type": "start-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "Start service gr71871f success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T15:41:52+08:00",
+                  "event_id": "cccb1b0c99ed43eb88a6b44a25b80515",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T15:41:52+08:00",
+                  "end_time": "2026-04-24T15:41:56+08:00",
+                  "opt_type": "stop-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "stop service gr71871f success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T14:54:50+08:00",
+                  "event_id": "085110e3035e40879253d3f605612e68",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T14:54:50+08:00",
+                  "end_time": "2026-04-24T14:54:50+08:00",
+                  "opt_type": "start-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "Start service gr71871f success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T14:54:43+08:00",
+                  "event_id": "a3e634e671d24b31993c89f4c4361ccf",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "{\"container_port\": 0, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"name\": \"\", \"attr_name\": \"CC\", \"attr_value\": \"ff\", \"is_change\": true, \"scope\": \"inner\", \"env_name\": \"CC\", \"env_value\": \"ff\", \"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"operator\": \"admin\"}",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T14:54:43+08:00",
+                  "end_time": "2026-04-24T14:54:43+08:00",
+                  "opt_type": "add-service-env",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "",
+                  "reason": ""
+                }
+              ],
+              "total": 26,
+              "page": 1,
+              "page_size": 5,
+              "has_next": true
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:34:29.264Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 4,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 4,
+      "timestamp": "2026-04-24T08:34:29.334Z",
+      "data": {
+        "tool_name": "rainbond_get_component_detail",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:34:29.334Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 5,
+      "timestamp": "2026-04-24T08:34:29.430Z",
+      "data": {
+        "tool_name": "rainbond_get_component_detail",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ID\": 297, \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_key\": \"application\", \"service_alias\": \"gr71871f\", \"service_cname\": \"rainbond-copilot-dev\", \"service_region\": \"rainbond\", \"desc\": \"application info\", \"category\": \"application\", \"service_port\": 0, \"is_web_service\": false, \"version\": \"latest-amd64\", \"update_version\": 1, \"image\": \"\", \"cmd\": \"\", \"min_node\": 1, \"min_cpu\": 500, \"container_gpu\": 0, \"min_memory\": 512, \"setting\": \"\", \"extend_method\": \"stateless_multiple\", \"env\": \"\", \"inner_port\": 5000, \"volume_mount_path\": \"\", \"host_path\": \"\", \"deploy_version\": \"\", \"code_from\": \"\", \"git_url\": \"https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git\", \"create_time\": \"2026-04-24 14:38:54\", \"git_project_id\": 0, \"is_code_upload\": false, \"code_version\": \"main-sse\", \"service_type\": \"application\", \"creater\": 1, \"language\": \"Node.js\", \"build_strategy\": \"cnb\", \"protocol\": \"\", \"total_memory\": 128, \"is_service\": false, \"namespace\": \"goodrain\", \"volume_type\": \"shared\", \"port_type\": \"multi_outer\", \"service_origin\": \"assistant\", \"tenant_service_group_id\": 0, \"expired_time\": null, \"open_webhooks\": false, \"service_source\": \"source_code\", \"create_status\": \"complete\", \"update_time\": \"2026-04-24 14:38:54\", \"check_uuid\": \"2142b072-53d2-4669-990b-7d9951177989\", \"check_event_id\": \"2cd7f61711e5419ab6e54785ec0e7e54\", \"docker_cmd\": null, \"secret\": null, \"server_type\": \"git\", \"is_upgrate\": false, \"build_upgrade\": true, \"service_name\": \"\", \"oauth_service_id\": null, \"git_full_name\": null, \"k8s_component_name\": \"rainbondcopilot\", \"job_strategy\": null, \"arch\": \"amd64\", \"dockerfile\": \"\", \"status\": \"running\", \"access_infos\": [\"http://gr71871f-8080-default.14.103.233.199.nip.io\"]}"
+            }
+          ],
+          "structuredContent": {
+            "ID": 297,
+            "service_id": "b95d57325b9f28721f53ae0f1171871f",
+            "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+            "service_key": "application",
+            "service_alias": "gr71871f",
+            "service_cname": "rainbond-copilot-dev",
+            "service_region": "rainbond",
+            "desc": "application info",
+            "category": "application",
+            "service_port": 0,
+            "is_web_service": false,
+            "version": "latest-amd64",
+            "update_version": 1,
+            "image": "",
+            "cmd": "",
+            "min_node": 1,
+            "min_cpu": 500,
+            "container_gpu": 0,
+            "min_memory": 512,
+            "setting": "",
+            "extend_method": "stateless_multiple",
+            "env": "",
+            "inner_port": 5000,
+            "volume_mount_path": "",
+            "host_path": "",
+            "deploy_version": "",
+            "code_from": "",
+            "git_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git",
+            "create_time": "2026-04-24 14:38:54",
+            "git_project_id": 0,
+            "is_code_upload": false,
+            "code_version": "main-sse",
+            "service_type": "application",
+            "creater": 1,
+            "language": "Node.js",
+            "build_strategy": "cnb",
+            "protocol": "",
+            "total_memory": 128,
+            "is_service": false,
+            "namespace": "goodrain",
+            "volume_type": "shared",
+            "port_type": "multi_outer",
+            "service_origin": "assistant",
+            "tenant_service_group_id": 0,
+            "expired_time": null,
+            "open_webhooks": false,
+            "service_source": "source_code",
+            "create_status": "complete",
+            "update_time": "2026-04-24 14:38:54",
+            "check_uuid": "2142b072-53d2-4669-990b-7d9951177989",
+            "check_event_id": "2cd7f61711e5419ab6e54785ec0e7e54",
+            "docker_cmd": null,
+            "secret": null,
+            "server_type": "git",
+            "is_upgrate": false,
+            "build_upgrade": true,
+            "service_name": "",
+            "oauth_service_id": null,
+            "git_full_name": null,
+            "k8s_component_name": "rainbondcopilot",
+            "job_strategy": null,
+            "arch": "amd64",
+            "dockerfile": "",
+            "status": "running",
+            "access_infos": [
+              "http://gr71871f-8080-default.14.103.233.199.nip.io"
+            ]
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:34:29.430Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 6,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 6,
+      "timestamp": "2026-04-24T08:35:15.542Z",
+      "data": {
+        "role": "assistant",
+        "content": "## 📋 组件信息概览：rainbond-copilot-dev\n\n---\n\n### 🏷️ 基本信息\n\n| 项目 | 详情 |\n|------|------|\n| **组件名称** | rainbond-copilot-dev |\n| **组件别名** | gr71871f |\n| **K8s 组件名** | rainbondcopilot |\n| **所属应用** | app_id: 134 |\n| **团队/集群** | default / rainbond |\n| **组件类型** | 无状态服务 (stateless_multiple) |\n| **当前状态** | ✅ **running** (运行中) |\n\n---\n\n### ⚙️ 资源配置\n\n| 资源 | 当前值 |\n|------|--------|\n| **CPU** | 500m (0.5 核) |\n| **内存** | 512 MB |\n| **GPU** | 无 |\n| **实例数** | 1 个 (最少 1) |\n\n---\n\n### 🔧 构建信息\n\n| 项目 | 详情 |\n|------|------|\n| **构建来源** | 源码构建 (Git) |\n| **源码仓库** | `https://github.com/xuzhonglin12138/rainbond-copilot.git`（通过 ghproxy 代理） |\n| **分支** | `main-sse` |\n| **语言/框架** | Node.js + **Vite 5.3.4** |\n| **Node 版本** | 24.13.0 |\n| **包管理工具** | npm |\n| **构建策略** | CNB (Cloud Native Buildpacks) |\n| **构建命令** | `build` |\n| **输出目录** | `dist` |\n| **架构** | amd64 |\n\n---\n\n### 🌐 端口与访问\n\n| 项目 | 详情 |\n|------|------|\n| **容器端口** | 8080 |\n| **对内服务** | ✅ 已开启 |\n| **对外服务** | ✅ 已开启 |\n| **访问地址** | 🔗 [http://gr71871f-8080-default.14.103.233.199.nip.io](http://gr71871f-8080-default.14.103.233.199.nip.io) |\n\n---\n\n### 📝 运行时环境变量 (inner)\n\n| 变量名 | 值 |\n|--------|-----|\n| `VITE_OPENAI_API_KEY` | `sk-06f71534...` |\n| `VITE_OPENAI_BASE_URL` | `https://api.deepseek.com/v1` |\n| `VITE_OPENAI_MODEL` | `deepseek-reasoner` |\n| `CC` | `ff` |\n\n---\n\n### 📦 存储\n\n当前 **无挂载存储卷**，无持久化数据存储。\n\n---\n\n### 📜 最近事件（最新 5 条）\n\n| 时间 | 操作 | 结果 |\n|------|------|------|\n| 2026-04-24 15:54:36 | 更新环境变量 `CC=ff` | ✅ 成功 |\n| 2026-04-24 15:54:27 | 启动服务 | ✅ 成功 |\n| 2026-04-24 15:41:52 | 停止服务 | ✅ 成功 |\n| 2026-04-24 14:54:50 | 启动服务 | ✅ 成功 |\n| 2026-04-24 14:54:43 | 添加环境变量 `CC=ff` | ✅ 成功 |\n\n---\n\n### 📊 总结\n\n该组件是一个 **Node.js + Vite** 构建的前端静态应用（Rainbond Copilot 开发版），运行状态正常。它连接了 DeepSeek API 作为后端 AI 服务，通过对外端口 8080 暴露 HTTP 访问。当前资源配置适中（512MB 内存 / 0.5 核 CPU），运行稳定，最近没有异常事件。\n\n需要我进一步查看运行日志、Pod 状态或进行其他操作吗？\n\n基于本次查询结果：\n当前组件 rainbond-copilot-dev 状态为 running，当前配置内存 512MB。"
+      }
+    },
+    "createdAt": "2026-04-24T08:35:15.542Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777019657402_1",
+    "sequence": 7,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777019657402_1",
+      "sequence": 7,
+      "timestamp": "2026-04-24T08:35:15.567Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-24T08:35:15.567Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 1,
+      "timestamp": "2026-04-24T08:42:07.280Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-24T08:42:07.280Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 2,
+    "eventType": "approval.requested",
+    "payload": {
+      "type": "approval.requested",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 2,
+      "timestamp": "2026-04-24T08:42:34.544Z",
+      "data": {
+        "approval_id": "ap_1777020154526_3",
+        "skill_id": "rainbond_manage_component_envs",
+        "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的环境变量",
+        "risk": "medium",
+        "level_label": "警告",
+        "scope": "component",
+        "scope_label": "组件级"
+      }
+    },
+    "createdAt": "2026-04-24T08:42:34.544Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 3,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 3,
+      "timestamp": "2026-04-24T08:42:34.589Z",
+      "data": {
+        "status": "waiting_approval"
+      }
+    },
+    "createdAt": "2026-04-24T08:42:34.589Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 4,
+    "eventType": "approval.resolved",
+    "payload": {
+      "type": "approval.resolved",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 4,
+      "timestamp": "2026-04-24T08:42:37.453Z",
+      "data": {
+        "approval_id": "ap_1777020154526_3",
+        "status": "approved",
+        "resolved_by": 1,
+        "comment": ""
+      }
+    },
+    "createdAt": "2026-04-24T08:42:37.453Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 5,
+      "timestamp": "2026-04-24T08:42:37.484Z",
+      "data": {
+        "tool_name": "rainbond_manage_component_envs",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "operation": "upsert",
+          "attr_name": "CC",
+          "attr_value": "yy",
+          "name": "CC",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:42:37.484Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 6,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 6,
+      "timestamp": "2026-04-24T08:42:37.689Z",
+      "data": {
+        "tool_name": "rainbond_manage_component_envs",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "operation": "upsert",
+          "attr_name": "CC",
+          "attr_value": "yy",
+          "name": "CC",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"envs\": [{\"note\": \"\", \"name\": \"VITE_OPENAI_API_KEY\", \"value\": \"sk-06f71534fd5941318ca278135abeee9b\", \"is_change\": true, \"scope\": \"inner\"}, {\"note\": \"\", \"name\": \"VITE_OPENAI_BASE_URL\", \"value\": \"https://api.deepseek.com/v1\", \"is_change\": true, \"scope\": \"inner\"}, {\"note\": \"\", \"name\": \"VITE_OPENAI_MODEL\", \"value\": \"deepseek-reasoner\", \"is_change\": true, \"scope\": \"inner\"}, {\"note\": \"CC\", \"name\": \"CC\", \"value\": \"yy\", \"is_change\": true, \"scope\": \"inner\"}], \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\"}"
+            }
+          ],
+          "structuredContent": {
+            "envs": [
+              {
+                "note": "",
+                "name": "VITE_OPENAI_API_KEY",
+                "value": "sk-06f71534fd5941318ca278135abeee9b",
+                "is_change": true,
+                "scope": "inner"
+              },
+              {
+                "note": "",
+                "name": "VITE_OPENAI_BASE_URL",
+                "value": "https://api.deepseek.com/v1",
+                "is_change": true,
+                "scope": "inner"
+              },
+              {
+                "note": "",
+                "name": "VITE_OPENAI_MODEL",
+                "value": "deepseek-reasoner",
+                "is_change": true,
+                "scope": "inner"
+              },
+              {
+                "note": "CC",
+                "name": "CC",
+                "value": "yy",
+                "is_change": true,
+                "scope": "inner"
+              }
+            ],
+            "service_id": "b95d57325b9f28721f53ae0f1171871f"
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:42:37.689Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 7,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 7,
+      "timestamp": "2026-04-24T08:42:44.126Z",
+      "data": {
+        "tool_name": "rainbond_create_app_version_snapshot",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:42:44.126Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 8,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 8,
+      "timestamp": "2026-04-24T08:42:44.366Z",
+      "data": {
+        "tool_name": "rainbond_create_app_version_snapshot",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"app_id\": 134, \"created\": true, \"snapshot\": {\"version_id\": 41, \"version\": \"1.0.3\", \"version_alias\": \"\", \"app_version_info\": \"\", \"create_time\": \"2026-04-24 16:42:46\", \"update_time\": \"2026-04-24 16:42:46\", \"group_id\": 134, \"app_model_id\": \"3e4394dc68c64b2e951e47be4489dfea\", \"template_type\": \"application_version\", \"arch\": \"amd64\", \"diff_summary\": {\"has_changes\": false, \"added_count\": 0, \"removed_count\": 0, \"updated_count\": 0, \"added_components\": [], \"removed_components\": [], \"updated_components\": []}, \"created\": true}}"
+            }
+          ],
+          "structuredContent": {
+            "app_id": 134,
+            "created": true,
+            "snapshot": {
+              "version_id": 41,
+              "version": "1.0.3",
+              "version_alias": "",
+              "app_version_info": "",
+              "create_time": "2026-04-24 16:42:46",
+              "update_time": "2026-04-24 16:42:46",
+              "group_id": 134,
+              "app_model_id": "3e4394dc68c64b2e951e47be4489dfea",
+              "template_type": "application_version",
+              "arch": "amd64",
+              "diff_summary": {
+                "has_changes": false,
+                "added_count": 0,
+                "removed_count": 0,
+                "updated_count": 0,
+                "added_components": [],
+                "removed_components": [],
+                "updated_components": []
+              },
+              "created": true
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:42:44.366Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 9,
+    "eventType": "approval.requested",
+    "payload": {
+      "type": "approval.requested",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 9,
+      "timestamp": "2026-04-24T08:42:51.906Z",
+      "data": {
+        "approval_id": "ap_1777020171892_4",
+        "skill_id": "rainbond_operate_app",
+        "description": "对应用执行 stop 操作",
+        "risk": "high",
+        "level_label": "危险",
+        "scope": "component",
+        "scope_label": "组件级"
+      }
+    },
+    "createdAt": "2026-04-24T08:42:51.906Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 10,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 10,
+      "timestamp": "2026-04-24T08:42:51.937Z",
+      "data": {
+        "status": "waiting_approval"
+      }
+    },
+    "createdAt": "2026-04-24T08:42:51.937Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 11,
+    "eventType": "approval.resolved",
+    "payload": {
+      "type": "approval.resolved",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 11,
+      "timestamp": "2026-04-24T08:42:56.076Z",
+      "data": {
+        "approval_id": "ap_1777020171892_4",
+        "status": "approved",
+        "resolved_by": 1,
+        "comment": ""
+      }
+    },
+    "createdAt": "2026-04-24T08:42:56.076Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 12,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 12,
+      "timestamp": "2026-04-24T08:42:56.109Z",
+      "data": {
+        "tool_name": "rainbond_operate_app",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "action": "stop",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:42:56.109Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 13,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 13,
+      "timestamp": "2026-04-24T08:42:56.315Z",
+      "data": {
+        "tool_name": "rainbond_operate_app",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "action": "stop",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"app_id\": 134, \"action\": \"stop\", \"service_ids\": [\"b95d57325b9f28721f53ae0f1171871f\"], \"result\": [{\"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"operation\": \"stop\", \"event_id\": \"9948e977b50d4c248c3c2fb69c90cd2f\", \"status\": \"success\", \"err_message\": \"\", \"deploy_version\": \"\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "app_id": 134,
+            "action": "stop",
+            "service_ids": [
+              "b95d57325b9f28721f53ae0f1171871f"
+            ],
+            "result": [
+              {
+                "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                "operation": "stop",
+                "event_id": "9948e977b50d4c248c3c2fb69c90cd2f",
+                "status": "success",
+                "err_message": "",
+                "deploy_version": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:42:56.315Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 14,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 14,
+      "timestamp": "2026-04-24T08:43:05.023Z",
+      "data": {
+        "role": "assistant",
+        "content": "三步操作已全部完成，总结如下：\n\n| 步骤 | 操作 | 结果 |\n|------|------|------|\n| 1️⃣ 添加环境变量 | 为组件添加 `CC=yy` | ✅ 成功，已加入环境变量列表 |\n| 2️⃣ 创建快照 | 应用快照版本 `1.0.3` | ✅ 成功，version_id=41 |\n| 3️⃣ 关闭应用 | 停止应用下所有组件 | ✅ 成功，组件已停止运行 |\n\n组件 `b95d57325b9f28721f53ae0f1171871f` 目前已处于停止状态。如需重新启动，随时告知。"
+      }
+    },
+    "createdAt": "2026-04-24T08:43:05.023Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020127276_2",
+    "sequence": 15,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020127276_2",
+      "sequence": 15,
+      "timestamp": "2026-04-24T08:43:05.045Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-24T08:43:05.045Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 1,
+      "timestamp": "2026-04-24T08:43:45.682Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-24T08:43:45.682Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 2,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 2,
+      "timestamp": "2026-04-24T08:44:06.039Z",
+      "data": {
+        "tool_name": "rainbond_get_component_summary",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:06.039Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 3,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 3,
+      "timestamp": "2026-04-24T08:44:06.220Z",
+      "data": {
+        "tool_name": "rainbond_get_component_summary",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"team_name\": \"default\", \"region_name\": \"rainbond\", \"app_id\": 134, \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"service\": {\"ID\": 297, \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_key\": \"application\", \"service_alias\": \"gr71871f\", \"service_cname\": \"rainbond-copilot-dev\", \"service_region\": \"rainbond\", \"desc\": \"application info\", \"category\": \"application\", \"service_port\": 0, \"is_web_service\": false, \"version\": \"latest-amd64\", \"update_version\": 1, \"image\": \"\", \"cmd\": \"\", \"min_node\": 1, \"min_cpu\": 500, \"container_gpu\": 0, \"min_memory\": 512, \"setting\": \"\", \"extend_method\": \"stateless_multiple\", \"env\": \"\", \"inner_port\": 5000, \"volume_mount_path\": \"\", \"host_path\": \"\", \"deploy_version\": \"\", \"code_from\": \"\", \"git_url\": \"https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git\", \"create_time\": \"2026-04-24 14:38:54\", \"git_project_id\": 0, \"is_code_upload\": false, \"code_version\": \"main-sse\", \"service_type\": \"application\", \"creater\": 1, \"language\": \"Node.js\", \"build_strategy\": \"cnb\", \"protocol\": \"\", \"total_memory\": 128, \"is_service\": false, \"namespace\": \"goodrain\", \"volume_type\": \"shared\", \"port_type\": \"multi_outer\", \"service_origin\": \"assistant\", \"tenant_service_group_id\": 0, \"expired_time\": null, \"open_webhooks\": false, \"service_source\": \"source_code\", \"create_status\": \"complete\", \"update_time\": \"2026-04-24 14:38:54\", \"check_uuid\": \"2142b072-53d2-4669-990b-7d9951177989\", \"check_event_id\": \"2cd7f61711e5419ab6e54785ec0e7e54\", \"docker_cmd\": null, \"secret\": null, \"server_type\": \"git\", \"is_upgrate\": false, \"build_upgrade\": true, \"service_name\": \"\", \"oauth_service_id\": null, \"git_full_name\": null, \"k8s_component_name\": \"rainbondcopilot\", \"job_strategy\": null, \"arch\": \"amd64\", \"dockerfile\": \"\", \"status\": \"closed\", \"access_infos\": [\"http://gr71871f-8080-default.14.103.233.199.nip.io\"]}, \"status\": {\"status\": \"closed\"}, \"resource\": {\"memory\": 0, \"disk\": 0, \"cpu\": 0}, \"ports\": {\"items\": [{\"ID\": 244, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 8080, \"mapping_port\": 8080, \"lb_mapping_port\": 0, \"protocol\": \"http\", \"port_alias\": \"GR71871F8080\", \"is_inner_service\": true, \"is_outer_service\": true, \"k8s_service_name\": \"rainbondcopilot\", \"name\": null}], \"total\": 1}, \"envs\": {\"items\": [{\"ID\": 5562, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 8080, \"name\": \"连接地址\", \"attr_name\": \"GR71871F8080_HOST\", \"attr_value\": \"rainbondcopilot\", \"is_change\": false, \"scope\": \"outer\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5563, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 8080, \"name\": \"端口\", \"attr_name\": \"GR71871F8080_PORT\", \"attr_value\": \"8080\", \"is_change\": false, \"scope\": \"outer\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5580, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_LOCK_FILE\", \"attr_value\": \"package-lock.json\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5581, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5582, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_VERSION\", \"attr_value\": \"5.3.4\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5583, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIMES\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5584, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5585, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_BUILD_CMD\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5586, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5587, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_DISPLAY_NAME\", \"attr_value\": \"Vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5588, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIME_TYPE\", \"attr_value\": \"static\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5589, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_NODE_VERSION_SOURCE\", \"attr_value\": \"default\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5590, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5591, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5592, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_BUILD_SCRIPT\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5593, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_VERSION\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5594, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5595, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_SOURCE\", \"attr_value\": \"global\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5596, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5597, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_YARNRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5598, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_ENV\", \"attr_value\": \"production\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5599, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5600, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"\", \"attr_name\": \"VITE_OPENAI_API_KEY\", \"attr_value\": \"sk-06f71534fd5941318ca278135abeee9b\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5601, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"\", \"attr_name\": \"VITE_OPENAI_BASE_URL\", \"attr_value\": \"https://api.deepseek.com/v1\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5602, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"\", \"attr_name\": \"VITE_OPENAI_MODEL\", \"attr_value\": \"deepseek-reasoner\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 6474, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"CC\", \"attr_name\": \"CC\", \"attr_value\": \"yy\", \"is_change\": true, \"scope\": \"inner\", \"create_time\": \"2026-04-24 14:54:43\"}], \"total\": 26}, \"build_envs\": {\"items\": [{\"ID\": 5580, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_LOCK_FILE\", \"attr_value\": \"package-lock.json\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5581, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5582, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_VERSION\", \"attr_value\": \"5.3.4\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5583, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIMES\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5584, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5585, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_BUILD_CMD\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5586, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5587, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_FRAMEWORK_DISPLAY_NAME\", \"attr_value\": \"Vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5588, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_RUNTIME_TYPE\", \"attr_value\": \"static\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5589, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_NODE_VERSION_SOURCE\", \"attr_value\": \"default\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5590, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_FRAMEWORK\", \"attr_value\": \"vite\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5591, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_OUTPUT_DIR\", \"attr_value\": \"dist\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5592, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_BUILD_SCRIPT\", \"attr_value\": \"build\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5593, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_VERSION\", \"attr_value\": \"24.13.0\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5594, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_PACKAGE_TOOL\", \"attr_value\": \"npm\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5595, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_SOURCE\", \"attr_value\": \"global\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5596, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5597, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"BUILD_HAS_YARNRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5598, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_NODE_ENV\", \"attr_value\": \"production\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}, {\"ID\": 5599, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"container_port\": 0, \"name\": \"构建运行时环境变量\", \"attr_name\": \"CNB_MIRROR_NPMRC\", \"attr_value\": \"\", \"is_change\": true, \"scope\": \"build\", \"create_time\": \"2026-04-24 14:38:54\"}], \"total\": 20}, \"volumes\": {\"items\": [], \"total\": 0}, \"mnts\": {\"items\": [], \"total\": 0}, \"probe\": null, \"autoscaler_rules\": {\"items\": [], \"total\": 0}, \"recent_events\": {\"items\": [{\"create_time\": \"2026-04-24T16:42:58+08:00\", \"event_id\": \"9948e977b50d4c248c3c2fb69c90cd2f\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T16:42:58+08:00\", \"end_time\": \"2026-04-24T16:43:02+08:00\", \"opt_type\": \"stop-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"stop service gr71871f success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T16:42:39+08:00\", \"event_id\": \"0c967dc13ee44feda4cabc6bf53bf57f\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"{\\\"env_name\\\": \\\"CC\\\", \\\"env_value\\\": \\\"yy\\\", \\\"scope\\\": \\\"inner\\\", \\\"operator\\\": \\\"admin\\\", \\\"tenant_id\\\": \\\"c724cc2ead764c5c9700d2589a5f6675\\\"}\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T16:42:39+08:00\", \"end_time\": \"2026-04-24T16:42:39+08:00\", \"opt_type\": \"update-service-env\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T15:54:36+08:00\", \"event_id\": \"5638fe060ffb4aea9c671db71b25be1c\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"{\\\"env_name\\\": \\\"CC\\\", \\\"env_value\\\": \\\"ff\\\", \\\"scope\\\": \\\"inner\\\", \\\"operator\\\": \\\"admin\\\", \\\"tenant_id\\\": \\\"c724cc2ead764c5c9700d2589a5f6675\\\"}\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T15:54:36+08:00\", \"end_time\": \"2026-04-24T15:54:36+08:00\", \"opt_type\": \"update-service-env\", \"syn_type\": 1, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T15:54:27+08:00\", \"event_id\": \"5bf24018ff504ef3b86fa839c2a7b480\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T15:54:27+08:00\", \"end_time\": \"2026-04-24T15:54:27+08:00\", \"opt_type\": \"start-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"Start service gr71871f success\", \"reason\": \"\"}, {\"create_time\": \"2026-04-24T15:41:52+08:00\", \"event_id\": \"cccb1b0c99ed43eb88a6b44a25b80515\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"service_id\": \"\", \"target\": \"service\", \"target_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"request_body\": \"\", \"user_name\": \"admin\", \"start_time\": \"2026-04-24T15:41:52+08:00\", \"end_time\": \"2026-04-24T15:41:56+08:00\", \"opt_type\": \"stop-service\", \"syn_type\": 0, \"status\": \"success\", \"final_status\": \"complete\", \"message\": \"stop service gr71871f success\", \"reason\": \"\"}], \"total\": 28, \"page\": 1, \"page_size\": 5, \"has_next\": true}}"
+            }
+          ],
+          "structuredContent": {
+            "team_name": "default",
+            "region_name": "rainbond",
+            "app_id": 134,
+            "service_id": "b95d57325b9f28721f53ae0f1171871f",
+            "service": {
+              "ID": 297,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+              "service_key": "application",
+              "service_alias": "gr71871f",
+              "service_cname": "rainbond-copilot-dev",
+              "service_region": "rainbond",
+              "desc": "application info",
+              "category": "application",
+              "service_port": 0,
+              "is_web_service": false,
+              "version": "latest-amd64",
+              "update_version": 1,
+              "image": "",
+              "cmd": "",
+              "min_node": 1,
+              "min_cpu": 500,
+              "container_gpu": 0,
+              "min_memory": 512,
+              "setting": "",
+              "extend_method": "stateless_multiple",
+              "env": "",
+              "inner_port": 5000,
+              "volume_mount_path": "",
+              "host_path": "",
+              "deploy_version": "",
+              "code_from": "",
+              "git_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git",
+              "create_time": "2026-04-24 14:38:54",
+              "git_project_id": 0,
+              "is_code_upload": false,
+              "code_version": "main-sse",
+              "service_type": "application",
+              "creater": 1,
+              "language": "Node.js",
+              "build_strategy": "cnb",
+              "protocol": "",
+              "total_memory": 128,
+              "is_service": false,
+              "namespace": "goodrain",
+              "volume_type": "shared",
+              "port_type": "multi_outer",
+              "service_origin": "assistant",
+              "tenant_service_group_id": 0,
+              "expired_time": null,
+              "open_webhooks": false,
+              "service_source": "source_code",
+              "create_status": "complete",
+              "update_time": "2026-04-24 14:38:54",
+              "check_uuid": "2142b072-53d2-4669-990b-7d9951177989",
+              "check_event_id": "2cd7f61711e5419ab6e54785ec0e7e54",
+              "docker_cmd": null,
+              "secret": null,
+              "server_type": "git",
+              "is_upgrate": false,
+              "build_upgrade": true,
+              "service_name": "",
+              "oauth_service_id": null,
+              "git_full_name": null,
+              "k8s_component_name": "rainbondcopilot",
+              "job_strategy": null,
+              "arch": "amd64",
+              "dockerfile": "",
+              "status": "closed",
+              "access_infos": [
+                "http://gr71871f-8080-default.14.103.233.199.nip.io"
+              ]
+            },
+            "status": {
+              "status": "closed"
+            },
+            "resource": {
+              "memory": 0,
+              "disk": 0,
+              "cpu": 0
+            },
+            "ports": {
+              "items": [
+                {
+                  "ID": 244,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 8080,
+                  "mapping_port": 8080,
+                  "lb_mapping_port": 0,
+                  "protocol": "http",
+                  "port_alias": "GR71871F8080",
+                  "is_inner_service": true,
+                  "is_outer_service": true,
+                  "k8s_service_name": "rainbondcopilot",
+                  "name": null
+                }
+              ],
+              "total": 1
+            },
+            "envs": {
+              "items": [
+                {
+                  "ID": 5562,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 8080,
+                  "name": "连接地址",
+                  "attr_name": "GR71871F8080_HOST",
+                  "attr_value": "rainbondcopilot",
+                  "is_change": false,
+                  "scope": "outer",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5563,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 8080,
+                  "name": "端口",
+                  "attr_name": "GR71871F8080_PORT",
+                  "attr_value": "8080",
+                  "is_change": false,
+                  "scope": "outer",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5580,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_LOCK_FILE",
+                  "attr_value": "package-lock.json",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5581,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5582,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_VERSION",
+                  "attr_value": "5.3.4",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5583,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIMES",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5584,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5585,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_BUILD_CMD",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5586,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5587,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_DISPLAY_NAME",
+                  "attr_value": "Vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5588,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIME_TYPE",
+                  "attr_value": "static",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5589,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_NODE_VERSION_SOURCE",
+                  "attr_value": "default",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5590,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5591,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5592,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_BUILD_SCRIPT",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5593,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_VERSION",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5594,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5595,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_SOURCE",
+                  "attr_value": "global",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5596,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5597,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_YARNRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5598,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_ENV",
+                  "attr_value": "production",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5599,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5600,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "",
+                  "attr_name": "VITE_OPENAI_API_KEY",
+                  "attr_value": "sk-06f71534fd5941318ca278135abeee9b",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5601,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "",
+                  "attr_name": "VITE_OPENAI_BASE_URL",
+                  "attr_value": "https://api.deepseek.com/v1",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5602,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "",
+                  "attr_name": "VITE_OPENAI_MODEL",
+                  "attr_value": "deepseek-reasoner",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 6474,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "CC",
+                  "attr_name": "CC",
+                  "attr_value": "yy",
+                  "is_change": true,
+                  "scope": "inner",
+                  "create_time": "2026-04-24 14:54:43"
+                }
+              ],
+              "total": 26
+            },
+            "build_envs": {
+              "items": [
+                {
+                  "ID": 5580,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_LOCK_FILE",
+                  "attr_value": "package-lock.json",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5581,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5582,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_VERSION",
+                  "attr_value": "5.3.4",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5583,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIMES",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5584,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5585,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_BUILD_CMD",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5586,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5587,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_FRAMEWORK_DISPLAY_NAME",
+                  "attr_value": "Vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5588,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_RUNTIME_TYPE",
+                  "attr_value": "static",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5589,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_NODE_VERSION_SOURCE",
+                  "attr_value": "default",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5590,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_FRAMEWORK",
+                  "attr_value": "vite",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5591,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_OUTPUT_DIR",
+                  "attr_value": "dist",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5592,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_BUILD_SCRIPT",
+                  "attr_value": "build",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5593,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_VERSION",
+                  "attr_value": "24.13.0",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5594,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_PACKAGE_TOOL",
+                  "attr_value": "npm",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5595,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_SOURCE",
+                  "attr_value": "global",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5596,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5597,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "BUILD_HAS_YARNRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5598,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_NODE_ENV",
+                  "attr_value": "production",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                },
+                {
+                  "ID": 5599,
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "container_port": 0,
+                  "name": "构建运行时环境变量",
+                  "attr_name": "CNB_MIRROR_NPMRC",
+                  "attr_value": "",
+                  "is_change": true,
+                  "scope": "build",
+                  "create_time": "2026-04-24 14:38:54"
+                }
+              ],
+              "total": 20
+            },
+            "volumes": {
+              "items": [],
+              "total": 0
+            },
+            "mnts": {
+              "items": [],
+              "total": 0
+            },
+            "probe": null,
+            "autoscaler_rules": {
+              "items": [],
+              "total": 0
+            },
+            "recent_events": {
+              "items": [
+                {
+                  "create_time": "2026-04-24T16:42:58+08:00",
+                  "event_id": "9948e977b50d4c248c3c2fb69c90cd2f",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T16:42:58+08:00",
+                  "end_time": "2026-04-24T16:43:02+08:00",
+                  "opt_type": "stop-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "stop service gr71871f success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T16:42:39+08:00",
+                  "event_id": "0c967dc13ee44feda4cabc6bf53bf57f",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "{\"env_name\": \"CC\", \"env_value\": \"yy\", \"scope\": \"inner\", \"operator\": \"admin\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\"}",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T16:42:39+08:00",
+                  "end_time": "2026-04-24T16:42:39+08:00",
+                  "opt_type": "update-service-env",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T15:54:36+08:00",
+                  "event_id": "5638fe060ffb4aea9c671db71b25be1c",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "{\"env_name\": \"CC\", \"env_value\": \"ff\", \"scope\": \"inner\", \"operator\": \"admin\", \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\"}",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T15:54:36+08:00",
+                  "end_time": "2026-04-24T15:54:36+08:00",
+                  "opt_type": "update-service-env",
+                  "syn_type": 1,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T15:54:27+08:00",
+                  "event_id": "5bf24018ff504ef3b86fa839c2a7b480",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T15:54:27+08:00",
+                  "end_time": "2026-04-24T15:54:27+08:00",
+                  "opt_type": "start-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "Start service gr71871f success",
+                  "reason": ""
+                },
+                {
+                  "create_time": "2026-04-24T15:41:52+08:00",
+                  "event_id": "cccb1b0c99ed43eb88a6b44a25b80515",
+                  "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+                  "service_id": "",
+                  "target": "service",
+                  "target_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "request_body": "",
+                  "user_name": "admin",
+                  "start_time": "2026-04-24T15:41:52+08:00",
+                  "end_time": "2026-04-24T15:41:56+08:00",
+                  "opt_type": "stop-service",
+                  "syn_type": 0,
+                  "status": "success",
+                  "final_status": "complete",
+                  "message": "stop service gr71871f success",
+                  "reason": ""
+                }
+              ],
+              "total": 28,
+              "page": 1,
+              "page_size": 5,
+              "has_next": true
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:06.220Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 4,
+    "eventType": "approval.requested",
+    "payload": {
+      "type": "approval.requested",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 4,
+      "timestamp": "2026-04-24T08:44:17.654Z",
+      "data": {
+        "approval_id": "ap_1777020257647_6",
+        "skill_id": "rainbond_operate_app",
+        "description": "启动组件 b95d57325b9f28721f53ae0f1171871f",
+        "risk": "high",
+        "level_label": "危险",
+        "scope": "component",
+        "scope_label": "组件级"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:17.654Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 5,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 5,
+      "timestamp": "2026-04-24T08:44:17.680Z",
+      "data": {
+        "status": "waiting_approval"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:17.680Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 6,
+    "eventType": "approval.resolved",
+    "payload": {
+      "type": "approval.resolved",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 6,
+      "timestamp": "2026-04-24T08:44:22.422Z",
+      "data": {
+        "approval_id": "ap_1777020257647_6",
+        "status": "approved",
+        "resolved_by": 1,
+        "comment": ""
+      }
+    },
+    "createdAt": "2026-04-24T08:44:22.422Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 7,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 7,
+      "timestamp": "2026-04-24T08:44:22.452Z",
+      "data": {
+        "tool_name": "rainbond_operate_app",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "action": "start",
+          "service_ids": [
+            "b95d57325b9f28721f53ae0f1171871f"
+          ],
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:22.452Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 8,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 8,
+      "timestamp": "2026-04-24T08:44:22.630Z",
+      "data": {
+        "tool_name": "rainbond_operate_app",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "action": "start",
+          "service_ids": [
+            "b95d57325b9f28721f53ae0f1171871f"
+          ],
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"app_id\": 134, \"action\": \"start\", \"service_ids\": [\"b95d57325b9f28721f53ae0f1171871f\"], \"result\": [{\"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"operation\": \"start\", \"event_id\": \"5b38a60e06b2419c8f42a6c7cf612d0a\", \"status\": \"success\", \"err_message\": \"\", \"deploy_version\": \"\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "app_id": 134,
+            "action": "start",
+            "service_ids": [
+              "b95d57325b9f28721f53ae0f1171871f"
+            ],
+            "result": [
+              {
+                "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                "operation": "start",
+                "event_id": "5b38a60e06b2419c8f42a6c7cf612d0a",
+                "status": "success",
+                "err_message": "",
+                "deploy_version": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:22.630Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 9,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 9,
+      "timestamp": "2026-04-24T08:44:30.858Z",
+      "data": {
+        "role": "assistant",
+        "content": "组件 **rainbond-copilot-dev** 的启动操作已成功提交！\n\n| 项目 | 详情 |\n|------|------|\n| **组件名称** | rainbond-copilot-dev |\n| **操作** | 启动 (start) |\n| **事件 ID** | `5b38a60e06b2419c8f42a6c7cf612d0a` |\n| **状态** | 已提交成功 |\n\n启动通常需要几秒到几十秒，服务就绪后你可以通过以下地址访问：\n\n- 🌐 `http://gr71871f-8080-default.14.103.233.199.nip.io`\n\n如果需要我帮你查看启动后的运行状态或日志，随时告诉我。"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:30.858Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020225679_5",
+    "sequence": 10,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020225679_5",
+      "sequence": 10,
+      "timestamp": "2026-04-24T08:44:30.891Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:30.891Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 1,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 1,
+      "timestamp": "2026-04-24T08:44:51.155Z",
+      "data": {
+        "status": "thinking"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:51.155Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 2,
+    "eventType": "approval.requested",
+    "payload": {
+      "type": "approval.requested",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 2,
+      "timestamp": "2026-04-24T08:44:51.312Z",
+      "data": {
+        "approval_id": "ap_1777020291301_8",
+        "skill_id": "rainbond_rollback_app_version_snapshot",
+        "description": "回滚当前应用到快照版本 1.0.1",
+        "risk": "high",
+        "level_label": "危险",
+        "scope": "app",
+        "scope_label": "应用级"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:51.312Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 3,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 3,
+      "timestamp": "2026-04-24T08:44:51.335Z",
+      "data": {
+        "status": "waiting_approval"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:51.335Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 4,
+    "eventType": "approval.resolved",
+    "payload": {
+      "type": "approval.resolved",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 4,
+      "timestamp": "2026-04-24T08:44:53.022Z",
+      "data": {
+        "approval_id": "ap_1777020291301_8",
+        "status": "approved",
+        "resolved_by": 1,
+        "comment": ""
+      }
+    },
+    "createdAt": "2026-04-24T08:44:53.022Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 5,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 5,
+      "timestamp": "2026-04-24T08:44:53.049Z",
+      "data": {
+        "tool_name": "rainbond_rollback_app_version_snapshot",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "version_id": 37
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:53.049Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 6,
+    "eventType": "chat.trace",
+    "payload": {
+      "type": "chat.trace",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 6,
+      "timestamp": "2026-04-24T08:44:53.453Z",
+      "data": {
+        "tool_name": "rainbond_rollback_app_version_snapshot",
+        "input": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "version_id": 37
+        },
+        "output": {
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"app_id\": 134, \"version_id\": 37, \"rollback_record\": {\"service_record\": [{\"status\": 4, \"update_time\": \"2026-04-24 16:44:55.504807\", \"event_id\": \"a63da10109a94a5cb5ffc9a7584c89b1\", \"update\": null, \"app_upgrade_record\": 25, \"service_cname\": \"rainbond-copilot-dev\", \"create_time\": \"2026-04-24 16:44:55.504830\", \"service_id\": \"b95d57325b9f28721f53ae0f1171871f\", \"upgrade_type\": \"upgrade\", \"ID\": 47, \"service_key\": \"application\"}], \"ID\": 25, \"tenant_id\": \"c724cc2ead764c5c9700d2589a5f6675\", \"group_id\": 134, \"group_key\": \"3e4394dc68c64b2e951e47be4489dfea\", \"group_name\": \"rainbond-copilot-dev\", \"version\": \"1.0.1\", \"old_version\": \"1.0.3\", \"status\": 4, \"update_time\": \"2026-04-24 16:44:55\", \"create_time\": \"2026-04-24 16:44:55\", \"market_name\": \"\", \"is_from_cloud\": false, \"upgrade_group_id\": 0, \"snapshot_id\": \"369c3b4b33a54d84a0d8dfd174a4698b\", \"record_type\": \"rollback\", \"parent_id\": 0, \"can_rollback\": false, \"is_finished\": false}}"
+            }
+          ],
+          "structuredContent": {
+            "app_id": 134,
+            "version_id": 37,
+            "rollback_record": {
+              "service_record": [
+                {
+                  "status": 4,
+                  "update_time": "2026-04-24T16:44:55.504807",
+                  "event_id": "a63da10109a94a5cb5ffc9a7584c89b1",
+                  "update": null,
+                  "app_upgrade_record": 25,
+                  "service_cname": "rainbond-copilot-dev",
+                  "create_time": "2026-04-24T16:44:55.504830",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "upgrade_type": "upgrade",
+                  "ID": 47,
+                  "service_key": "application"
+                }
+              ],
+              "ID": 25,
+              "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+              "group_id": 134,
+              "group_key": "3e4394dc68c64b2e951e47be4489dfea",
+              "group_name": "rainbond-copilot-dev",
+              "version": "1.0.1",
+              "old_version": "1.0.3",
+              "status": 4,
+              "update_time": "2026-04-24 16:44:55",
+              "create_time": "2026-04-24 16:44:55",
+              "market_name": "",
+              "is_from_cloud": false,
+              "upgrade_group_id": 0,
+              "snapshot_id": "369c3b4b33a54d84a0d8dfd174a4698b",
+              "record_type": "rollback",
+              "parent_id": 0,
+              "can_rollback": false,
+              "is_finished": false
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:53.453Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 7,
+    "eventType": "chat.message",
+    "payload": {
+      "type": "chat.message",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 7,
+      "timestamp": "2026-04-24T08:44:53.486Z",
+      "data": {
+        "role": "assistant",
+        "content": "已发起回滚到快照版本 1.0.1。"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:53.486Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 8,
+    "eventType": "workflow.completed",
+    "payload": {
+      "type": "workflow.completed",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 8,
+      "timestamp": "2026-04-24T08:44:53.502Z",
+      "data": {
+        "workflow_id": "pending-workflow-action",
+        "workflow_stage": "executed",
+        "next_action": "none",
+        "structured_result": {
+          "summary": "已发起回滚到快照版本 1.0.1。",
+          "tool_calls": [
+            {
+              "name": "rainbond_rollback_app_version_snapshot",
+              "status": "success"
+            }
+          ],
+          "subflowData": {
+            "snapshotVersion": "1.0.1"
+          },
+          "executedAction": {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_rollback_app_version_snapshot",
+            "requiresApproval": true,
+            "risk": "high",
+            "scope": "app",
+            "description": "回滚当前应用到快照版本 1.0.1",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "version_id": 37
+            }
+          },
+          "actionResult": {
+            "app_id": 134,
+            "version_id": 37,
+            "rollback_record": {
+              "service_record": [
+                {
+                  "status": 4,
+                  "update_time": "2026-04-24T16:44:55.504807",
+                  "event_id": "a63da10109a94a5cb5ffc9a7584c89b1",
+                  "update": null,
+                  "app_upgrade_record": 25,
+                  "service_cname": "rainbond-copilot-dev",
+                  "create_time": "2026-04-24T16:44:55.504830",
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "upgrade_type": "upgrade",
+                  "ID": 47,
+                  "service_key": "application"
+                }
+              ],
+              "ID": 25,
+              "tenant_id": "c724cc2ead764c5c9700d2589a5f6675",
+              "group_id": 134,
+              "group_key": "3e4394dc68c64b2e951e47be4489dfea",
+              "group_name": "rainbond-copilot-dev",
+              "version": "1.0.1",
+              "old_version": "1.0.3",
+              "status": 4,
+              "update_time": "2026-04-24 16:44:55",
+              "create_time": "2026-04-24 16:44:55",
+              "market_name": "",
+              "is_from_cloud": false,
+              "upgrade_group_id": 0,
+              "snapshot_id": "369c3b4b33a54d84a0d8dfd174a4698b",
+              "record_type": "rollback",
+              "parent_id": 0,
+              "can_rollback": false,
+              "is_finished": false
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2026-04-24T08:44:53.502Z"
+  },
+  {
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "runId": "run_1777020291152_7",
+    "sequence": 9,
+    "eventType": "run.status",
+    "payload": {
+      "type": "run.status",
+      "tenantId": "local-default",
+      "sessionId": "cs_1777017243591_1",
+      "runId": "run_1777020291152_7",
+      "sequence": 9,
+      "timestamp": "2026-04-24T08:44:53.516Z",
+      "data": {
+        "status": "done"
+      }
+    },
+    "createdAt": "2026-04-24T08:44:53.516Z"
   }
 ]
