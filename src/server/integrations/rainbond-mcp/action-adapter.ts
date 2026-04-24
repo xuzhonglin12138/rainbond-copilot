@@ -20,7 +20,12 @@ interface LogsPayload {
 
 interface ScalePayload {
   component_name?: string;
+  service_id?: string;
+  service_alias?: string;
   memory?: number;
+  new_memory?: number;
+  cpu?: number;
+  new_cpu?: number;
 }
 
 export class RainbondMcpActionAdapter {
@@ -88,12 +93,28 @@ export class RainbondMcpActionAdapter {
         app_id: input.appId,
         service_id: input.serviceId,
         new_memory: input.memory,
+        ...(typeof input.cpu === "number" ? { new_cpu: input.cpu } : {}),
       }
     );
 
     return {
-      name: result.structuredContent.component_name || input.serviceId,
-      memory: result.structuredContent.memory || input.memory,
+      name:
+        result.structuredContent.component_name ||
+        result.structuredContent.service_alias ||
+        result.structuredContent.service_id ||
+        input.serviceId,
+      memory:
+        result.structuredContent.new_memory ||
+        result.structuredContent.memory ||
+        input.memory,
+      ...(typeof (result.structuredContent.new_cpu || result.structuredContent.cpu || input.cpu) === "number"
+        ? {
+            cpu:
+              result.structuredContent.new_cpu ||
+              result.structuredContent.cpu ||
+              input.cpu,
+          }
+        : {}),
     };
   }
 }

@@ -45,7 +45,7 @@ export const MUTABLE_TOOL_POLICY_LIST = [
     { name: "rainbond_manage_component_ports", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的端口配置", allowDirectExecution: false },
     { name: "rainbond_manage_component_probe", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的探针配置", allowDirectExecution: false },
     { name: "rainbond_manage_component_storage", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的存储配置", allowDirectExecution: false },
-    { name: "rainbond_operate_app", scope: app, riskLevel: "high", approvalMessage: "对应用执行 {action} 操作", allowDirectExecution: false },
+    { name: "rainbond_operate_app", scope: component, riskLevel: "high", approvalMessage: "对应用执行 {action} 操作", allowDirectExecution: false },
     { name: "rainbond_rollback_app_upgrade_record", scope: app, riskLevel: "high", approvalMessage: "回滚应用升级记录", allowDirectExecution: false },
     { name: "rainbond_rollback_app_version_snapshot", scope: app, riskLevel: "high", approvalMessage: "回滚到应用快照版本", allowDirectExecution: false },
     { name: "rainbond_start_app_share_event", scope: app, riskLevel: "high", approvalMessage: "启动应用分享流程", allowDirectExecution: false },
@@ -123,6 +123,25 @@ function buildSpecialApprovalMessage(toolName, input) {
     }
     if (toolName === "rainbond_create_region" && regionDisplay) {
         return `创建集群 ${regionDisplay}`;
+    }
+    if (toolName === "rainbond_operate_app") {
+        const action = readString(input.action, input.operation).toLowerCase();
+        const serviceIds = Array.isArray(input.service_ids)
+            ? input.service_ids.filter((item) => typeof item === "string" && !!item)
+            : [];
+        const actionText = {
+            stop: "关闭",
+            start: "启动",
+            restart: "重启",
+            deploy: "部署",
+            upgrade: "升级",
+        }[action] || action || "执行";
+        if (serviceIds.length === 1) {
+            return `${actionText}组件 ${serviceIds[0]}`;
+        }
+        if (serviceIds.length > 1) {
+            return `对 ${serviceIds.length} 个组件执行 ${actionText} 操作`;
+        }
     }
     return "";
 }

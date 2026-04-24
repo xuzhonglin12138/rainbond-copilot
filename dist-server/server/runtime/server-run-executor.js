@@ -1,5 +1,42 @@
 import { extractComponentName, shouldInspectLogs, summarizeLogs, } from "../../runtime/runtime-helpers.js";
 import { createServerActionSkills } from "./server-action-skills.js";
+function parseMemoryTarget(normalized) {
+    const matched = normalized.match(/(\d+(?:\.\d+)?)\s*(gb|g|mb|m)/i);
+    if (!matched) {
+        return null;
+    }
+    const value = Number(matched[1]);
+    if (!Number.isFinite(value) || value <= 0) {
+        return null;
+    }
+    const unit = matched[2].toLowerCase();
+    if (unit === "gb" || unit === "g") {
+        return Math.round(value * 1024);
+    }
+    return Math.round(value);
+}
+function parseCpuTarget(normalized) {
+    const milliMatch = normalized.match(/cpu[^0-9]*(\d+)\s*m\b/i);
+    if (milliMatch) {
+        const value = Number(milliMatch[1]);
+        return Number.isFinite(value) && value > 0 ? value : null;
+    }
+    const coreMatch = normalized.match(/cpu[^0-9]*(\d+(?:\.\d+)?)\s*(core|cores|vcpu|核)\b/i);
+    if (coreMatch) {
+        const value = Number(coreMatch[1]);
+        return Number.isFinite(value) && value > 0
+            ? Math.round(value * 1000)
+            : null;
+    }
+    const genericMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(core|cores|vcpu|核)\b/i);
+    if (genericMatch) {
+        const value = Number(genericMatch[1]);
+        return Number.isFinite(value) && value > 0
+            ? Math.round(value * 1000)
+            : null;
+    }
+    return null;
+}
 export class ServerRunExecutor {
     constructor(deps) {
         this.deps = deps;
@@ -17,15 +54,17 @@ export class ServerRunExecutor {
                 description: `执行高风险操作前需要确认：${message}`,
             };
         }
-        if (/(scale|扩容|memory|内存)/i.test(normalized)) {
-            const memoryMatch = normalized.match(/(\d{3,5})/);
-            const memory = memoryMatch ? Number(memoryMatch[1]) : 1024;
+        if (/(scale|扩容|memory|内存|cpu|core|核)/i.test(normalized)) {
+            const memory = parseMemoryTarget(normalized) || 1024;
+            const cpu = parseCpuTarget(normalized);
+            const hasCpuChange = typeof cpu === "number";
+            const cpuPart = hasCpuChange ? `，CPU ${cpu}m` : "";
             return {
                 requiresApproval: true,
                 skillId: "scale-component-memory",
-                input: { name: componentName, memory },
-                risk: memory >= 2048 ? "high" : "medium",
-                description: `执行高风险操作前需要确认：${message}`,
+                input: { name: componentName, memory, ...(hasCpuChange ? { cpu } : {}) },
+                risk: memory >= 2048 || (hasCpuChange && cpu >= 1000) ? "high" : "medium",
+                description: `执行资源调整前需要确认：内存 ${memory}MB${cpuPart}`,
             };
         }
         return {

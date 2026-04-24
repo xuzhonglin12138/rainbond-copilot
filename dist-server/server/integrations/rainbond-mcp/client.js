@@ -8,6 +8,61 @@ function getHeader(headers, name) {
     }
     return headers.get(name) || "";
 }
+async function readErrorResponseMessage(response) {
+    try {
+        const cloned = response.clone();
+        const payload = await cloned.json();
+        if (payload && typeof payload === "object") {
+            const jsonrpcError = payload.error &&
+                typeof payload.error.message === "string"
+                ? payload.error.message
+                : "";
+            if (jsonrpcError) {
+                return jsonrpcError;
+            }
+            const directMessage = typeof payload.msg_show === "string" && payload.msg_show
+                ? payload.msg_show
+                : typeof payload.msg === "string" && payload.msg
+                    ? payload.msg
+                    : typeof payload.message === "string" && payload.message
+                        ? payload.message
+                        : "";
+            if (directMessage) {
+                return directMessage;
+            }
+            if (payload.result && typeof payload.result === "object") {
+                const result = payload.result;
+                const structured = result.structuredContent && typeof result.structuredContent === "object"
+                    ? result.structuredContent
+                    : result;
+                const structuredMessage = typeof structured.msg_show === "string" && structured.msg_show
+                    ? structured.msg_show
+                    : typeof structured.msg === "string" && structured.msg
+                        ? structured.msg
+                        : typeof structured.message === "string" && structured.message
+                            ? structured.message
+                            : "";
+                if (structuredMessage) {
+                    return structuredMessage;
+                }
+            }
+        }
+    }
+    catch {
+        // fall through to text body parsing
+    }
+    try {
+        const cloned = response.clone();
+        const text = (await cloned.text()).trim();
+        if (text) {
+            return text.slice(0, 500);
+        }
+    }
+    catch {
+        // ignore text parsing failure
+    }
+    return "";
+}
 export class RainbondMcpClient {
     constructor(options) {
         this.requestId = 0;
@@ -89,7 +144,10 @@ export class RainbondMcpClient {
             body: JSON.stringify(payload),
         });
         if (!response.ok) {
-            throw new Error(`Rainbond MCP request failed with status ${response.status}`);
+            const detail = await readErrorResponseMessage(response);
+            throw new Error(detail
+                ? `Rainbond MCP request failed with status ${response.status}: ${detail}`
+                : `Rainbond MCP request failed with status ${response.status}`);
         }
         const json = (await response.json());
         if ("error" in json) {

@@ -88,9 +88,15 @@ export function buildPendingWorkflowActionCompletion(
           : typeof pendingAction.arguments.memory === "number"
             ? `${pendingAction.arguments.memory}MB`
             : "目标值";
+      const cpu =
+        typeof actionResult?.cpu === "number"
+          ? `${actionResult.cpu}m`
+          : typeof pendingAction.arguments.cpu === "number"
+            ? `${pendingAction.arguments.cpu}m`
+            : "";
       summary = componentName
-        ? `${componentName} 的内存已调整为 ${memory}。`
-        : `组件内存已调整为 ${memory}。`;
+        ? `${componentName} 的资源已调整为内存 ${memory}${cpu ? `，CPU ${cpu}` : ""}。`
+        : `组件资源已调整为内存 ${memory}${cpu ? `，CPU ${cpu}` : ""}。`;
       if (componentName) {
         subflowData.componentName = componentName;
       }
@@ -443,10 +449,16 @@ export function buildPendingWorkflowActionCompletion(
           : typeof pendingAction.arguments.new_memory === "number"
             ? `${pendingAction.arguments.new_memory}MB`
             : "";
+      const newCpu =
+        typeof actionResult?.new_cpu === "number"
+          ? `${actionResult.new_cpu}m`
+          : typeof pendingAction.arguments.new_cpu === "number"
+            ? `${pendingAction.arguments.new_cpu}m`
+            : "";
       if (pendingAction.toolName === "rainbond_vertical_scale_component" && newMemory) {
         summary = componentName
-          ? `已将组件 ${componentName} 的资源配置调整为内存 ${newMemory}。`
-          : `已将组件资源配置调整为内存 ${newMemory}。`;
+          ? `已将组件 ${componentName} 的资源配置调整为内存 ${newMemory}${newCpu ? `，CPU ${newCpu}` : ""}。`
+          : `已将组件资源配置调整为内存 ${newMemory}${newCpu ? `，CPU ${newCpu}` : ""}。`;
       } else {
         summary = componentName
           ? `已更新组件 ${componentName} 的伸缩配置。`

@@ -46,5 +46,247 @@
     "messageText": "查询当前集群的相关信息",
     "status": "pending",
     "startedAt": "2026-04-23T08:29:18.707Z"
+  },
+  {
+    "runId": "run_1776945183240_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776945183120_1",
+    "messageText": "添加一个环境变量VV=dd",
+    "status": "completed",
+    "startedAt": "2026-04-23T11:53:03.240Z",
+    "finishedAt": "2026-04-23T11:53:15.502Z"
+  },
+  {
+    "runId": "run_1776946088039_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776946087919_1",
+    "messageText": "添加环境变量VV=cc",
+    "status": "completed",
+    "startedAt": "2026-04-23T12:08:08.039Z",
+    "finishedAt": "2026-04-23T12:08:27.413Z"
+  },
+  {
+    "runId": "run_1776946147203_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776946087919_1",
+    "messageText": "修改手动伸缩为内存1gb,cpu1core",
+    "status": "completed",
+    "startedAt": "2026-04-23T12:09:07.203Z",
+    "finishedAt": "2026-04-23T12:09:09.438Z"
+  },
+  {
+    "runId": "run_1776946224213_7",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776946224093_6",
+    "messageText": "查询当前组件的伸缩信息",
+    "status": "pending",
+    "startedAt": "2026-04-23T12:10:24.213Z"
+  },
+  {
+    "runId": "run_1776946291962_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776946224093_6",
+    "messageText": "调整内存为1GB,CPU调整为1Core",
+    "status": "completed",
+    "startedAt": "2026-04-23T12:11:31.962Z",
+    "finishedAt": "2026-04-23T12:11:34.097Z"
+  },
+  {
+    "runId": "run_1776946365206_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776946224093_6",
+    "messageText": "关闭组件",
+    "status": "completed",
+    "startedAt": "2026-04-23T12:12:45.206Z",
+    "finishedAt": "2026-04-23T12:13:04.463Z"
+  },
+  {
+    "runId": "run_1776947165642_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776947165537_1",
+    "messageText": "调整内存为1GB,CPU调整为1Core",
+    "status": "completed",
+    "startedAt": "2026-04-23T12:26:05.643Z",
+    "finishedAt": "2026-04-23T12:26:07.362Z"
+  },
+  {
+    "runId": "run_1776948148135_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776948148018_1",
+    "messageText": "调整伸缩内存为1GB,CPU调整为1Core",
+    "status": "running",
+    "startedAt": "2026-04-23T12:42:28.135Z"
+  },
+  {
+    "runId": "run_1776948258201_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776948258067_4",
+    "messageText": "调整伸缩内存为1GB,CPU调整为1Core",
+    "status": "running",
+    "startedAt": "2026-04-23T12:44:18.201Z"
+  },
+  {
+    "runId": "run_1776949001057_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776949000941_1",
+    "messageText": "调整伸缩为内存1gb cpu1core",
+    "status": "failed",
+    "startedAt": "2026-04-23T12:56:41.057Z",
+    "errorMessage": "Rainbond MCP request failed with status 500",
+    "finishedAt": "2026-04-23T12:56:59.988Z"
+  },
+  {
+    "runId": "run_1776949527540_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776949527421_1",
+    "messageText": "调整伸缩为内存1gb cpu1core",
+    "status": "failed",
+    "startedAt": "2026-04-23T13:05:27.540Z",
+    "errorMessage": "Rainbond MCP request failed with status 500",
+    "finishedAt": "2026-04-23T13:06:15.198Z"
+  },
+  {
+    "runId": "run_1776950272968_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776950272865_1",
+    "messageText": "调整伸缩为内存1gb cpu1core",
+    "status": "pending",
+    "startedAt": "2026-04-23T13:17:52.968Z"
+  },
+  {
+    "runId": "run_1776950334946_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776950272865_1",
+    "messageText": "调整伸缩为内存1gb cpu1core",
+    "status": "failed",
+    "startedAt": "2026-04-23T13:18:54.946Z",
+    "errorMessage": "Rainbond MCP request failed with status 500: Traceback (most recent call last):\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/backends/mysql/base.py\", line 71, in execute\n    return self.cursor.execute(query, args)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/MySQLdb/cursors.py\", line 206, in execute\n    res = self._query(query)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/MySQLdb/cursors.py\", line 319, in _query\n    db.query(q)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/MySQLdb/connections.py\", line 254, in query\n    _mysql.connection.query(self, query)\nMySQLdb.OperationalError: (1048, \"Column 'container_gpu' cannot be null\")\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/rest_framework/views.py\", line 480, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/views/decorators/cache.py\", line 44, in _wrapped_view_func\n    response = view_func(request, *args, **kwargs)\n  File \"/app/ui/console/views/mcp_query.py\", line 444, in post\n    rpc_response = self._dispatch_rpc(payload, user, protocol_version=protocol_version)\n  File \"/app/ui/console/views/mcp_query.py\", line 242, in _dispatch_rpc\n    data = mcp_query_service.call_tool(user, tool_name, arguments)\n  File \"/app/ui/console/services/mcp_query_service.py\", line 346, in call_tool\n    return self.vertical_scale_component(user, arguments)\n  File \"/app/ui/console/services/mcp_query_service.py\", line 1639, in vertical_scale_component\n    code, msg = app_manage_service.vertical_upgrade(team, service, user, new_memory, None, new_gpu, new_cpu)\n  File \"/app/ui/console/services/app_actions/app_manage.py\", line 877, in vertical_upgrade\n    service.save()\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/base.py\", line 741, in save\n    force_update=force_update, update_fields=update_fields)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/base.py\", line 779, in save_base\n    force_update, using, update_fields,\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/base.py\", line 851, in _save_table\n    forced_update)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/base.py\", line 900, in _do_update\n    return filtered._update(values) > 0\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/query.py\", line 760, in _update\n    return query.get_compiler(self.db).execute_sql(CURSOR)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py\", line 1426, in execute_sql\n    cursor = super().execute_sql(result_type)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py\", line 1097, in execute_sql\n    cursor.execute(sql, params)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/backends/utils.py\", line 67, in execute\n    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/backends/utils.py\", line 76, in _execute_with_wrappers\n    return executor(sql, params, many, context)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/backends/utils.py\", line 84, in _execute\n    return self.cursor.execute(sql, params)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/backends/mysql/base.py\", line 76, in execute\n    raise utils.IntegrityError(*tuple(e.args))\ndjango.db.utils.IntegrityError: (1048, \"Column 'container_gpu' cannot be null\")\n",
+    "finishedAt": "2026-04-23T13:19:11.794Z"
+  },
+  {
+    "runId": "run_1776950784855_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776950784750_1",
+    "messageText": "调整伸缩为内存1gb cpu1core",
+    "status": "completed",
+    "startedAt": "2026-04-23T13:26:24.855Z",
+    "finishedAt": "2026-04-23T13:36:48.181Z"
+  },
+  {
+    "runId": "run_1776996998342_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776996998210_4",
+    "messageText": "启动应用",
+    "status": "completed",
+    "startedAt": "2026-04-24T02:16:38.342Z",
+    "finishedAt": "2026-04-24T02:16:48.943Z"
+  },
+  {
+    "runId": "run_1776997068804_7",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776996998210_4",
+    "messageText": "这个服务有啥问题",
+    "status": "pending",
+    "startedAt": "2026-04-24T02:17:48.804Z"
+  },
+  {
+    "runId": "run_1776997202501_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776996998210_4",
+    "messageText": "帮我重启",
+    "status": "pending",
+    "startedAt": "2026-04-24T02:20:02.501Z"
+  },
+  {
+    "runId": "run_1776997305705_9",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776996998210_4",
+    "messageText": "去人执行",
+    "status": "pending",
+    "startedAt": "2026-04-24T02:21:45.705Z"
+  },
+  {
+    "runId": "run_1777000322294_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1776996998210_4",
+    "messageText": "取消当前组件的api外部依赖",
+    "status": "pending",
+    "startedAt": "2026-04-24T03:12:02.294Z"
+  },
+  {
+    "runId": "run_1777000372506_c",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000372395_b",
+    "messageText": "取消这个组件的api依赖",
+    "status": "pending",
+    "startedAt": "2026-04-24T03:12:52.506Z"
+  },
+  {
+    "runId": "run_1777000785063_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000784944_1",
+    "messageText": "取消这个组件的api依赖",
+    "status": "completed",
+    "startedAt": "2026-04-24T03:19:45.063Z",
+    "finishedAt": "2026-04-24T03:20:08.986Z"
+  },
+  {
+    "runId": "run_1777000843260_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000784944_1",
+    "messageText": "更新当前组件",
+    "status": "pending",
+    "startedAt": "2026-04-24T03:20:43.260Z"
+  },
+  {
+    "runId": "run_1777000920161_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000784944_1",
+    "messageText": "更改构建源，仓库地址改为\nhttps://gitee.com/yangkaa/rainbond-demo.git?dir=frontend-xu",
+    "status": "pending",
+    "startedAt": "2026-04-24T03:22:00.161Z"
+  },
+  {
+    "runId": "run_1777000992497_7",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000992321_6",
+    "messageText": "更改构建源\nhttps://gitee.com/yangkaa/rainbond-demo.git?dir=frontend-xu",
+    "status": "pending",
+    "startedAt": "2026-04-24T03:23:12.497Z"
+  },
+  {
+    "runId": "run_1777001039367_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000992321_6",
+    "messageText": "确认并构建",
+    "status": "completed",
+    "startedAt": "2026-04-24T03:23:59.367Z",
+    "finishedAt": "2026-04-24T03:24:22.216Z"
+  },
+  {
+    "runId": "run_1777001224842_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000992321_6",
+    "messageText": "请你查看我这个组件的问题",
+    "status": "pending",
+    "startedAt": "2026-04-24T03:27:04.842Z"
+  },
+  {
+    "runId": "run_1777001372968_b",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000992321_6",
+    "messageText": "更改构建源为docker.1ms.run/mariadb:10.6.4-focal-xu",
+    "status": "completed",
+    "startedAt": "2026-04-24T03:29:32.968Z",
+    "finishedAt": "2026-04-24T03:29:48.818Z"
+  },
+  {
+    "runId": "run_1777001426166_d",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777000992321_6",
+    "messageText": "创建一个3307的端口，打开对内与对外服务",
+    "status": "completed",
+    "startedAt": "2026-04-24T03:30:26.166Z",
+    "finishedAt": "2026-04-24T03:30:44.389Z"
   }
 ]

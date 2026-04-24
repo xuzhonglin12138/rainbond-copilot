@@ -8,6 +8,7 @@ export interface LegacyComponentLogsInput extends LegacyComponentStatusInput {
 
 export interface LegacyScaleMemoryInput extends LegacyComponentStatusInput {
   memory: number;
+  cpu?: number;
 }
 
 export interface RealComponentScopeInput {
@@ -31,4 +32,5 @@ export interface RealRestartInput {
 
 export interface RealScaleMemoryInput extends RealComponentScopeInput {
   memory: number;
+  cpu?: number;
 }

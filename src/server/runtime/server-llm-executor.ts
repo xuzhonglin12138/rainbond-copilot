@@ -41,15 +41,16 @@ interface ServerLlmExecutorDeps {
   llmClient?: ServerChatClient | null;
   actionAdapter?: ActionAdapter;
   queryToolClientFactory?: QueryToolClientFactory;
-    requestApproval?: (input: {
-      actor: RequestActor;
-      sessionId: string;
-      runId: string;
-      pendingAction: PendingWorkflowAction;
-      description: string;
-      risk: RiskLevel;
-      scope?: string;
-    }) => Promise<void>;
+  requestApproval?: (input: {
+    actor: RequestActor;
+    sessionId: string;
+    runId: string;
+    pendingAction: PendingWorkflowAction;
+    description: string;
+    risk: RiskLevel;
+    scope?: string;
+  }) => Promise<void>;
+  enableLegacyActionSkills?: boolean;
 }
 
 export interface ExecuteServerLlmRunParams {
@@ -64,6 +65,20 @@ export type QueryToolClientFactory = (params: {
   actor: RequestActor;
   sessionId: string;
 }) => Promise<RainbondQueryToolClient> | RainbondQueryToolClient;
+
+interface QueryComponentsLookupResult {
+  items?: Array<{
+    service_id?: string;
+    service_alias?: string;
+    service_cname?: string;
+  }>;
+}
+
+interface ComponentSummaryLookupResult {
+  service?: {
+    container_gpu?: number | null;
+  };
+}
 
 function normalizeK8sAppNameSeed(value: string): string {
   const lowered = (value || "").trim().toLowerCase();
@@ -92,10 +107,14 @@ function buildGeneratedK8sAppName(value: string): string {
 
 export class ServerLlmExecutor {
   private readonly skills: Record<string, ActionSkill>;
+  private readonly enableLegacyActionSkills: boolean;
   private resolvedClient: ServerChatClient | null | undefined;
 
   constructor(private readonly deps: ServerLlmExecutorDeps) {
-    this.skills = createServerActionSkills(deps.actionAdapter);
+    this.enableLegacyActionSkills = deps.enableLegacyActionSkills === true;
+    this.skills = this.enableLegacyActionSkills
+      ? createServerActionSkills(deps.actionAdapter)
+      : {};
     this.resolvedClient = deps.llmClient;
   }
 
@@ -154,6 +173,7 @@ export class ServerLlmExecutor {
       messages.push({
         role: "assistant",
         content: response.content || null,
+        reasoning_content: response.reasoning_content || null,
         tool_calls: response.tool_calls,
       });
 
@@ -237,10 +257,17 @@ export class ServerLlmExecutor {
           params.sessionContext,
           params.actor
         );
+        const resolvedInput = await this.resolveComponentScopedInput(
+          mcpTool.name,
+          enrichedInput,
+          mcpToolContext.client,
+          params.sessionContext,
+          params.actor
+        );
         if (isMutableMcpToolName(mcpTool.name)) {
           const approvalDecision = evaluateMutableToolApproval(
             mcpTool.name,
-            enrichedInput
+            resolvedInput
           );
           if (approvalDecision.requiresApproval) {
             if (!this.deps.requestApproval) {
@@ -257,7 +284,7 @@ export class ServerLlmExecutor {
                 risk: approvalDecision.risk,
                 scope: approvalDecision.scope,
                 description: approvalDecision.reason,
-                arguments: enrichedInput,
+                arguments: resolvedInput,
               },
               description: approvalDecision.reason,
               risk: approvalDecision.risk,
@@ -268,7 +295,7 @@ export class ServerLlmExecutor {
         }
         const mcpCacheKey = this.buildToolCacheKey(
           toolCall.function.name,
-          enrichedInput
+          resolvedInput
         );
         const cachedMcpResult = toolResultCache.get(mcpCacheKey);
         if (cachedMcpResult) {
@@ -283,12 +310,12 @@ export class ServerLlmExecutor {
 
         await this.publishTrace(params, {
           tool_name: mcpTool.name,
-          input: enrichedInput,
+          input: resolvedInput,
         });
 
         const output = await mcpToolContext.client.callTool(
           mcpTool.name,
-          enrichedInput
+          resolvedInput
         );
         const toolMessageContent = JSON.stringify(
           this.serializeMcpToolResult(output)
@@ -300,7 +327,7 @@ export class ServerLlmExecutor {
 
         await this.publishTrace(params, {
           tool_name: mcpTool.name,
-          input: enrichedInput,
+          input: resolvedInput,
           output,
         });
 
@@ -586,6 +613,140 @@ export class ServerLlmExecutor {
     }
 
     return nextInput;
+  }
+
+  private async resolveComponentScopedInput(
+    toolName: string,
+    input: Record<string, unknown>,
+    client: RainbondQueryToolClient,
+    sessionContext: Record<string, unknown> | undefined,
+    actor: RequestActor
+  ): Promise<Record<string, unknown>> {
+    if (!this.isComponentScopedToolName(toolName)) {
+      return input;
+    }
+
+    const nextInput = { ...(input || {}) };
+    const enterpriseId = this.readContextString(
+      nextInput.enterprise_id,
+      sessionContext?.enterpriseId,
+      sessionContext?.enterprise_id,
+      actor.enterpriseId
+    );
+    const appIdRaw = this.readContextString(
+      nextInput.app_id,
+      sessionContext?.appId,
+      sessionContext?.app_id
+    );
+
+    if (!enterpriseId || !appIdRaw) {
+      return nextInput;
+    }
+
+    const parsedAppId = Number(appIdRaw);
+    const appId = Number.isNaN(parsedAppId) ? appIdRaw : parsedAppId;
+
+    if (typeof nextInput.service_id === "string" && nextInput.service_id) {
+      nextInput.service_id = await this.resolveServiceIdCandidate(
+        client,
+        enterpriseId,
+        appId,
+        nextInput.service_id
+      );
+    }
+
+    if (Array.isArray(nextInput.service_ids) && nextInput.service_ids.length > 0) {
+      nextInput.service_ids = await Promise.all(
+        nextInput.service_ids.map(async (item) => {
+          if (typeof item !== "string" || !item) {
+            return item;
+          }
+
+          return this.resolveServiceIdCandidate(
+            client,
+            enterpriseId,
+            appId,
+            item
+          );
+        })
+      );
+    }
+
+    if (
+      toolName === "rainbond_vertical_scale_component" &&
+      typeof nextInput.new_gpu !== "number"
+    ) {
+      nextInput.new_gpu = await this.resolveCurrentComponentGpu(
+        client,
+        nextInput
+      );
+    }
+
+    return nextInput;
+  }
+
+  private async resolveServiceIdCandidate(
+    client: RainbondQueryToolClient,
+    enterpriseId: string,
+    appId: string | number,
+    candidate: string
+  ): Promise<string> {
+    try {
+      const result = await client.callTool<QueryComponentsLookupResult>(
+        "rainbond_query_components",
+        {
+          enterprise_id: enterpriseId,
+          app_id: appId,
+          query: candidate,
+          page: 1,
+          page_size: 20,
+        }
+      );
+      const items = Array.isArray(result.structuredContent?.items)
+        ? result.structuredContent.items
+        : [];
+      const matched =
+        items.find((item) => item.service_id === candidate) ||
+        items.find((item) => item.service_alias === candidate) ||
+        items.find((item) => item.service_cname === candidate) ||
+        items[0];
+
+      return matched?.service_id || candidate;
+    } catch {
+      return candidate;
+    }
+  }
+
+  private async resolveCurrentComponentGpu(
+    client: RainbondQueryToolClient,
+    input: Record<string, unknown>
+  ): Promise<number> {
+    try {
+      const result = await client.callTool<ComponentSummaryLookupResult>(
+        "rainbond_get_component_summary",
+        {
+          team_name: input.team_name,
+          region_name: input.region_name,
+          app_id: input.app_id,
+          service_id: input.service_id,
+          event_limit: 1,
+        }
+      );
+
+      const gpu = result.structuredContent?.service?.container_gpu;
+      return typeof gpu === "number" ? gpu : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  private isComponentScopedToolName(toolName: string): boolean {
+    if (/^rainbond_get_component_/.test(toolName)) {
+      return true;
+    }
+
+    const policy = getMutableToolPolicy(toolName);
+    return policy?.scope === "component";
   }
 
   private mergeAssistantContentWithToolResults(
@@ -930,14 +1091,16 @@ export class ServerLlmExecutor {
     mutableTools: McpToolDefinition[] = []
   ): ToolDefinition[] {
     return [
-      ...Object.values(this.skills).map((skill) => ({
-        type: "function" as const,
-        function: {
-          name: skill.id,
-          description: skill.description,
-          parameters: this.inferParameters(skill.id),
-        },
-      })),
+      ...(this.enableLegacyActionSkills
+        ? Object.values(this.skills).map((skill) => ({
+            type: "function" as const,
+            function: {
+              name: skill.id,
+              description: skill.description,
+              parameters: this.inferParameters(skill.id),
+            },
+          }))
+        : []),
       ...buildReadOnlyMcpToolDefinitions(readOnlyTools),
       ...buildMutableMcpToolDefinitions(mutableTools),
     ];
@@ -977,6 +1140,26 @@ export class ServerLlmExecutor {
       "rainbond_install_app_by_market",
       "rainbond_upgrade_app",
     ]);
+    const allowedComponentToolNames = new Set([
+      "rainbond_manage_component_envs",
+      "rainbond_manage_component_connection_envs",
+      "rainbond_manage_component_dependency",
+      "rainbond_manage_component_ports",
+      "rainbond_manage_component_storage",
+      "rainbond_manage_component_autoscaler",
+      "rainbond_manage_component_probe",
+      "rainbond_horizontal_scale_component",
+      "rainbond_vertical_scale_component",
+      "rainbond_build_component",
+      "rainbond_change_component_image",
+      "rainbond_create_component",
+      "rainbond_create_component_from_image",
+      "rainbond_create_component_from_source",
+      "rainbond_create_component_from_local_package",
+      "rainbond_create_component_from_package",
+      "rainbond_delete_component",
+      "rainbond_operate_app",
+    ]);
     const allowedTeamToolNames = new Set(["rainbond_create_app"]);
     return filterMutableMcpTools(tools).filter((tool) => {
       const policy = getMutableToolPolicy(tool.name);
@@ -987,6 +1170,7 @@ export class ServerLlmExecutor {
       return (
         policy.scope === "enterprise" ||
         allowedAppToolNames.has(tool.name) ||
+        allowedComponentToolNames.has(tool.name) ||
         allowedTeamToolNames.has(tool.name)
       );
     });

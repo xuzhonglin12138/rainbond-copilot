@@ -93,6 +93,7 @@ export class CustomAnthropicClient {
             }
             return {
                 content: content || null,
+                reasoning_content: null,
                 tool_calls,
                 finish_reason: data.stop_reason,
             };

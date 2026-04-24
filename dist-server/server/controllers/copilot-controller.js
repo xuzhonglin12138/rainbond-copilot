@@ -183,6 +183,34 @@ function parseSnapshotRollbackVersion(message) {
     }
     return matched[1];
 }
+async function hydrateVerticalScaleArguments(client, arguments_) {
+    if (typeof arguments_.new_gpu === "number" ||
+        typeof arguments_.team_name !== "string" ||
+        typeof arguments_.region_name !== "string" ||
+        typeof arguments_.service_id !== "string") {
+        return arguments_;
+    }
+    try {
+        const summary = await client.callTool("rainbond_get_component_summary", {
+            team_name: arguments_.team_name,
+            region_name: arguments_.region_name,
+            app_id: arguments_.app_id,
+            service_id: arguments_.service_id,
+            event_limit: 1,
+        });
+        const gpu = summary.structuredContent?.service?.container_gpu;
+        return {
+            ...arguments_,
+            new_gpu: typeof gpu === "number" ? gpu : 0,
+        };
+    }
+    catch {
+        return {
+            ...arguments_,
+            new_gpu: 0,
+        };
+    }
+}
 function findSnapshotVersionId(payload, targetVersion) {
     if (!payload || !Array.isArray(payload.items) || !targetVersion) {
         return 0;
@@ -277,6 +305,7 @@ function buildContextualOperateDescription(action, target, label) {
     return `重启当前应用 ${label}`;
 }
 export function createCopilotController(deps = {}) {
+    const enableLegacyActionSkills = deps.enableLegacyActionSkills === true;
     const sessionStore = deps.sessionStore ?? createInMemorySessionStore();
     const runStore = deps.runStore ?? createInMemoryRunStore();
     const approvalStore = deps.approvalStore ?? createInMemoryApprovalStore();
@@ -328,34 +357,6 @@ export function createCopilotController(deps = {}) {
         let nextSequence = completedEvents.length + 1;
         let traceToolName = pendingAction.toolName;
         let output;
-        if (pendingAction.kind === "action_skill") {
-            const actionAdapter = await resolveActionAdapter({
-                actor: params.actor,
-                sessionId: params.sessionId,
-            });
-            if (!actionAdapter) {
-                throw new Error("Action adapter is required");
-            }
-            const actionSkills = createServerActionSkills(actionAdapter);
-            const skill = actionSkills[pendingAction.toolName];
-            if (!skill) {
-                throw new Error(`Unsupported action skill: ${pendingAction.toolName}`);
-            }
-            traceToolName = skill.name;
-            const actionResult = (await skill.execute(pendingAction.arguments));
-            output = {
-                isError: false,
-                structuredContent: actionResult,
-                content: [],
-            };
-        }
-        else {
-            const client = await resolvePendingMcpClient({
-                actor: params.actor,
-                sessionId: params.sessionId,
-            });
-            output = await client.callTool(pendingAction.toolName, pendingAction.arguments);
-        }
         await eventPublisher.publish({
             type: "chat.trace",
             tenantId: params.actor.tenantId,
@@ -368,6 +369,78 @@ export function createCopilotController(deps = {}) {
             },
         });
         nextSequence += 1;
+        try {
+            if (pendingAction.kind === "action_skill") {
+                const actionAdapter = await resolveActionAdapter({
+                    actor: params.actor,
+                    sessionId: params.sessionId,
+                });
+                if (!actionAdapter) {
+                    throw new Error("Action adapter is required");
+                }
+                const actionSkills = createServerActionSkills(actionAdapter);
+                const skill = actionSkills[pendingAction.toolName];
+                if (!skill) {
+                    throw new Error(`Unsupported action skill: ${pendingAction.toolName}`);
+                }
+                traceToolName = skill.name;
+                const actionResult = (await skill.execute(pendingAction.arguments));
+                output = {
+                    isError: false,
+                    structuredContent: actionResult,
+                    content: [],
+                };
+            }
+            else {
+                const client = await resolvePendingMcpClient({
+                    actor: params.actor,
+                    sessionId: params.sessionId,
+                });
+                const pendingArguments = pendingAction.toolName === "rainbond_vertical_scale_component"
+                    ? await hydrateVerticalScaleArguments(client, pendingAction.arguments)
+                    : pendingAction.arguments;
+                output = await client.callTool(pendingAction.toolName, pendingArguments);
+                pendingAction.arguments = pendingArguments;
+            }
+        }
+        catch (error) {
+            const errorMessage = error && typeof error.message === "string" && error.message
+                ? error.message
+                : "执行过程中发生错误，请稍后重试。";
+            await sessionStore.update({
+                ...currentSession,
+                pendingWorkflowAction: undefined,
+            });
+            await runStore.update({
+                ...currentRun,
+                status: "failed",
+                errorMessage,
+                finishedAt: new Date().toISOString(),
+            });
+            await eventPublisher.publish({
+                type: "run.error",
+                tenantId: params.actor.tenantId,
+                sessionId: params.sessionId,
+                runId: params.runId,
+                sequence: nextSequence,
+                data: {
+                    code: "internal_error",
+                    message: errorMessage,
+                },
+            });
+            nextSequence += 1;
+            await eventPublisher.publish({
+                type: "run.status",
+                tenantId: params.actor.tenantId,
+                sessionId: params.sessionId,
+                runId: params.runId,
+                sequence: nextSequence,
+                data: {
+                    status: "error",
+                },
+            });
+            return;
+        }
         await eventPublisher.publish({
             type: "chat.trace",
             tenantId: params.actor.tenantId,
@@ -631,38 +704,58 @@ export function createCopilotController(deps = {}) {
                     sessionId: request.params.sessionId,
                 })
                 : deps.actionAdapter;
-            const runExecutor = new ServerRunExecutor({
-                broker,
-                eventPublisher,
-                actionAdapter,
-            });
             const llmExecutor = new ServerLlmExecutor({
                 broker,
                 eventPublisher,
                 llmClient: deps.llmClient,
                 actionAdapter,
                 queryToolClientFactory: deps.queryToolClientFactory,
+                enableLegacyActionSkills,
                 requestApproval: async (input) => {
                     await queuePendingActionApproval(input);
                 },
             });
-            const plan = runExecutor.plan(request.body.message);
-            if (plan.requiresApproval) {
-                await queuePendingActionApproval({
-                    actor: request.actor,
-                    sessionId: request.params.sessionId,
-                    runId: run.runId,
-                    pendingAction: {
-                        kind: "action_skill",
-                        toolName: plan.skillId,
-                        requiresApproval: true,
-                        risk: plan.risk,
-                        description: plan.description,
-                        arguments: plan.input,
-                    },
-                    description: plan.description,
-                    risk: plan.risk,
+            if (enableLegacyActionSkills) {
+                const runExecutor = new ServerRunExecutor({
+                    broker,
+                    eventPublisher,
+                    actionAdapter,
                 });
+                const plan = runExecutor.plan(request.body.message);
+                if (plan.requiresApproval) {
+                    await queuePendingActionApproval({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        pendingAction: {
+                            kind: "action_skill",
+                            toolName: plan.skillId,
+                            requiresApproval: true,
+                            risk: plan.risk,
+                            description: plan.description,
+                            arguments: plan.input,
+                        },
+                        description: plan.description,
+                        risk: plan.risk,
+                    });
+                }
+                else {
+                    const handledByLlm = await llmExecutor.execute({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        message: request.body.message,
+                        sessionContext: session.context,
+                    });
+                    if (!handledByLlm) {
+                        await runExecutor.executeLowRisk({
+                            actor: request.actor,
+                            sessionId: request.params.sessionId,
+                            runId: run.runId,
+                            message: request.body.message,
+                        });
+                    }
+                }
             }
             else {
                 const handledByLlm = await llmExecutor.execute({
@@ -673,11 +766,29 @@ export function createCopilotController(deps = {}) {
                     sessionContext: session.context,
                 });
                 if (!handledByLlm) {
-                    await runExecutor.executeLowRisk({
-                        actor: request.actor,
+                    const fallbackEvents = await broker.replay(run.runId, request.actor.tenantId, { afterSequence: 0 });
+                    let nextSequence = fallbackEvents.length + 1;
+                    await eventPublisher.publish({
+                        type: "chat.message",
+                        tenantId: request.actor.tenantId,
                         sessionId: request.params.sessionId,
                         runId: run.runId,
-                        message: request.body.message,
+                        sequence: nextSequence,
+                        data: {
+                            role: "assistant",
+                            content: "当前已禁用规则型快捷动作，且本次没有可执行的 MCP 工具调用，请补充更明确的目标对象或操作参数后重试。",
+                        },
+                    });
+                    nextSequence += 1;
+                    await eventPublisher.publish({
+                        type: "run.status",
+                        tenantId: request.actor.tenantId,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        sequence: nextSequence,
+                        data: {
+                            status: "done",
+                        },
                     });
                 }
             }

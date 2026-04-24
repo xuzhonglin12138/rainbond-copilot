@@ -29,7 +29,10 @@ function buildGeneratedK8sAppName(value) {
 export class ServerLlmExecutor {
     constructor(deps) {
         this.deps = deps;
-        this.skills = createServerActionSkills(deps.actionAdapter);
+        this.enableLegacyActionSkills = deps.enableLegacyActionSkills === true;
+        this.skills = this.enableLegacyActionSkills
+            ? createServerActionSkills(deps.actionAdapter)
+            : {};
         this.resolvedClient = deps.llmClient;
     }
     async execute(params) {
@@ -66,6 +69,7 @@ export class ServerLlmExecutor {
             messages.push({
                 role: "assistant",
                 content: response.content || null,
+                reasoning_content: response.reasoning_content || null,
                 tool_calls: response.tool_calls,
             });
             for (const toolCall of response.tool_calls) {
@@ -133,8 +137,9 @@ export class ServerLlmExecutor {
                     continue;
                 }
                 const enrichedInput = this.enrichQueryToolInput(mcpTool.name, toolInput, params.sessionContext, params.actor);
+                const resolvedInput = await this.resolveComponentScopedInput(mcpTool.name, enrichedInput, mcpToolContext.client, params.sessionContext, params.actor);
                 if (isMutableMcpToolName(mcpTool.name)) {
-                    const approvalDecision = evaluateMutableToolApproval(mcpTool.name, enrichedInput);
+                    const approvalDecision = evaluateMutableToolApproval(mcpTool.name, resolvedInput);
                     if (approvalDecision.requiresApproval) {
                         if (!this.deps.requestApproval) {
                             throw new Error("requestApproval callback is required for protected MCP tools");
@@ -150,7 +155,7 @@ export class ServerLlmExecutor {
                                 risk: approvalDecision.risk,
                                 scope: approvalDecision.scope,
                                 description: approvalDecision.reason,
-                                arguments: enrichedInput,
+                                arguments: resolvedInput,
                             },
                             description: approvalDecision.reason,
                             risk: approvalDecision.risk,
@@ -159,7 +164,7 @@ export class ServerLlmExecutor {
                         return true;
                     }
                 }
-                const mcpCacheKey = this.buildToolCacheKey(toolCall.function.name, enrichedInput);
+                const mcpCacheKey = this.buildToolCacheKey(toolCall.function.name, resolvedInput);
                 const cachedMcpResult = toolResultCache.get(mcpCacheKey);
                 if (cachedMcpResult) {
                     messages.push({
@@ -172,9 +177,9 @@ export class ServerLlmExecutor {
                 }
                 await this.publishTrace(params, {
                     tool_name: mcpTool.name,
-                    input: enrichedInput,
+                    input: resolvedInput,
                 });
-                const output = await mcpToolContext.client.callTool(mcpTool.name, enrichedInput);
+                const output = await mcpToolContext.client.callTool(mcpTool.name, resolvedInput);
                 const toolMessageContent = JSON.stringify(this.serializeMcpToolResult(output));
                 toolResultCache.set(mcpCacheKey, {
                     traceOutput: output,
@@ -182,7 +187,7 @@ export class ServerLlmExecutor {
                 });
                 await this.publishTrace(params, {
                     tool_name: mcpTool.name,
-                    input: enrichedInput,
+                    input: resolvedInput,
                     output,
                 });
                 messages.push({
@@ -374,6 +379,80 @@ export class ServerLlmExecutor {
             nextInput.k8s_app = buildGeneratedK8sAppName(targetAppName || "app");
         }
         return nextInput;
+    }
+    async resolveComponentScopedInput(toolName, input, client, sessionContext, actor) {
+        if (!this.isComponentScopedToolName(toolName)) {
+            return input;
+        }
+        const nextInput = { ...(input || {}) };
+        const enterpriseId = this.readContextString(nextInput.enterprise_id, sessionContext?.enterpriseId, sessionContext?.enterprise_id, actor.enterpriseId);
+        const appIdRaw = this.readContextString(nextInput.app_id, sessionContext?.appId, sessionContext?.app_id);
+        if (!enterpriseId || !appIdRaw) {
+            return nextInput;
+        }
+        const parsedAppId = Number(appIdRaw);
+        const appId = Number.isNaN(parsedAppId) ? appIdRaw : parsedAppId;
+        if (typeof nextInput.service_id === "string" && nextInput.service_id) {
+            nextInput.service_id = await this.resolveServiceIdCandidate(client, enterpriseId, appId, nextInput.service_id);
+        }
+        if (Array.isArray(nextInput.service_ids) && nextInput.service_ids.length > 0) {
+            nextInput.service_ids = await Promise.all(nextInput.service_ids.map(async (item) => {
+                if (typeof item !== "string" || !item) {
+                    return item;
+                }
+                return this.resolveServiceIdCandidate(client, enterpriseId, appId, item);
+            }));
+        }
+        if (toolName === "rainbond_vertical_scale_component" &&
+            typeof nextInput.new_gpu !== "number") {
+            nextInput.new_gpu = await this.resolveCurrentComponentGpu(client, nextInput);
+        }
+        return nextInput;
+    }
+    async resolveServiceIdCandidate(client, enterpriseId, appId, candidate) {
+        try {
+            const result = await client.callTool("rainbond_query_components", {
+                enterprise_id: enterpriseId,
+                app_id: appId,
+                query: candidate,
+                page: 1,
+                page_size: 20,
+            });
+            const items = Array.isArray(result.structuredContent?.items)
+                ? result.structuredContent.items
+                : [];
+            const matched = items.find((item) => item.service_id === candidate) ||
+                items.find((item) => item.service_alias === candidate) ||
+                items.find((item) => item.service_cname === candidate) ||
+                items[0];
+            return matched?.service_id || candidate;
+        }
+        catch {
+            return candidate;
+        }
+    }
+    async resolveCurrentComponentGpu(client, input) {
+        try {
+            const result = await client.callTool("rainbond_get_component_summary", {
+                team_name: input.team_name,
+                region_name: input.region_name,
+                app_id: input.app_id,
+                service_id: input.service_id,
+                event_limit: 1,
+            });
+            const gpu = result.structuredContent?.service?.container_gpu;
+            return typeof gpu === "number" ? gpu : 0;
+        }
+        catch {
+            return 0;
+        }
+    }
+    isComponentScopedToolName(toolName) {
+        if (/^rainbond_get_component_/.test(toolName)) {
+            return true;
+        }
+        const policy = getMutableToolPolicy(toolName);
+        return policy?.scope === "component";
     }
     mergeAssistantContentWithToolResults(content, synthesizedSummary) {
         const trimmedContent = (content || "").trim();
@@ -635,14 +714,16 @@ export class ServerLlmExecutor {
     }
     buildTools(readOnlyTools = [], mutableTools = []) {
         return [
-            ...Object.values(this.skills).map((skill) => ({
-                type: "function",
-                function: {
-                    name: skill.id,
-                    description: skill.description,
-                    parameters: this.inferParameters(skill.id),
-                },
-            })),
+            ...(this.enableLegacyActionSkills
+                ? Object.values(this.skills).map((skill) => ({
+                    type: "function",
+                    function: {
+                        name: skill.id,
+                        description: skill.description,
+                        parameters: this.inferParameters(skill.id),
+                    },
+                }))
+                : []),
             ...buildReadOnlyMcpToolDefinitions(readOnlyTools),
             ...buildMutableMcpToolDefinitions(mutableTools),
         ];
@@ -679,6 +760,26 @@ export class ServerLlmExecutor {
             "rainbond_install_app_by_market",
             "rainbond_upgrade_app",
         ]);
+        const allowedComponentToolNames = new Set([
+            "rainbond_manage_component_envs",
+            "rainbond_manage_component_connection_envs",
+            "rainbond_manage_component_dependency",
+            "rainbond_manage_component_ports",
+            "rainbond_manage_component_storage",
+            "rainbond_manage_component_autoscaler",
+            "rainbond_manage_component_probe",
+            "rainbond_horizontal_scale_component",
+            "rainbond_vertical_scale_component",
+            "rainbond_build_component",
+            "rainbond_change_component_image",
+            "rainbond_create_component",
+            "rainbond_create_component_from_image",
+            "rainbond_create_component_from_source",
+            "rainbond_create_component_from_local_package",
+            "rainbond_create_component_from_package",
+            "rainbond_delete_component",
+            "rainbond_operate_app",
+        ]);
         const allowedTeamToolNames = new Set(["rainbond_create_app"]);
         return filterMutableMcpTools(tools).filter((tool) => {
             const policy = getMutableToolPolicy(tool.name);
@@ -687,6 +788,7 @@ export class ServerLlmExecutor {
             }
             return (policy.scope === "enterprise" ||
                 allowedAppToolNames.has(tool.name) ||
+                allowedComponentToolNames.has(tool.name) ||
                 allowedTeamToolNames.has(tool.name));
         });
     }

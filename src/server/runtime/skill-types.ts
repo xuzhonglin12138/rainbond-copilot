@@ -38,8 +38,9 @@ export interface ActionAdapter {
     status: string;
   }>;
 
-  scaleComponentMemory(input: { name: string; memory: number }): Promise<{
+  scaleComponentMemory(input: { name: string; memory: number; cpu?: number }): Promise<{
     name: string;
     memory: number;
+    cpu?: number;
   }>;
 }

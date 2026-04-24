@@ -11,6 +11,7 @@ export interface LLMConfig {
 export interface ChatMessage {
   role: "system" | "user" | "assistant" | "tool";
   content: string | null;
+  reasoning_content?: string | null;
   name?: string;
   tool_call_id?: string;
   tool_calls?: ToolCall[];
@@ -40,6 +41,7 @@ export interface ToolCall {
 
 export interface ChatCompletionResponse {
   content: string | null;
+  reasoning_content?: string | null;
   tool_calls?: ToolCall[];
   finish_reason: "stop" | "tool_calls" | "length" | "content_filter";
 }

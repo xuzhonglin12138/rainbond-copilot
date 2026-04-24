@@ -33,8 +33,12 @@ export class OpenAIClient {
             }
             const choice = response.choices[0];
             const message = choice.message;
+            const reasoningContent = typeof message.reasoning_content === "string"
+                ? message.reasoning_content
+                : null;
             return {
                 content: message.content,
+                reasoning_content: reasoningContent,
                 tool_calls: message.tool_calls,
                 finish_reason: choice.finish_reason,
             };
@@ -59,6 +63,7 @@ export class OpenAIClient {
             stream: true,
         });
         let content = "";
+        let reasoning_content = "";
         let tool_calls = [];
         let finish_reason = "stop";
         for await (const chunk of stream) {
@@ -66,6 +71,9 @@ export class OpenAIClient {
             if (delta?.content) {
                 content += delta.content;
                 onChunk?.(delta.content);
+            }
+            if (typeof delta?.reasoning_content === "string") {
+                reasoning_content += delta.reasoning_content;
             }
             if (delta?.tool_calls) {
                 tool_calls.push(...delta.tool_calls);
@@ -76,6 +84,7 @@ export class OpenAIClient {
         }
         return {
             content: content || null,
+            reasoning_content: reasoning_content || null,
             tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
             finish_reason,
         };

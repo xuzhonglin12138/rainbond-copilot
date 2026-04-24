@@ -222,7 +222,8 @@ describe("SessionScopedRainbondActionAdapter", () => {
             isError: false,
             structuredContent: {
               component_name: "svc-direct",
-              memory: 2048,
+              new_memory: 1024,
+              new_cpu: 1000,
             },
             content: [],
           };
@@ -254,7 +255,7 @@ describe("SessionScopedRainbondActionAdapter", () => {
       },
     });
 
-    await adapter.scaleComponentMemory({ name: "svc-direct", memory: 2048 });
+    await adapter.scaleComponentMemory({ name: "svc-direct", memory: 1024, cpu: 1000 });
 
     expect(client.callTool).toHaveBeenCalledWith(
       "rainbond_vertical_scale_component",
@@ -263,7 +264,8 @@ describe("SessionScopedRainbondActionAdapter", () => {
         region_name: "region-a",
         app_id: 12,
         service_id: "svc-direct",
-        new_memory: 2048,
+        new_memory: 1024,
+        new_cpu: 1000,
       }
     );
   });
@@ -301,7 +303,8 @@ describe("SessionScopedRainbondActionAdapter", () => {
             isError: false,
             structuredContent: {
               component_name: "api",
-              memory: 2048,
+              new_memory: 1024,
+              new_cpu: 1000,
             },
             content: [],
           };
@@ -341,7 +344,7 @@ describe("SessionScopedRainbondActionAdapter", () => {
       },
     });
 
-    await adapter.scaleComponentMemory({ name: "svc-direct", memory: 2048 });
+    await adapter.scaleComponentMemory({ name: "svc-direct", memory: 1024, cpu: 1000 });
 
     expect(client.callTool).toHaveBeenCalledWith(
       "rainbond_vertical_scale_component",
@@ -350,7 +353,8 @@ describe("SessionScopedRainbondActionAdapter", () => {
         region_name: "region-a",
         app_id: 12,
         service_id: "svc-direct",
-        new_memory: 2048,
+        new_memory: 1024,
+        new_cpu: 1000,
       }
     );
   });

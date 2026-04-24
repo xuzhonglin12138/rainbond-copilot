@@ -17,6 +17,33 @@ function jsonResponse(payload: unknown, headers: Record<string, string> = {}) {
     async json() {
       return payload;
     },
+    async text() {
+      return JSON.stringify(payload);
+    },
+    clone() {
+      return jsonResponse(payload, headers);
+    },
+  };
+}
+
+function errorJsonResponse(status: number, payload: unknown) {
+  return {
+    ok: false,
+    status,
+    headers: {
+      get() {
+        return null;
+      },
+    },
+    async json() {
+      return payload;
+    },
+    async text() {
+      return JSON.stringify(payload);
+    },
+    clone() {
+      return errorJsonResponse(status, payload);
+    },
   };
 }
 
@@ -168,5 +195,47 @@ describe("RainbondMcpClient", () => {
     expect(toolHeaders.get("Authorization")).toBe("GRJWT token");
     expect(toolHeaders.get("Cookie")).toBe("token=jwt-token; sessionid=abc");
     expect(toolHeaders.get("Mcp-Session-Id")).toBe("session_123");
+  });
+
+  it("includes structured backend error details for non-200 MCP responses", async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse(
+          {
+            jsonrpc: "2.0",
+            id: 1,
+            result: {
+              protocolVersion: "2025-03-26",
+              serverInfo: { name: "rainbond-console-mcp", version: "0.1.0" },
+            },
+          },
+          {
+            "Mcp-Session-Id": "session_123",
+            "MCP-Protocol-Version": "2025-03-26",
+          }
+        )
+      )
+      .mockResolvedValueOnce(
+        errorJsonResponse(500, {
+          isError: true,
+          structuredContent: {
+            msg_show: "组件异常",
+          },
+        })
+      );
+
+    const client = new RainbondMcpClient({
+      baseUrl: "http://console.test",
+      fetchImpl,
+    });
+
+    await client.initialize({ authorization: "GRJWT token" });
+
+    await expect(
+      client.callTool("rainbond_vertical_scale_component", {})
+    ).rejects.toThrow(
+      "Rainbond MCP request failed with status 500: 组件异常"
+    );
   });
 });

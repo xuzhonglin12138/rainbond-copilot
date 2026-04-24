@@ -88,5 +88,459 @@
     "createdAt": "2026-04-23T08:27:02.049Z",
     "updatedAt": "2026-04-23T08:29:18.708Z",
     "latestRunId": "run_1776932958707_1"
+  },
+  {
+    "sessionId": "cs_1776945183120_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "170",
+      "app_name": "170",
+      "component_id": "gr679b11",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/170/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr679b11",
+        "name": "gr679b11"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|170|gr679b11|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T11:53:03.120Z",
+    "updatedAt": "2026-04-23T11:53:03.241Z",
+    "latestRunId": "run_1776945183240_2"
+  },
+  {
+    "sessionId": "cs_1776946087919_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "170",
+      "app_name": "170",
+      "component_id": "gr679b11",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/170/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr679b11",
+        "name": "gr679b11"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|170|gr679b11|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T12:08:07.919Z",
+    "updatedAt": "2026-04-23T12:09:07.204Z",
+    "latestRunId": "run_1776946147203_4"
+  },
+  {
+    "sessionId": "cs_1776946224093_6",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "170",
+      "app_name": "170",
+      "component_id": "gr679b11",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/170/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr679b11",
+        "name": "gr679b11"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|170|gr679b11|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T12:10:24.094Z",
+    "updatedAt": "2026-04-23T12:12:45.206Z",
+    "latestRunId": "run_1776946365206_a"
+  },
+  {
+    "sessionId": "cs_1776947165537_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "170",
+      "app_name": "170",
+      "component_id": "gr679b11",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/170/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr679b11",
+        "name": "gr679b11"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|170|gr679b11|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T12:26:05.537Z",
+    "updatedAt": "2026-04-23T12:26:05.643Z",
+    "latestRunId": "run_1776947165642_2"
+  },
+  {
+    "sessionId": "cs_1776948148018_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "170",
+      "app_name": "170",
+      "component_id": "gr679b11",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/170/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr679b11",
+        "name": "gr679b11"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|170|gr679b11|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T12:42:28.018Z",
+    "updatedAt": "2026-04-23T12:42:28.137Z",
+    "latestRunId": "run_1776948148135_2",
+    "pendingWorkflowAction": {
+      "kind": "mcp_tool",
+      "toolName": "rainbond_vertical_scale_component",
+      "requiresApproval": true,
+      "risk": "medium",
+      "scope": "component",
+      "description": "调整组件 0dfb3f33959a4df393efb4713f679b11 的资源配置",
+      "arguments": {
+        "team_name": "kz5igqh4",
+        "region_name": "rainbond",
+        "app_id": 170,
+        "service_id": "0dfb3f33959a4df393efb4713f679b11",
+        "new_memory": 1024,
+        "new_cpu": 1000,
+        "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+      }
+    }
+  },
+  {
+    "sessionId": "cs_1776948258067_4",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "170",
+      "app_name": "170",
+      "component_id": "gr679b11",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/170/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr679b11",
+        "name": "gr679b11"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|170|gr679b11|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T12:44:18.067Z",
+    "updatedAt": "2026-04-23T12:44:18.202Z",
+    "latestRunId": "run_1776948258201_5",
+    "pendingWorkflowAction": {
+      "kind": "mcp_tool",
+      "toolName": "rainbond_vertical_scale_component",
+      "requiresApproval": true,
+      "risk": "medium",
+      "scope": "component",
+      "description": "调整组件 0dfb3f33959a4df393efb4713f679b11 的资源配置",
+      "arguments": {
+        "team_name": "kz5igqh4",
+        "region_name": "rainbond",
+        "app_id": 170,
+        "service_id": "0dfb3f33959a4df393efb4713f679b11",
+        "new_memory": 1024,
+        "new_cpu": 1000,
+        "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+      }
+    }
+  },
+  {
+    "sessionId": "cs_1776949000941_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "158",
+      "app_name": "158",
+      "component_id": "gradb093",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/158/overview",
+      "resource": {
+        "type": "component",
+        "id": "gradb093",
+        "name": "gradb093"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|158|gradb093|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T12:56:40.941Z",
+    "updatedAt": "2026-04-23T12:56:41.058Z",
+    "latestRunId": "run_1776949001057_2"
+  },
+  {
+    "sessionId": "cs_1776949527421_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "158",
+      "app_name": "158",
+      "component_id": "gradb093",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/158/overview",
+      "resource": {
+        "type": "component",
+        "id": "gradb093",
+        "name": "gradb093"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|158|gradb093|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T13:05:27.421Z",
+    "updatedAt": "2026-04-23T13:05:27.541Z",
+    "latestRunId": "run_1776949527540_2"
+  },
+  {
+    "sessionId": "cs_1776950272865_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "158",
+      "app_name": "158",
+      "component_id": "5e3d8577491be560e10b495906a01c12",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/158/overview",
+      "resource": {
+        "type": "component",
+        "id": "5e3d8577491be560e10b495906a01c12",
+        "name": "5e3d8577491be560e10b495906a01c12"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|158|5e3d8577491be560e10b495906a01c12|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T13:17:52.865Z",
+    "updatedAt": "2026-04-23T13:18:54.947Z",
+    "latestRunId": "run_1776950334946_3"
+  },
+  {
+    "sessionId": "cs_1776950784750_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "kz5igqh4",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "kz5igqh4",
+      "region_name": "rainbond",
+      "app_id": "158",
+      "app_name": "158",
+      "component_id": "gra01c12",
+      "component_source": "query",
+      "page": "/team/kz5igqh4/region/rainbond/apps/158/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra01c12",
+        "name": "gra01c12"
+      }
+    },
+    "contextSignature": "kz5igqh4|rainbond|158|gra01c12|candidate",
+    "status": "active",
+    "createdAt": "2026-04-23T13:26:24.750Z",
+    "updatedAt": "2026-04-23T13:26:24.856Z",
+    "latestRunId": "run_1776950784855_2"
+  },
+  {
+    "sessionId": "cs_1776996998210_4",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "pdt0yhfe",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "pdt0yhfe",
+      "region_name": "rainbond",
+      "app_id": "76",
+      "app_name": "76",
+      "component_id": "88e0e2068ab78416b41cf48eb5b0e9c3",
+      "component_source": "query",
+      "page": "/team/pdt0yhfe/region/rainbond/apps/76/overview",
+      "resource": {
+        "type": "component",
+        "id": "88e0e2068ab78416b41cf48eb5b0e9c3",
+        "name": "88e0e2068ab78416b41cf48eb5b0e9c3"
+      }
+    },
+    "contextSignature": "pdt0yhfe|rainbond|76|88e0e2068ab78416b41cf48eb5b0e9c3|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T02:16:38.210Z",
+    "updatedAt": "2026-04-24T03:12:02.295Z",
+    "latestRunId": "run_1777000322294_a"
+  },
+  {
+    "sessionId": "cs_1777000372395_b",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "pdt0yhfe",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "pdt0yhfe",
+      "region_name": "rainbond",
+      "app_id": "76",
+      "app_name": "76",
+      "component_id": "grb0e9c3",
+      "component_source": "query",
+      "page": "/team/pdt0yhfe/region/rainbond/apps/76/overview",
+      "resource": {
+        "type": "component",
+        "id": "grb0e9c3",
+        "name": "grb0e9c3"
+      }
+    },
+    "contextSignature": "pdt0yhfe|rainbond|76|grb0e9c3|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T03:12:52.395Z",
+    "updatedAt": "2026-04-24T03:12:52.507Z",
+    "latestRunId": "run_1777000372506_c"
+  },
+  {
+    "sessionId": "cs_1777000784944_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "pdt0yhfe",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "pdt0yhfe",
+      "region_name": "rainbond",
+      "app_id": "76",
+      "app_name": "76",
+      "component_id": "88e0e2068ab78416b41cf48eb5b0e9c3",
+      "component_source": "query",
+      "page": "/team/pdt0yhfe/region/rainbond/apps/76/overview",
+      "resource": {
+        "type": "component",
+        "id": "88e0e2068ab78416b41cf48eb5b0e9c3",
+        "name": "88e0e2068ab78416b41cf48eb5b0e9c3"
+      }
+    },
+    "contextSignature": "pdt0yhfe|rainbond|76|88e0e2068ab78416b41cf48eb5b0e9c3|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T03:19:44.944Z",
+    "updatedAt": "2026-04-24T03:22:00.161Z",
+    "latestRunId": "run_1777000920161_5"
+  },
+  {
+    "sessionId": "cs_1777000992321_6",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "25jt3s7o",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "25jt3s7o",
+      "region_name": "rainbond",
+      "app_id": "161",
+      "app_name": "161",
+      "component_id": "cf7c654c675978754ad06caf13b8ec36",
+      "component_source": "query",
+      "page": "/team/25jt3s7o/region/rainbond/apps/161/overview",
+      "resource": {
+        "type": "component",
+        "id": "cf7c654c675978754ad06caf13b8ec36",
+        "name": "cf7c654c675978754ad06caf13b8ec36"
+      }
+    },
+    "contextSignature": "25jt3s7o|rainbond|161|cf7c654c675978754ad06caf13b8ec36|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T03:23:12.321Z",
+    "updatedAt": "2026-04-24T03:30:26.167Z",
+    "latestRunId": "run_1777001426166_d"
   }
 ]

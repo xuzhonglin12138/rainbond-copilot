@@ -21,6 +21,7 @@ describe("createServerActionSkills", () => {
       scaleComponentMemory: vi.fn(async () => ({
         name: "api",
         memory: 2048,
+        cpu: 1000,
       })),
     };
 
@@ -36,6 +37,37 @@ describe("createServerActionSkills", () => {
       name: "api",
       status: "running",
       memory: 1024,
+    });
+  });
+
+  it("passes cpu together with memory for scale action skills", async () => {
+    const adapter = {
+      getComponentStatus: vi.fn(),
+      getComponentLogs: vi.fn(),
+      restartComponent: vi.fn(),
+      scaleComponentMemory: vi.fn(async () => ({
+        name: "api",
+        memory: 1024,
+        cpu: 1000,
+      })),
+    };
+
+    const skills = createServerActionSkills(adapter as any);
+    const result = await skills["scale-component-memory"].execute({
+      name: "api",
+      memory: 1024,
+      cpu: 1000,
+    });
+
+    expect(adapter.scaleComponentMemory).toHaveBeenCalledWith({
+      name: "api",
+      memory: 1024,
+      cpu: 1000,
+    });
+    expect(result).toMatchObject({
+      name: "api",
+      memory: 1024,
+      cpu: 1000,
     });
   });
 

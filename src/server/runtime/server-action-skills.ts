@@ -108,16 +108,18 @@ export function createServerActionSkills(
     "scale-component-memory": createActionSkill(
       "scale-component-memory",
       {
-        name: "Scale Component Memory",
-        description: "Scale the memory allocation of a Rainbond component",
+        name: "Scale Component Resources",
+        description: "Scale the CPU and memory allocation of a Rainbond component",
         risk: "medium",
         requiresApproval: true,
         approvalPolicy: {
-          evaluate(input: { name: string; memory: number }) {
+          evaluate(input: { name: string; memory: number; cpu?: number }) {
             const isLargeScaleChange = input.memory >= 2048;
             const isStatefulComponent = /(^|[-_])(db|mysql|redis)([-_]|$)/i.test(
               input.name
             );
+            const cpuPart =
+              typeof input.cpu === "number" ? `，CPU 调整到 ${input.cpu}m` : "";
 
             return {
               requiresApproval: true,
@@ -127,12 +129,12 @@ export function createServerActionSkills(
                   : ("medium" as const),
               reason:
                 isLargeScaleChange || isStatefulComponent
-                  ? `将 ${input.name} 的内存调整到 ${input.memory}MB，属于高影响资源变更`
-                  : `将 ${input.name} 的内存调整到 ${input.memory}MB，需要确认资源变更影响`,
+                  ? `将 ${input.name} 的内存调整到 ${input.memory}MB${cpuPart}，属于高影响资源变更`
+                  : `将 ${input.name} 的内存调整到 ${input.memory}MB${cpuPart}，需要确认资源变更影响`,
             };
           },
         },
-        execute: (input: { name: string; memory: number }) =>
+        execute: (input: { name: string; memory: number; cpu?: number }) =>
           requireActionAdapter(adapter).scaleComponentMemory(input),
       }
     ),

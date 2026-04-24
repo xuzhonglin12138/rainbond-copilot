@@ -103,13 +103,14 @@ describe("RainbondMcpActionAdapter", () => {
     expect(result.status).toBe("running");
   });
 
-  it("maps scaleComponentMemory to rainbond_vertical_scale_component", async () => {
+  it("maps scaleComponentMemory to rainbond_vertical_scale_component with cpu and memory", async () => {
     const client = {
       callTool: vi.fn(async () => ({
         isError: false,
         structuredContent: {
           component_name: "api",
-          memory: 2048,
+          new_memory: 1024,
+          new_cpu: 1000,
         },
         content: [],
       })),
@@ -121,7 +122,8 @@ describe("RainbondMcpActionAdapter", () => {
       regionName: "region-a",
       appId: 12,
       serviceId: "svc-1",
-      memory: 2048,
+      memory: 1024,
+      cpu: 1000,
     });
 
     expect(client.callTool).toHaveBeenCalledWith(
@@ -131,12 +133,14 @@ describe("RainbondMcpActionAdapter", () => {
         region_name: "region-a",
         app_id: 12,
         service_id: "svc-1",
-        new_memory: 2048,
+        new_memory: 1024,
+        new_cpu: 1000,
       }
     );
     expect(result).toMatchObject({
       name: "api",
-      memory: 2048,
+      memory: 1024,
+      cpu: 1000,
     });
   });
 });

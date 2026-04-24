@@ -290,6 +290,110 @@ describe("copilot event stream", () => {
     );
   });
 
+  it("preserves reasoning_content across tool call continuations", async () => {
+    const llmClient = {
+      chat: vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: "",
+          reasoning_content: "先确认当前团队应用列表，再决定下一步。",
+          tool_calls: [
+            {
+              id: "tool_team_apps_reasoning_1",
+              type: "function",
+              function: {
+                name: "rainbond_get_team_apps",
+                arguments: JSON.stringify({}),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "已完成查询。",
+          finish_reason: "stop",
+        }),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_get_team_apps",
+          description: "Get application list under the specified team and region.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              team_name: { type: "string" },
+              region_name: { type: "string" },
+            },
+            required: ["team_name", "region_name"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {
+          items: [],
+          total: 0,
+          page: 1,
+          page_size: 20,
+        },
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "jabrm8l6",
+      regionName: "rainbond",
+      enterpriseId: "8948f3fcf66e0cd91bf1045e8ca4a965",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "8948f3fcf66e0cd91bf1045e8ca4a965",
+          team_name: "jabrm8l6",
+          region_name: "rainbond",
+          page: "/team/jabrm8l6/region/rainbond/index",
+        },
+      },
+    });
+
+    await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "请帮我查看当前团队的应用列表", stream: true },
+    });
+
+    const secondCallMessages = llmClient.chat.mock.calls[1][0];
+    expect(secondCallMessages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "assistant",
+          reasoning_content: "先确认当前团队应用列表，再决定下一步。",
+          tool_calls: [
+            expect.objectContaining({
+              function: expect.objectContaining({
+                name: "rainbond_get_team_apps",
+              }),
+            }),
+          ],
+        }),
+      ])
+    );
+  });
+
   it("routes enterprise mutable MCP tool calls into approval flow", async () => {
     const llmClient = {
       chat: vi.fn(async () => ({
@@ -732,6 +836,228 @@ describe("copilot event stream", () => {
     expect(queryToolClient.callTool).not.toHaveBeenCalled();
   });
 
+  it("executes low-risk component summary mutable MCP tools directly", async () => {
+    const llmClient = {
+      chat: vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: "",
+          tool_calls: [
+            {
+              id: "tool_component_probe_summary_1",
+              type: "function",
+              function: {
+                name: "rainbond_manage_component_probe",
+                arguments: JSON.stringify({
+                  operation: "summary",
+                }),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "",
+          finish_reason: "stop",
+        }),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_manage_component_probe",
+          description: "Manage component probes.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              operation: { type: "string" },
+            },
+            required: ["operation"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {
+          probe_count: 1,
+          operation: "summary",
+        },
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "demo-team",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "demo-team",
+          region_name: "rainbond",
+          app_id: "134",
+          component_id: "svc-1",
+          page: "/team/demo-team/region/rainbond/apps/134/overview",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "查看当前组件的探针概况", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "chat.trace",
+      "chat.trace",
+      "chat.message",
+      "run.status",
+    ]);
+    expect(queryToolClient.callTool).toHaveBeenCalledWith(
+      "rainbond_manage_component_probe",
+      {
+        operation: "summary",
+        enterprise_id: "ent_123",
+        team_name: "demo-team",
+        region_name: "rainbond",
+        app_id: 134,
+        service_id: "svc-1",
+      }
+    );
+  });
+
+  it("routes component operate_app actions into component-scoped approval flow", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_component_restart_1",
+            type: "function",
+            function: {
+              name: "rainbond_operate_app",
+              arguments: JSON.stringify({
+                action: "restart",
+                service_ids: ["svc-1"],
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_operate_app",
+          description: "Batch operate application components.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              action: { type: "string" },
+              service_ids: {
+                type: "array",
+                items: { type: "string" },
+              },
+            },
+            required: ["action"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {},
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "demo-team",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "demo-team",
+          region_name: "rainbond",
+          app_id: "134",
+          component_id: "svc-1",
+          page: "/team/demo-team/region/rainbond/apps/134/overview",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "重启当前组件", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "重启组件 svc-1",
+        risk: "high",
+        level_label: "危险",
+        scope: "component",
+        scope_label: "组件级",
+      },
+    });
+    expect(queryToolClient.callTool).not.toHaveBeenCalled();
+  });
+
   it("routes snapshot rollback requests into approval with the resolved snapshot version id", async () => {
     const llmClient = {
       chat: vi.fn(async () => ({
@@ -924,6 +1250,137 @@ describe("copilot event stream", () => {
     expect(String(pendingAction.arguments.k8s_app)).toMatch(
       /^demo-mcp-[a-z0-9]{6}$/
     );
+  });
+
+  it("resolves component alias to service_id before queuing component env approvals", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_component_env_1",
+            type: "function",
+            function: {
+              name: "rainbond_manage_component_envs",
+              arguments: JSON.stringify({
+                operation: "upsert",
+                attr_name: "VV",
+                attr_value: "dd",
+                name: "VV",
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_manage_component_envs",
+          description: "Manage component environment variables.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              operation: { type: "string" },
+              attr_name: { type: "string" },
+              attr_value: { type: "string" },
+              name: { type: "string" },
+            },
+            required: ["operation"],
+          },
+        },
+      ]),
+      callTool: vi.fn(async (name: string) => {
+        if (name === "rainbond_query_components") {
+          return {
+            isError: false,
+            structuredContent: {
+              items: [
+                {
+                  service_id: "svc-1",
+                  service_alias: "backend",
+                  service_cname: "backend",
+                },
+              ],
+              total: 1,
+            },
+            content: [],
+          };
+        }
+
+        return {
+          isError: false,
+          structuredContent: {},
+          content: [],
+        };
+      }),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "kz5igqh4",
+      regionName: "rainbond",
+      enterpriseId: "8948f3fcf66e0cd91bf1045e8ca4a965",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "8948f3fcf66e0cd91bf1045e8ca4a965",
+          team_name: "kz5igqh4",
+          region_name: "rainbond",
+          app_id: "170",
+          component_id: "backend",
+          component_source: "route",
+          page: "/team/kz5igqh4/region/rainbond/apps/170/overview",
+        },
+      },
+    });
+    await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "给当前组件添加环境变量 VV=dd", stream: true },
+    });
+
+    const currentSession = await controller.getSession({
+      actor,
+      params: { sessionId: session.data.session_id },
+    });
+    const pendingAction = currentSession.data.pending_workflow_action as any;
+
+    expect(queryToolClient.callTool).toHaveBeenCalledWith(
+      "rainbond_query_components",
+      {
+        enterprise_id: "8948f3fcf66e0cd91bf1045e8ca4a965",
+        app_id: 170,
+        query: "backend",
+        page: 1,
+        page_size: 20,
+      }
+    );
+    expect(pendingAction).toMatchObject({
+      tool_name: "rainbond_manage_component_envs",
+      requires_approval: true,
+      arguments: expect.objectContaining({
+        operation: "upsert",
+        service_id: "svc-1",
+        attr_name: "VV",
+        attr_value: "dd",
+        name: "VV",
+      }),
+    });
   });
 
   it("refreshes the server-side session context when a new message carries a more specific context", async () => {

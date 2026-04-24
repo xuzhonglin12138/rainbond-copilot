@@ -31,6 +31,8 @@ interface RpcRequest {
   params?: Record<string, unknown>;
 }
 
+type ResponseLike = Awaited<ReturnType<FetchLike>>;
+
 function trimTrailingSlash(input: string): string {
   return input.endsWith("/") ? input.slice(0, -1) : input;
 }
@@ -43,6 +45,69 @@ function getHeader(
     return "";
   }
   return headers.get(name) || "";
+}
+
+async function readErrorResponseMessage(response: ResponseLike): Promise<string> {
+  try {
+    const cloned = response.clone();
+    const payload = await cloned.json();
+
+    if (payload && typeof payload === "object") {
+      const jsonrpcError =
+        (payload as any).error &&
+        typeof (payload as any).error.message === "string"
+          ? (payload as any).error.message
+          : "";
+      if (jsonrpcError) {
+        return jsonrpcError;
+      }
+
+      const directMessage =
+        typeof (payload as any).msg_show === "string" && (payload as any).msg_show
+          ? (payload as any).msg_show
+          : typeof (payload as any).msg === "string" && (payload as any).msg
+            ? (payload as any).msg
+            : typeof (payload as any).message === "string" && (payload as any).message
+              ? (payload as any).message
+              : "";
+      if (directMessage) {
+        return directMessage;
+      }
+
+      if ((payload as any).result && typeof (payload as any).result === "object") {
+        const result = (payload as any).result;
+        const structured =
+          result.structuredContent && typeof result.structuredContent === "object"
+            ? result.structuredContent
+            : result;
+        const structuredMessage =
+          typeof structured.msg_show === "string" && structured.msg_show
+            ? structured.msg_show
+            : typeof structured.msg === "string" && structured.msg
+              ? structured.msg
+              : typeof structured.message === "string" && structured.message
+                ? structured.message
+                : "";
+        if (structuredMessage) {
+          return structuredMessage;
+        }
+      }
+    }
+  } catch {
+    // fall through to text body parsing
+  }
+
+  try {
+    const cloned = response.clone();
+    const text = (await cloned.text()).trim();
+    if (text) {
+      return text.slice(0, 500);
+    }
+  } catch {
+    // ignore text parsing failure
+  }
+
+  return "";
 }
 
 export class RainbondMcpClient {
@@ -157,7 +222,12 @@ export class RainbondMcpClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Rainbond MCP request failed with status ${response.status}`);
+      const detail = await readErrorResponseMessage(response);
+      throw new Error(
+        detail
+          ? `Rainbond MCP request failed with status ${response.status}: ${detail}`
+          : `Rainbond MCP request failed with status ${response.status}`
+      );
     }
 
     const json = (await response.json()) as McpRpcResponse<TResult>;
