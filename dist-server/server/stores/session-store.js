@@ -13,6 +13,7 @@ export function createSessionRecord(input) {
         lastVerifiedScopeSignature: input.lastVerifiedScopeSignature,
         verifiedScope: input.verifiedScope,
         pendingWorkflowAction: input.pendingWorkflowAction,
+        pendingLlmContinuation: input.pendingLlmContinuation,
         status: input.status ?? "active",
         latestRunId: input.latestRunId,
         createdAt: now,

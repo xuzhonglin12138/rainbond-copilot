@@ -27,6 +27,41 @@ function shouldAutoRollbackSnapshot(message) {
     }
     return /(回滚到|回滚当前应用|回滚快照|rollback)/i.test(normalized);
 }
+function parseSnapshotVersionInput(message) {
+    const normalized = (message || "").trim();
+    if (!normalized) {
+        return "";
+    }
+    const matched = normalized.match(/\b(v?\d+\.\d+(?:\.\d+)?)\b/i);
+    return matched && matched[1] ? matched[1] : "";
+}
+function suggestNextSnapshotVersion(version) {
+    const normalized = (version || "").trim();
+    if (!normalized) {
+        return "v1.0.1";
+    }
+    const matched = normalized.match(/^(v?)(\d+)\.(\d+)(?:\.(\d+))?$/i);
+    if (!matched) {
+        return "v1.0.1";
+    }
+    const prefix = matched[1] || "v";
+    const major = Number(matched[2]);
+    const minor = Number(matched[3]);
+    const patch = matched[4] ? Number(matched[4]) + 1 : 1;
+    if (!Number.isFinite(major) || !Number.isFinite(minor) || !Number.isFinite(patch)) {
+        return "v1.0.1";
+    }
+    return `${prefix || "v"}${major}.${minor}.${patch}`;
+}
+function suggestRollbackSnapshotVersion(items) {
+    if (items.length > 1) {
+        return readStructuredString(items[1], "version");
+    }
+    if (items.length > 0) {
+        return readStructuredString(items[0], "version");
+    }
+    return "v1.0.1";
+}
 function shouldUseCloudTemplateInstall(message) {
     const normalized = (message || "").trim();
     if (!normalized) {
@@ -180,7 +215,11 @@ function isAppAssistantPrompt(message) {
     return /(rainbond.+跑起来|在 rainbond 上跑起来|部署|修复|恢复服务|卡在哪|排查|探针|probe|端口|port|存储|挂载|volume|autoscaler|伸缩|连接信息|helm|chart|模板|template|市场|安装到当前应用|快照|snapshot|发布|publish|回滚|rollback|版本中心|version center|交付|验收|验证|verify|访问地址|url|你能做什么|可以做什么|有哪些流程|有哪些能力|有哪些工作流|workflow|skill|技能)/i.test(message);
 }
 export function isContinueWorkflowActionPrompt(message) {
-    return /(继续执行|确认执行|继续|立即执行|execute|confirm|run now)/i.test(message);
+    const normalized = (message || "").trim();
+    if (!normalized) {
+        return false;
+    }
+    return /^(继续执行|确认执行|继续|立即执行|execute|confirm|run now|是的|是|好的|好|可以|行|没问题|没错|对)$/i.test(normalized);
 }
 export class WorkflowExecutor {
     constructor(deps) {
@@ -430,7 +469,7 @@ export class WorkflowExecutor {
                             ? readStructuredString(versions.structuredContent.items[versions.structuredContent.items.length - 1], "version")
                             : "";
                     return {
-                        summary: "已查询云市场模板及其版本，下一步可继续选择版本并执行安装。",
+                        summary: `已查询云市场模板及其版本，建议安装版本为 ${latestVersion}。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。`,
                         toolCalls,
                         lastSequence: sequenceCursor - 1,
                         subflowData: {
@@ -439,6 +478,22 @@ export class WorkflowExecutor {
                             appModelName: modelName,
                             versionCount,
                             latestVersion,
+                        },
+                        proposedToolAction: {
+                            toolName: "rainbond_install_app_model",
+                            requiresApproval: true,
+                            arguments: {
+                                team_name: result.candidateScope.teamName || actor.tenantId,
+                                region_name: result.candidateScope.regionName || actor.regionName || "",
+                                app_id: parseAppId(result.candidateScope.appId),
+                                source: "cloud",
+                                market_name: marketName,
+                                app_model_id: modelId,
+                                app_model_version: latestVersion,
+                                is_deploy: true,
+                                __await_version_input: true,
+                                suggested_version: latestVersion,
+                            },
                         },
                     };
                 }
@@ -491,7 +546,11 @@ export class WorkflowExecutor {
                     output: versions,
                 });
                 return {
-                    summary: "已查询当前企业下可安装的本地模板及其版本，下一步可继续选择版本并执行安装。",
+                    summary: `已查询当前企业下可安装的本地模板及其版本，建议安装版本为 ${versions.structuredContent &&
+                        Array.isArray(versions.structuredContent.items) &&
+                        versions.structuredContent.items.length > 0
+                        ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
+                        : ""}。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。`,
                     toolCalls: [
                         { name: "rainbond_query_local_app_models", status: "success" },
                         { name: "rainbond_query_app_model_versions", status: "success" },
@@ -512,6 +571,29 @@ export class WorkflowExecutor {
                             versions.structuredContent.items.length > 0
                             ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
                             : undefined,
+                    },
+                    proposedToolAction: {
+                        toolName: "rainbond_install_app_model",
+                        requiresApproval: true,
+                        arguments: {
+                            team_name: result.candidateScope.teamName || actor.tenantId,
+                            region_name: result.candidateScope.regionName || actor.regionName || "",
+                            app_id: parseAppId(result.candidateScope.appId),
+                            source: "local",
+                            app_model_id: modelId,
+                            app_model_version: versions.structuredContent &&
+                                Array.isArray(versions.structuredContent.items) &&
+                                versions.structuredContent.items.length > 0
+                                ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
+                                : "",
+                            is_deploy: true,
+                            __await_version_input: true,
+                            suggested_version: versions.structuredContent &&
+                                Array.isArray(versions.structuredContent.items) &&
+                                versions.structuredContent.items.length > 0
+                                ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
+                                : "",
+                        },
                     },
                 };
             }
@@ -603,6 +685,87 @@ export class WorkflowExecutor {
                 latestSnapshotVersion,
                 latestSnapshotServiceCount,
             };
+            if (shouldAutoCreateSnapshot(message)) {
+                const requestedSnapshotVersion = parseSnapshotVersionInput(message);
+                if (requestedSnapshotVersion) {
+                    const createSnapshotWithVersionInput = {
+                        ...createSnapshotInput,
+                        version: requestedSnapshotVersion,
+                    };
+                    const createSequence = (latestSnapshotDetail ? 9 : 7) + 1;
+                    await this.publishToolTrace(actor.tenantId, sessionId, runId, createSequence, {
+                        tool_name: "rainbond_create_app_version_snapshot",
+                        input: createSnapshotWithVersionInput,
+                    });
+                    const createSnapshotOutput = await client.callTool("rainbond_create_app_version_snapshot", createSnapshotWithVersionInput);
+                    await this.publishToolTrace(actor.tenantId, sessionId, runId, createSequence + 1, {
+                        tool_name: "rainbond_create_app_version_snapshot",
+                        input: createSnapshotWithVersionInput,
+                        output: createSnapshotOutput,
+                    });
+                    return {
+                        summary: `已创建应用快照 ${requestedSnapshotVersion}，可以继续执行发布或回滚。`,
+                        toolCalls: [
+                            ...baseToolCalls,
+                            { name: "rainbond_create_app_version_snapshot", status: "success" },
+                        ],
+                        lastSequence: createSequence + 1,
+                        subflowData: {
+                            ...baseSubflowData,
+                            snapshotVersion: requestedSnapshotVersion,
+                        },
+                        structuredResultPatch: {
+                            executedAction: {
+                                toolName: "rainbond_create_app_version_snapshot",
+                                requiresApproval: false,
+                            },
+                        },
+                    };
+                }
+                const suggestedSnapshotVersion = suggestNextSnapshotVersion(latestSnapshotVersion || currentVersion);
+                return {
+                    summary: `已读取版本中心概览，建议新快照版本为 ${suggestedSnapshotVersion}。请直接回复版本号，我会为当前运行态创建新的快照。`,
+                    toolCalls: baseToolCalls,
+                    lastSequence: latestSnapshotDetail ? 9 : 7,
+                    subflowData: {
+                        ...baseSubflowData,
+                        suggestedSnapshotVersion,
+                    },
+                    proposedToolAction: {
+                        toolName: "rainbond_create_app_version_snapshot",
+                        requiresApproval: false,
+                        arguments: {
+                            ...createSnapshotInput,
+                            __await_version_input: true,
+                            suggested_version: suggestedSnapshotVersion,
+                        },
+                    },
+                };
+            }
+            if (shouldAutoRollbackSnapshot(message)) {
+                const requestedRollbackVersion = parseSnapshotVersionInput(message);
+                if (!requestedRollbackVersion) {
+                    const suggestedRollbackVersion = suggestRollbackSnapshotVersion(snapshotItems);
+                    return {
+                        summary: `已读取版本中心概览，请直接回复要回滚到的快照版本号，例如 ${suggestedRollbackVersion}。`,
+                        toolCalls: baseToolCalls,
+                        lastSequence: latestSnapshotDetail ? 9 : 7,
+                        subflowData: {
+                            ...baseSubflowData,
+                            suggestedRollbackVersion,
+                        },
+                        proposedToolAction: {
+                            toolName: "rainbond_rollback_app_version_snapshot",
+                            requiresApproval: true,
+                            arguments: {
+                                ...createSnapshotInput,
+                                __await_version_input: true,
+                                suggested_version: suggestedRollbackVersion,
+                            },
+                        },
+                    };
+                }
+            }
             return {
                 summary: "已查询版本中心概览，下一步可继续进入快照、发布或回滚动作。",
                 toolCalls: baseToolCalls,

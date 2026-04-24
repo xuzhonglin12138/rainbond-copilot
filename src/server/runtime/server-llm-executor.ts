@@ -24,7 +24,10 @@ import {
 } from "../integrations/rainbond-mcp/mutable-tools.js";
 import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import type { McpToolDefinition, McpToolResult } from "../integrations/rainbond-mcp/types.js";
-import type { PendingWorkflowAction } from "../stores/session-store.js";
+import type {
+  PendingLlmContinuation,
+  PendingWorkflowAction,
+} from "../stores/session-store.js";
 import { createServerActionSkills } from "./server-action-skills.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
 
@@ -46,6 +49,7 @@ interface ServerLlmExecutorDeps {
     sessionId: string;
     runId: string;
     pendingAction: PendingWorkflowAction;
+    continuation?: PendingLlmContinuation;
     description: string;
     risk: RiskLevel;
     scope?: string;
@@ -59,6 +63,7 @@ export interface ExecuteServerLlmRunParams {
   runId: string;
   message: string;
   sessionContext?: Record<string, unknown>;
+  continuation?: PendingLlmContinuation;
 }
 
 export type QueryToolClientFactory = (params: {
@@ -124,24 +129,26 @@ export class ServerLlmExecutor {
       return false;
     }
 
-    const messages: ChatMessage[] = [
-      {
-        role: "system",
-        content: await buildServerSystemPrompt(),
-      },
-      ...(this.buildSessionContextMessages(params.sessionContext) as ChatMessage[]),
-      {
-        role: "user",
-        content: params.message,
-      },
-    ];
+    const messages: ChatMessage[] = params.continuation?.messages
+      ? params.continuation.messages.map((message) => ({ ...message }))
+      : [
+          {
+            role: "system",
+            content: await buildServerSystemPrompt(),
+          },
+          ...(this.buildSessionContextMessages(params.sessionContext) as ChatMessage[]),
+          {
+            role: "user",
+            content: params.message,
+          },
+        ];
 
     const mcpToolContext = await this.resolveMcpToolContext(params);
     const tools = this.buildTools(
       mcpToolContext.readOnlyDefinitions,
       mcpToolContext.mutableDefinitions
     );
-    let iteration = 0;
+    let iteration = params.continuation?.iteration || 0;
     const toolResultCache = new Map<
       string,
       {
@@ -177,7 +184,8 @@ export class ServerLlmExecutor {
         tool_calls: response.tool_calls,
       });
 
-      for (const toolCall of response.tool_calls) {
+      for (let toolIndex = 0; toolIndex < response.tool_calls.length; toolIndex += 1) {
+        const toolCall = response.tool_calls[toolIndex];
         const skill = this.skills[toolCall.function.name];
         const toolInput = JSON.parse(toolCall.function.arguments || "{}");
         if (skill) {
@@ -201,6 +209,12 @@ export class ServerLlmExecutor {
             if (!this.deps.requestApproval) {
               throw new Error("requestApproval callback is required for protected action skills");
             }
+            const followUpActions = await this.buildFollowUpActionsFromToolCalls({
+              toolCalls: response.tool_calls,
+              startIndex: toolIndex + 1,
+              executeParams: params,
+              mcpToolContext,
+            });
             await this.deps.requestApproval({
               actor: params.actor,
               sessionId: params.sessionId,
@@ -208,10 +222,16 @@ export class ServerLlmExecutor {
               pendingAction: {
                 kind: "action_skill",
                 toolName: toolCall.function.name,
+                toolCallId: toolCall.id,
                 requiresApproval: true,
                 risk: approvalDecision.risk,
                 description: approvalDecision.reason,
                 arguments: toolInput,
+                followUpActions,
+              },
+              continuation: {
+                iteration,
+                messages: messages.map((message) => ({ ...message })),
               },
               description: approvalDecision.reason,
               risk: approvalDecision.risk,
@@ -273,6 +293,12 @@ export class ServerLlmExecutor {
             if (!this.deps.requestApproval) {
               throw new Error("requestApproval callback is required for protected MCP tools");
             }
+            const followUpActions = await this.buildFollowUpActionsFromToolCalls({
+              toolCalls: response.tool_calls,
+              startIndex: toolIndex + 1,
+              executeParams: params,
+              mcpToolContext,
+            });
             await this.deps.requestApproval({
               actor: params.actor,
               sessionId: params.sessionId,
@@ -280,11 +306,17 @@ export class ServerLlmExecutor {
               pendingAction: {
                 kind: "mcp_tool",
                 toolName: mcpTool.name,
+                toolCallId: toolCall.id,
                 requiresApproval: true,
                 risk: approvalDecision.risk,
                 scope: approvalDecision.scope,
                 description: approvalDecision.reason,
                 arguments: resolvedInput,
+                followUpActions,
+              },
+              continuation: {
+                iteration,
+                messages: messages.map((message) => ({ ...message })),
               },
               description: approvalDecision.reason,
               risk: approvalDecision.risk,
@@ -1316,6 +1348,118 @@ export class ServerLlmExecutor {
     input: Record<string, unknown>
   ): string {
     return `${toolName}:${JSON.stringify(input || {})}`;
+  }
+
+  private async buildFollowUpActionsFromToolCalls(params: {
+    toolCalls: NonNullable<ChatCompletionResponse["tool_calls"]>;
+    startIndex: number;
+    executeParams: ExecuteServerLlmRunParams;
+    mcpToolContext: {
+      client: RainbondQueryToolClient | null;
+      readOnlyDefinitions: McpToolDefinition[];
+      mutableDefinitions: McpToolDefinition[];
+      byName: Map<string, McpToolDefinition>;
+    };
+  }): Promise<PendingWorkflowAction[]> {
+    const { toolCalls, startIndex, executeParams, mcpToolContext } = params;
+    const followUps: PendingWorkflowAction[] = [];
+
+    for (let index = startIndex; index < toolCalls.length; index += 1) {
+      const action = await this.buildPendingActionFromToolCall(
+        toolCalls[index],
+        executeParams,
+        mcpToolContext
+      );
+      if (action) {
+        followUps.push(action);
+      }
+    }
+
+    return this.attachFollowUpActions(followUps);
+  }
+
+  private attachFollowUpActions(
+    actions: PendingWorkflowAction[]
+  ): PendingWorkflowAction[] {
+    return actions.map((action, index) => ({
+      ...action,
+      followUpActions:
+        index + 1 < actions.length ? actions.slice(index + 1) : undefined,
+    }));
+  }
+
+  private async buildPendingActionFromToolCall(
+    toolCall: NonNullable<ChatCompletionResponse["tool_calls"]>[number],
+    params: ExecuteServerLlmRunParams,
+    mcpToolContext: {
+      client: RainbondQueryToolClient | null;
+      readOnlyDefinitions: McpToolDefinition[];
+      mutableDefinitions: McpToolDefinition[];
+      byName: Map<string, McpToolDefinition>;
+    }
+  ): Promise<PendingWorkflowAction | null> {
+    const toolName = toolCall.function.name;
+    const toolInput = JSON.parse(toolCall.function.arguments || "{}");
+    const skill = this.skills[toolName];
+
+    if (skill) {
+      const approvalDecision = this.evaluateSkillApproval(skill, toolInput);
+      return {
+        kind: "action_skill",
+        toolName,
+        toolCallId: toolCall.id,
+        requiresApproval: approvalDecision.requiresApproval,
+        risk: approvalDecision.risk,
+        description: approvalDecision.reason,
+        arguments: toolInput,
+      };
+    }
+
+    const mcpTool = mcpToolContext.byName.get(toolName);
+    if (!mcpTool || !mcpToolContext.client) {
+      return null;
+    }
+
+    const enrichedInput = this.enrichQueryToolInput(
+      mcpTool.name,
+      toolInput,
+      params.sessionContext,
+      params.actor
+    );
+    const resolvedInput = await this.resolveComponentScopedInput(
+      mcpTool.name,
+      enrichedInput,
+      mcpToolContext.client,
+      params.sessionContext,
+      params.actor
+    );
+
+    if (isMutableMcpToolName(mcpTool.name)) {
+      const approvalDecision = evaluateMutableToolApproval(
+        mcpTool.name,
+        resolvedInput
+      );
+      return {
+        kind: "mcp_tool",
+        toolName: mcpTool.name,
+        toolCallId: toolCall.id,
+        requiresApproval: approvalDecision.requiresApproval,
+        risk: approvalDecision.risk,
+        scope: approvalDecision.scope,
+        description: approvalDecision.reason,
+        arguments: resolvedInput,
+      };
+    }
+
+    return {
+      kind: "mcp_tool",
+      toolName: mcpTool.name,
+      toolCallId: toolCall.id,
+      requiresApproval: false,
+      risk: "low",
+      description: `执行 ${mcpTool.name}`,
+      arguments: resolvedInput,
+    };
   }
 
   private extractDisplayName(item: Record<string, any>): string {

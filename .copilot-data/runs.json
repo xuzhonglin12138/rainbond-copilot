@@ -288,5 +288,71 @@
     "status": "completed",
     "startedAt": "2026-04-24T03:30:26.166Z",
     "finishedAt": "2026-04-24T03:30:44.389Z"
+  },
+  {
+    "runId": "run_1777011475154_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777011474942_1",
+    "messageText": "添加一个XX=yy的环境变量后，对这个应用进行一次快照",
+    "status": "running",
+    "startedAt": "2026-04-24T06:17:55.154Z"
+  },
+  {
+    "runId": "run_1777011591498_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777011474942_1",
+    "messageText": "回滚快照到上一个版本后关闭整个应用",
+    "status": "pending",
+    "startedAt": "2026-04-24T06:19:51.498Z"
+  },
+  {
+    "runId": "run_1777011646078_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777011474942_1",
+    "messageText": "是的",
+    "status": "pending",
+    "startedAt": "2026-04-24T06:20:46.078Z"
+  },
+  {
+    "runId": "run_1777012731122_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777012731022_1",
+    "messageText": "回滚快照到上一个版本后关闭整个应用",
+    "status": "completed",
+    "startedAt": "2026-04-24T06:38:51.122Z",
+    "finishedAt": "2026-04-24T06:38:58.765Z"
+  },
+  {
+    "runId": "run_1777013653542_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777012731022_1",
+    "messageText": "启动当前应用并添加环境变量CC=ff,最后建立一个新的快照",
+    "status": "running",
+    "startedAt": "2026-04-24T06:54:13.542Z"
+  },
+  {
+    "runId": "run_1777013709088_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777012731022_1",
+    "messageText": "v1.0.3",
+    "status": "pending",
+    "startedAt": "2026-04-24T06:55:09.088Z"
+  },
+  {
+    "runId": "run_1777017182943_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017182810_9",
+    "messageText": "启动当前应用并添加环境变量CC=ff,最后建立一个新的快照",
+    "status": "waiting_approval",
+    "startedAt": "2026-04-24T07:53:02.943Z"
+  },
+  {
+    "runId": "run_1777017243747_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777017243591_1",
+    "messageText": "启动当前应用并添加环境变量CC=ff,最后建立一个新的快照",
+    "status": "completed",
+    "startedAt": "2026-04-24T07:54:03.747Z",
+    "finishedAt": "2026-04-24T07:54:35.806Z"
   }
 ]

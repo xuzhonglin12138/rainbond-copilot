@@ -83,6 +83,9 @@ export class CopilotSessionService {
       pendingWorkflowAction: contextChanged
         ? undefined
         : session.pendingWorkflowAction,
+      pendingLlmContinuation: contextChanged
+        ? undefined
+        : session.pendingLlmContinuation,
     };
 
     await this.sessionStore.update(updatedSession);

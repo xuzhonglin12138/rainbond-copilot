@@ -1058,6 +1058,609 @@ describe("copilot event stream", () => {
     expect(queryToolClient.callTool).not.toHaveBeenCalled();
   });
 
+  it("keeps follow-up mutable tool actions from the same sentence instead of dropping the second one", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "",
+        tool_calls: [
+          {
+            id: "tool_env_1",
+            type: "function",
+            function: {
+              name: "rainbond_manage_component_envs",
+              arguments: JSON.stringify({
+                operation: "upsert",
+                envs: [
+                  {
+                    name: "MYSQL_HOST",
+                    attr_name: "MYSQL_HOST",
+                    attr_value: "db.default",
+                  },
+                ],
+              }),
+            },
+          },
+          {
+            id: "tool_port_1",
+            type: "function",
+            function: {
+              name: "rainbond_manage_component_ports",
+              arguments: JSON.stringify({
+                operation: "enable_outer",
+                port: 8080,
+              }),
+            },
+          },
+        ],
+        finish_reason: "tool_calls",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_manage_component_envs",
+          description: "Manage component envs.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              operation: { type: "string" },
+              envs: { type: "array" },
+            },
+          },
+        },
+        {
+          name: "rainbond_manage_component_ports",
+          description: "Manage component ports.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              operation: { type: "string" },
+              port: { type: "integer" },
+            },
+          },
+        },
+      ]),
+      callTool: vi.fn(async (name: string, input: Record<string, unknown>) => {
+        if (name === "rainbond_manage_component_envs") {
+          return {
+            isError: false,
+            structuredContent: {
+              updated: true,
+              service_id: input.service_id,
+            },
+            content: [],
+          };
+        }
+        return {
+          isError: false,
+          structuredContent: {
+            updated: true,
+            service_id: input.service_id,
+          },
+          content: [],
+        };
+      }),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      sessionStore,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "team-a",
+      tenantName: "team-a",
+      regionName: "region-a",
+      enterpriseId: "eid-1",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          team_name: "team-a",
+          region_name: "region-a",
+          app_id: "12",
+          component_id: "svc-direct",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: {
+        message: "把 MYSQL_HOST 改成 db.default，并且把 8080 端口开放到外网",
+        stream: true,
+      },
+    });
+
+    const initialStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(initialStream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+
+    const storedSessionAfterQueue = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(storedSessionAfterQueue?.pendingWorkflowAction).toMatchObject({
+      toolName: "rainbond_manage_component_envs",
+      followUpActions: [
+        expect.objectContaining({
+          toolName: "rainbond_manage_component_ports",
+          requiresApproval: true,
+        }),
+      ],
+    });
+
+    const firstApprovalId = initialStream.events[1].data.approval_id;
+    await controller.decideApproval({
+      actor,
+      params: { approvalId: firstApprovalId },
+      body: { decision: "approved", comment: "先执行第一步" },
+    });
+
+    const resumedAfterFirstApproval = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "3" },
+    });
+
+    expect(resumedAfterFirstApproval.events.map((event) => event.type)).toContain(
+      "approval.requested"
+    );
+
+    const storedSessionAfterFirstApproval = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(storedSessionAfterFirstApproval?.pendingWorkflowAction).toMatchObject({
+      toolName: "rainbond_manage_component_ports",
+    });
+  });
+
+  it("continues the llm tool loop after approval using the approved tool result", async () => {
+    const llmClient = {
+      chat: vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: "",
+          tool_calls: [
+            {
+              id: "tool_mutate_1",
+              type: "function",
+              function: {
+                name: "rainbond_manage_component_envs",
+                arguments: JSON.stringify({
+                  operation: "upsert",
+                  envs: [
+                    {
+                      name: "MYSQL_HOST",
+                      attr_name: "MYSQL_HOST",
+                      attr_value: "db.default",
+                    },
+                  ],
+                }),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "",
+          tool_calls: [
+            {
+              id: "tool_summary_1",
+              type: "function",
+              function: {
+                name: "rainbond_get_component_summary",
+                arguments: JSON.stringify({}),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "环境变量已更新，组件当前状态正常。",
+          finish_reason: "stop",
+        }),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_manage_component_envs",
+          description: "Manage component envs.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              operation: { type: "string" },
+              envs: { type: "array" },
+            },
+          },
+        },
+        {
+          name: "rainbond_get_component_summary",
+          description: "Get component summary.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              team_name: { type: "string" },
+              region_name: { type: "string" },
+              app_id: { type: "integer" },
+              service_id: { type: "string" },
+            },
+          },
+        },
+      ]),
+      callTool: vi.fn(async (name: string, input: Record<string, unknown>) => {
+        if (name === "rainbond_manage_component_envs") {
+          return {
+            isError: false,
+            structuredContent: {
+              updated: true,
+              service_id: input.service_id,
+            },
+            content: [],
+          };
+        }
+
+        return {
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "svc-direct",
+              min_memory: 1024,
+            },
+            status: {
+              status: "running",
+            },
+          },
+          content: [],
+        };
+      }),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "team-a",
+      tenantName: "team-a",
+      regionName: "region-a",
+      enterpriseId: "eid-1",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          team_name: "team-a",
+          region_name: "region-a",
+          app_id: "12",
+          component_id: "svc-direct",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: {
+        message: "把 MYSQL_HOST 改成 db.default，改完后帮我确认组件状态",
+        stream: true,
+      },
+    });
+
+    const initialStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(initialStream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+
+    const approvalId = initialStream.events[1].data.approval_id;
+    await controller.decideApproval({
+      actor,
+      params: { approvalId },
+      body: { decision: "approved", comment: "执行并继续" },
+    });
+
+    const resumedStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "3" },
+    });
+
+    expect(llmClient.chat).toHaveBeenCalledTimes(3);
+    expect(llmClient.chat.mock.calls[1][0]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "assistant",
+          tool_calls: [
+            expect.objectContaining({
+              id: "tool_mutate_1",
+              function: expect.objectContaining({
+                name: "rainbond_manage_component_envs",
+              }),
+            }),
+          ],
+        }),
+        expect.objectContaining({
+          role: "tool",
+          name: "rainbond_manage_component_envs",
+          tool_call_id: "tool_mutate_1",
+        }),
+      ])
+    );
+    expect(resumedStream.events.at(-1)).toMatchObject({
+      type: "run.status",
+      data: { status: "done" },
+    });
+    expect(
+      resumedStream.events.find((event) => event.type === "chat.message")?.data
+    ).toMatchObject({
+      role: "assistant",
+      content: expect.stringContaining("svc-direct"),
+    });
+  });
+
+  it("resumes the llm loop after multiple approved actions so it can continue planning later steps", async () => {
+    const llmClient = {
+      chat: vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: "",
+          tool_calls: [
+            {
+              id: "tool_start_1",
+              type: "function",
+              function: {
+                name: "rainbond_operate_app",
+                arguments: JSON.stringify({
+                  action: "start",
+                }),
+              },
+            },
+            {
+              id: "tool_env_1",
+              type: "function",
+              function: {
+                name: "rainbond_manage_component_envs",
+                arguments: JSON.stringify({
+                  operation: "upsert",
+                  envs: [
+                    {
+                      name: "CC",
+                      attr_name: "CC",
+                      attr_value: "ff",
+                    },
+                  ],
+                }),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "",
+          tool_calls: [
+            {
+              id: "tool_snapshot_1",
+              type: "function",
+              function: {
+                name: "rainbond_create_app_version_snapshot",
+                arguments: JSON.stringify({
+                  version: "v1.0.3",
+                }),
+              },
+            },
+          ],
+          finish_reason: "tool_calls",
+        })
+        .mockResolvedValueOnce({
+          content: "三个步骤都已完成。",
+          finish_reason: "stop",
+        }),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => [
+        {
+          name: "rainbond_operate_app",
+          description: "Operate app.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              action: { type: "string" },
+            },
+          },
+        },
+        {
+          name: "rainbond_manage_component_envs",
+          description: "Manage component envs.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              operation: { type: "string" },
+              envs: { type: "array" },
+            },
+          },
+        },
+        {
+          name: "rainbond_create_app_version_snapshot",
+          description: "Create app version snapshot.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              version: { type: "string" },
+            },
+          },
+        },
+      ]),
+      callTool: vi.fn(async (name: string, input: Record<string, unknown>) => {
+        if (name === "rainbond_operate_app") {
+          return {
+            isError: false,
+            structuredContent: {
+              action: "start",
+              app_id: input.app_id,
+            },
+            content: [],
+          };
+        }
+
+        if (name === "rainbond_manage_component_envs") {
+          return {
+            isError: false,
+            structuredContent: {
+              updated: true,
+              service_id: input.service_id,
+            },
+            content: [],
+          };
+        }
+
+        return {
+          isError: false,
+          structuredContent: {
+            snapshot: {
+              version: "v1.0.3",
+            },
+          },
+          content: [],
+        };
+      }),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      queryToolClientFactory: async () => queryToolClient as any,
+    });
+    const actor = {
+      tenantId: "team-a",
+      tenantName: "team-a",
+      regionName: "region-a",
+      enterpriseId: "eid-1",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          team_name: "team-a",
+          region_name: "region-a",
+          app_id: "134",
+          component_id: "svc-direct",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: {
+        message: "启动当前应用并添加环境变量CC=ff,最后建立一个新的快照",
+        stream: true,
+      },
+    });
+
+    const firstStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+    const firstApprovalId = firstStream.events[1].data.approval_id;
+
+    await controller.decideApproval({
+      actor,
+      params: { approvalId: firstApprovalId },
+      body: { decision: "approved", comment: "先启动" },
+    });
+
+    const secondApprovalStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "3" },
+    });
+    const secondApprovalId = secondApprovalStream.events.find(
+      (event) => event.type === "approval.requested"
+    ).data.approval_id;
+
+    await controller.decideApproval({
+      actor,
+      params: { approvalId: secondApprovalId },
+      body: { decision: "approved", comment: "再改环境变量" },
+    });
+
+    const finalStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: String(secondApprovalStream.events.at(-1).sequence) },
+    });
+
+    expect(llmClient.chat).toHaveBeenCalledTimes(3);
+    expect(queryToolClient.callTool).toHaveBeenCalledWith(
+      "rainbond_create_app_version_snapshot",
+      expect.objectContaining({
+        version: "v1.0.3",
+      })
+    );
+    expect(finalStream.events.at(-1)).toMatchObject({
+      type: "run.status",
+      data: { status: "done" },
+    });
+  });
+
   it("routes snapshot rollback requests into approval with the resolved snapshot version id", async () => {
     const llmClient = {
       chat: vi.fn(async () => ({
@@ -1149,6 +1752,113 @@ describe("copilot event stream", () => {
         scope_label: "应用级",
       },
     });
+  });
+
+  it("queues rollback-to-previous-version and close-app as pending approvals for version-center confirmation prompts", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+
+    const queryToolClient = {
+      listTools: vi.fn(async () => []),
+      callTool: vi.fn(async () => ({
+        isError: false,
+        structuredContent: {
+          items: [
+            { version_id: 39, version: "1.0.3" },
+            { version_id: 38, version: "1.0.2" },
+            { version_id: 37, version: "1.0.1" },
+          ],
+          total: 3,
+        },
+        content: [],
+      })),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      actionAdapter: mockActionAdapter as any,
+      queryToolClientFactory: async () => queryToolClient as any,
+      sessionStore,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: ["app_admin"],
+      tenantName: "kz5igqh4",
+      regionName: "rainbond",
+      enterpriseId: "ent_123",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          enterprise_id: "ent_123",
+          team_name: "kz5igqh4",
+          region_name: "rainbond",
+          app_id: "158",
+          page: "/team/kz5igqh4/region/rainbond/apps/158/version",
+        },
+      },
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "回滚快照到上一个版本后关闭整个应用", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "approval.requested",
+      "run.status",
+    ]);
+    expect(stream.events[1]).toMatchObject({
+      type: "approval.requested",
+      data: {
+        description: "回滚当前应用到快照版本 1.0.2",
+      },
+    });
+
+    const storedSession = await controller.getSession({
+      actor,
+      params: { sessionId: session.data.session_id },
+    });
+    expect(storedSession.data.pending_workflow_action).toMatchObject({
+      tool_name: "rainbond_rollback_app_version_snapshot",
+      requires_approval: true,
+      arguments: expect.objectContaining({
+        version_id: 38,
+      }),
+    });
+    const internalSession = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(internalSession?.pendingWorkflowAction?.followUpActions).toMatchObject([
+      expect.objectContaining({
+        toolName: "rainbond_operate_app",
+        arguments: expect.objectContaining({
+          action: "stop",
+          app_id: 158,
+        }),
+      }),
+    ]);
   });
 
   it("adds a generated k8s_app when creating a new app from a snapshot version", async () => {

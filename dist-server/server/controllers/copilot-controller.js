@@ -39,6 +39,18 @@ function readContextInt(context, ...keys) {
     const numeric = Number(raw);
     return Number.isFinite(numeric) ? numeric : 0;
 }
+function readContextAppId(context, ...keys) {
+    const raw = readContextString(context, ...keys);
+    if (!raw) {
+        return 0;
+    }
+    const numeric = Number(raw);
+    if (Number.isFinite(numeric)) {
+        return numeric;
+    }
+    const matched = raw.match(/(\d+)/);
+    return matched && matched[1] ? Number(matched[1]) : 0;
+}
 function isDeleteCurrentAppIntent(message, context) {
     const normalized = (message || "").trim();
     if (!normalized) {
@@ -182,6 +194,48 @@ function parseSnapshotRollbackVersion(message) {
         return "";
     }
     return matched[1];
+}
+function parseSnapshotCreateVersionInput(message) {
+    const normalized = (message || "").trim();
+    if (!normalized) {
+        return "";
+    }
+    const matched = normalized.match(/\b(v?\d+\.\d+(?:\.\d+)?)\b/i);
+    return matched && matched[1] ? matched[1] : "";
+}
+function requestsRollbackToPreviousSnapshot(message) {
+    const normalized = (message || "").trim();
+    if (!normalized || !/(回滚|rollback)/i.test(normalized)) {
+        return false;
+    }
+    return /(上一个版本|上个版本|上一版本|前一个版本|上一个快照|上个快照|上一快照|previous version|previous snapshot)/i.test(normalized);
+}
+function requestsCloseWholeApp(message) {
+    const normalized = (message || "").trim();
+    if (!normalized) {
+        return false;
+    }
+    return /(关闭整个应用|关闭当前应用|关闭应用|停止整个应用|停止当前应用|停止应用|close.*app|stop.*app)/i.test(normalized);
+}
+function findPreviousSnapshotVersionId(payload) {
+    if (!payload || !Array.isArray(payload.items)) {
+        return 0;
+    }
+    const items = payload.items;
+    if (items.length < 2) {
+        return 0;
+    }
+    return readContextInt(items[1], "version_id", "ID", "id");
+}
+function findPreviousSnapshotVersion(payload) {
+    if (!payload || !Array.isArray(payload.items)) {
+        return "";
+    }
+    const items = payload.items;
+    if (items.length < 2) {
+        return "";
+    }
+    return readContextString(items[1], "version", "share_version", "snapshot_version");
 }
 async function hydrateVerticalScaleArguments(client, arguments_) {
     if (typeof arguments_.new_gpu === "number" ||
@@ -340,168 +394,299 @@ export function createCopilotController(deps = {}) {
         }
         return factory(params);
     };
+    const createLlmExecutor = async (params) => {
+        const actionAdapter = deps.actionAdapterFactory
+            ? await deps.actionAdapterFactory(params)
+            : deps.actionAdapter;
+        return new ServerLlmExecutor({
+            broker,
+            eventPublisher,
+            llmClient: deps.llmClient,
+            actionAdapter,
+            queryToolClientFactory: deps.queryToolClientFactory,
+            enableLegacyActionSkills,
+            requestApproval: async (input) => {
+                await queuePendingActionApproval(input);
+            },
+        });
+    };
+    const serializeToolResultForContinuation = (params) => {
+        if (params.pendingAction.kind === "action_skill") {
+            return JSON.stringify(params.output.structuredContent || {});
+        }
+        return JSON.stringify({
+            isError: params.output.isError,
+            structuredContent: params.output.structuredContent || {},
+        });
+    };
     const executePendingAction = async (params) => {
         const currentRun = await runStore.getById(params.runId, params.actor.tenantId);
         if (!currentRun) {
             throw new Error("Run not found");
         }
-        const currentSession = await sessionService.getSession(params.sessionId, {
+        let currentSession = await sessionService.getSession(params.sessionId, {
             tenantId: params.actor.tenantId,
             userId: params.actor.userId,
         });
-        const pendingAction = currentSession.pendingWorkflowAction;
+        let pendingAction = currentSession.pendingWorkflowAction;
         if (!pendingAction) {
             throw new Error("Pending workflow action not found");
         }
         const completedEvents = await broker.replay(params.runId, params.actor.tenantId, { afterSequence: 0 });
         let nextSequence = completedEvents.length + 1;
-        let traceToolName = pendingAction.toolName;
-        let output;
-        await eventPublisher.publish({
-            type: "chat.trace",
-            tenantId: params.actor.tenantId,
-            sessionId: params.sessionId,
-            runId: params.runId,
-            sequence: nextSequence,
-            data: {
-                tool_name: traceToolName,
-                input: pendingAction.arguments,
-            },
-        });
-        nextSequence += 1;
-        try {
-            if (pendingAction.kind === "action_skill") {
-                const actionAdapter = await resolveActionAdapter({
-                    actor: params.actor,
-                    sessionId: params.sessionId,
-                });
-                if (!actionAdapter) {
-                    throw new Error("Action adapter is required");
-                }
-                const actionSkills = createServerActionSkills(actionAdapter);
-                const skill = actionSkills[pendingAction.toolName];
-                if (!skill) {
-                    throw new Error(`Unsupported action skill: ${pendingAction.toolName}`);
-                }
-                traceToolName = skill.name;
-                const actionResult = (await skill.execute(pendingAction.arguments));
-                output = {
-                    isError: false,
-                    structuredContent: actionResult,
-                    content: [],
-                };
-            }
-            else {
-                const client = await resolvePendingMcpClient({
-                    actor: params.actor,
-                    sessionId: params.sessionId,
-                });
-                const pendingArguments = pendingAction.toolName === "rainbond_vertical_scale_component"
-                    ? await hydrateVerticalScaleArguments(client, pendingAction.arguments)
-                    : pendingAction.arguments;
-                output = await client.callTool(pendingAction.toolName, pendingArguments);
-                pendingAction.arguments = pendingArguments;
-            }
-        }
-        catch (error) {
-            const errorMessage = error && typeof error.message === "string" && error.message
-                ? error.message
-                : "执行过程中发生错误，请稍后重试。";
-            await sessionStore.update({
-                ...currentSession,
-                pendingWorkflowAction: undefined,
-            });
-            await runStore.update({
-                ...currentRun,
-                status: "failed",
-                errorMessage,
-                finishedAt: new Date().toISOString(),
-            });
+        const completedSummaries = [];
+        const executedToolCalls = [];
+        while (pendingAction) {
+            let traceToolName = pendingAction.toolName;
+            let output;
             await eventPublisher.publish({
-                type: "run.error",
+                type: "chat.trace",
                 tenantId: params.actor.tenantId,
                 sessionId: params.sessionId,
                 runId: params.runId,
                 sequence: nextSequence,
                 data: {
-                    code: "internal_error",
-                    message: errorMessage,
+                    tool_name: traceToolName,
+                    input: pendingAction.arguments,
                 },
             });
             nextSequence += 1;
+            try {
+                if (pendingAction.kind === "action_skill") {
+                    const actionAdapter = await resolveActionAdapter({
+                        actor: params.actor,
+                        sessionId: params.sessionId,
+                    });
+                    if (!actionAdapter) {
+                        throw new Error("Action adapter is required");
+                    }
+                    const actionSkills = createServerActionSkills(actionAdapter);
+                    const skill = actionSkills[pendingAction.toolName];
+                    if (!skill) {
+                        throw new Error(`Unsupported action skill: ${pendingAction.toolName}`);
+                    }
+                    traceToolName = skill.name;
+                    const actionResult = (await skill.execute(pendingAction.arguments));
+                    output = {
+                        isError: false,
+                        structuredContent: actionResult,
+                        content: [],
+                    };
+                }
+                else {
+                    const client = await resolvePendingMcpClient({
+                        actor: params.actor,
+                        sessionId: params.sessionId,
+                    });
+                    const pendingArguments = pendingAction.toolName === "rainbond_vertical_scale_component"
+                        ? await hydrateVerticalScaleArguments(client, pendingAction.arguments)
+                        : pendingAction.arguments;
+                    output = await client.callTool(pendingAction.toolName, pendingArguments);
+                    pendingAction.arguments = pendingArguments;
+                }
+            }
+            catch (error) {
+                const errorMessage = error && typeof error.message === "string" && error.message
+                    ? error.message
+                    : "执行过程中发生错误，请稍后重试。";
+                await sessionStore.update({
+                    ...currentSession,
+                    pendingWorkflowAction: undefined,
+                });
+                await runStore.update({
+                    ...currentRun,
+                    status: "failed",
+                    errorMessage,
+                    finishedAt: new Date().toISOString(),
+                });
+                await eventPublisher.publish({
+                    type: "run.error",
+                    tenantId: params.actor.tenantId,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    sequence: nextSequence,
+                    data: {
+                        code: "internal_error",
+                        message: errorMessage,
+                    },
+                });
+                nextSequence += 1;
+                await eventPublisher.publish({
+                    type: "run.status",
+                    tenantId: params.actor.tenantId,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    sequence: nextSequence,
+                    data: {
+                        status: "error",
+                    },
+                });
+                return;
+            }
             await eventPublisher.publish({
-                type: "run.status",
+                type: "chat.trace",
                 tenantId: params.actor.tenantId,
                 sessionId: params.sessionId,
                 runId: params.runId,
                 sequence: nextSequence,
                 data: {
-                    status: "error",
+                    tool_name: traceToolName,
+                    input: pendingAction.arguments,
+                    output,
                 },
             });
-            return;
+            nextSequence += 1;
+            const completion = buildPendingWorkflowActionCompletion(pendingAction, output);
+            completedSummaries.push(completion.summary);
+            executedToolCalls.push({
+                name: pendingAction.toolName,
+                status: output.isError ? "error" : "success",
+            });
+            const nextPendingAction = pendingAction.followUpActions?.[0]
+                ? {
+                    ...pendingAction.followUpActions[0],
+                    followUpActions: pendingAction.followUpActions.slice(1).length > 0
+                        ? pendingAction.followUpActions.slice(1)
+                        : undefined,
+                }
+                : undefined;
+            if (nextPendingAction?.requiresApproval) {
+                await sessionStore.update({
+                    ...currentSession,
+                    pendingWorkflowAction: nextPendingAction,
+                    pendingLlmContinuation: undefined,
+                });
+                await eventPublisher.publish({
+                    type: "chat.message",
+                    tenantId: params.actor.tenantId,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    sequence: nextSequence,
+                    data: {
+                        role: "assistant",
+                        content: completedSummaries.join("\n"),
+                    },
+                });
+                nextSequence += 1;
+                runResumer.register(params.actor.tenantId, params.runId, async ({ runId }) => {
+                    await executePendingAction({
+                        actor: params.actor,
+                        sessionId: params.sessionId,
+                        runId,
+                    });
+                });
+                await approvalService.createPendingApproval({
+                    actor: params.actor,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    skillId: nextPendingAction.toolName,
+                    description: nextPendingAction.description ||
+                        `执行 ${nextPendingAction.toolName}`,
+                    risk: nextPendingAction.risk || "high",
+                    scope: nextPendingAction.scope,
+                });
+                return;
+            }
+            if (!nextPendingAction) {
+                if (currentSession.pendingLlmContinuation &&
+                    pendingAction.toolCallId) {
+                    const continuationMessages = [
+                        ...currentSession.pendingLlmContinuation.messages.map((message) => ({
+                            ...message,
+                        })),
+                        {
+                            role: "tool",
+                            content: serializeToolResultForContinuation({
+                                pendingAction,
+                                output,
+                            }),
+                            name: pendingAction.toolName,
+                            tool_call_id: pendingAction.toolCallId,
+                        },
+                    ];
+                    await sessionStore.update({
+                        ...currentSession,
+                        pendingWorkflowAction: undefined,
+                        pendingLlmContinuation: undefined,
+                    });
+                    const llmExecutor = await createLlmExecutor({
+                        actor: params.actor,
+                        sessionId: params.sessionId,
+                    });
+                    const handledByLlm = await llmExecutor.execute({
+                        actor: params.actor,
+                        sessionId: params.sessionId,
+                        runId: params.runId,
+                        message: currentRun.messageText,
+                        sessionContext: currentSession.context,
+                        continuation: {
+                            iteration: currentSession.pendingLlmContinuation.iteration,
+                            messages: continuationMessages,
+                        },
+                    });
+                    if (handledByLlm) {
+                        return;
+                    }
+                }
+                await sessionStore.update({
+                    ...currentSession,
+                    pendingWorkflowAction: undefined,
+                    pendingLlmContinuation: undefined,
+                });
+                await runStore.update({
+                    ...currentRun,
+                    status: "completed",
+                    finishedAt: new Date().toISOString(),
+                });
+                await eventPublisher.publish({
+                    type: "chat.message",
+                    tenantId: params.actor.tenantId,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    sequence: nextSequence,
+                    data: {
+                        role: "assistant",
+                        content: completedSummaries.join("\n"),
+                    },
+                });
+                nextSequence += 1;
+                await eventPublisher.publish({
+                    type: "workflow.completed",
+                    tenantId: params.actor.tenantId,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    sequence: nextSequence,
+                    data: {
+                        workflow_id: "pending-workflow-action",
+                        workflow_stage: completion.workflowStage,
+                        next_action: completion.nextAction,
+                        structured_result: {
+                            ...completion.structuredResult,
+                            summary: completedSummaries.join("\n"),
+                            tool_calls: executedToolCalls,
+                        },
+                    },
+                });
+                nextSequence += 1;
+                await eventPublisher.publish({
+                    type: "run.status",
+                    tenantId: params.actor.tenantId,
+                    sessionId: params.sessionId,
+                    runId: params.runId,
+                    sequence: nextSequence,
+                    data: {
+                        status: "done",
+                    },
+                });
+                return;
+            }
+            currentSession = {
+                ...currentSession,
+                pendingWorkflowAction: nextPendingAction,
+                pendingLlmContinuation: undefined,
+            };
+            pendingAction = nextPendingAction;
         }
-        await eventPublisher.publish({
-            type: "chat.trace",
-            tenantId: params.actor.tenantId,
-            sessionId: params.sessionId,
-            runId: params.runId,
-            sequence: nextSequence,
-            data: {
-                tool_name: traceToolName,
-                input: pendingAction.arguments,
-                output,
-            },
-        });
-        nextSequence += 1;
-        const completion = buildPendingWorkflowActionCompletion(pendingAction, output);
-        await sessionStore.update({
-            ...currentSession,
-            pendingWorkflowAction: undefined,
-        });
-        await runStore.update({
-            ...currentRun,
-            status: "completed",
-            finishedAt: new Date().toISOString(),
-        });
-        await eventPublisher.publish({
-            type: "chat.message",
-            tenantId: params.actor.tenantId,
-            sessionId: params.sessionId,
-            runId: params.runId,
-            sequence: nextSequence,
-            data: {
-                role: "assistant",
-                content: completion.summary,
-            },
-        });
-        nextSequence += 1;
-        await eventPublisher.publish({
-            type: "workflow.completed",
-            tenantId: params.actor.tenantId,
-            sessionId: params.sessionId,
-            runId: params.runId,
-            sequence: nextSequence,
-            data: {
-                workflow_id: "pending-workflow-action",
-                workflow_stage: completion.workflowStage,
-                next_action: completion.nextAction,
-                structured_result: {
-                    ...completion.structuredResult,
-                },
-            },
-        });
-        nextSequence += 1;
-        await eventPublisher.publish({
-            type: "run.status",
-            tenantId: params.actor.tenantId,
-            sessionId: params.sessionId,
-            runId: params.runId,
-            sequence: nextSequence,
-            data: {
-                status: "done",
-            },
-        });
     };
     const queuePendingActionApproval = async (params) => {
         const currentSession = await sessionService.getSession(params.sessionId, {
@@ -511,6 +696,7 @@ export function createCopilotController(deps = {}) {
         const normalizedPendingAction = {
             kind: params.pendingAction.kind || "mcp_tool",
             toolName: params.pendingAction.toolName,
+            toolCallId: params.pendingAction.toolCallId,
             requiresApproval: true,
             risk: params.pendingAction.risk || params.risk,
             scope: params.pendingAction.scope ||
@@ -522,6 +708,7 @@ export function createCopilotController(deps = {}) {
         await sessionStore.update({
             ...currentSession,
             pendingWorkflowAction: normalizedPendingAction,
+            pendingLlmContinuation: params.continuation,
         });
         runResumer.register(params.actor.tenantId, params.runId, async ({ runId }) => {
             await executePendingAction({
@@ -619,6 +806,7 @@ export function createCopilotController(deps = {}) {
                     sessionId: request.params.sessionId,
                     runId: run.runId,
                     pendingAction: session.pendingWorkflowAction,
+                    continuation: session.pendingLlmContinuation,
                     description: session.pendingWorkflowAction.description ||
                         `执行 ${session.pendingWorkflowAction.toolName}`,
                     risk: session.pendingWorkflowAction.risk || "high",
@@ -631,15 +819,147 @@ export function createCopilotController(deps = {}) {
                     },
                 };
             }
+            const pendingSnapshotVersion = parseSnapshotCreateVersionInput(request.body.message);
+            if (session.pendingWorkflowAction &&
+                !session.pendingWorkflowAction.requiresApproval &&
+                session.pendingWorkflowAction.toolName === "rainbond_create_app_version_snapshot" &&
+                session.pendingWorkflowAction.arguments &&
+                session.pendingWorkflowAction.arguments.__await_version_input === true &&
+                pendingSnapshotVersion) {
+                const nextArguments = {
+                    ...session.pendingWorkflowAction.arguments,
+                    version: pendingSnapshotVersion,
+                };
+                delete nextArguments.__await_version_input;
+                delete nextArguments.suggested_version;
+                await sessionStore.update({
+                    ...session,
+                    pendingWorkflowAction: {
+                        ...session.pendingWorkflowAction,
+                        arguments: nextArguments,
+                    },
+                });
+                const handledByWorkflow = await workflowExecutor.execute({
+                    actor: request.actor,
+                    sessionId: request.params.sessionId,
+                    runId: run.runId,
+                    message: "继续执行",
+                });
+                if (handledByWorkflow) {
+                    return {
+                        data: {
+                            run_id: run.runId,
+                            session_id: run.sessionId,
+                            stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                        },
+                    };
+                }
+            }
+            if (session.pendingWorkflowAction &&
+                session.pendingWorkflowAction.arguments &&
+                session.pendingWorkflowAction.arguments.__await_version_input === true &&
+                pendingSnapshotVersion) {
+                if (session.pendingWorkflowAction.toolName === "rainbond_install_app_model") {
+                    const nextArguments = {
+                        ...session.pendingWorkflowAction.arguments,
+                        app_model_version: pendingSnapshotVersion,
+                    };
+                    delete nextArguments.__await_version_input;
+                    delete nextArguments.suggested_version;
+                    await sessionStore.update({
+                        ...session,
+                        pendingWorkflowAction: {
+                            ...session.pendingWorkflowAction,
+                            arguments: nextArguments,
+                        },
+                    });
+                    await queuePendingActionApproval({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        pendingAction: {
+                            ...session.pendingWorkflowAction,
+                            arguments: nextArguments,
+                        },
+                        description: session.pendingWorkflowAction.description ||
+                            `执行 ${session.pendingWorkflowAction.toolName}`,
+                        risk: session.pendingWorkflowAction.risk || "high",
+                    });
+                    return {
+                        data: {
+                            run_id: run.runId,
+                            session_id: run.sessionId,
+                            stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                        },
+                    };
+                }
+                if (session.pendingWorkflowAction.toolName ===
+                    "rainbond_rollback_app_version_snapshot") {
+                    const teamName = readContextString(session.context, "teamName", "team_name") ||
+                        request.actor.tenantName ||
+                        request.actor.tenantId;
+                    const regionName = readContextString(session.context, "regionName", "region_name") ||
+                        request.actor.regionName ||
+                        "";
+                    const appId = readContextAppId(session.context, "appId", "app_id");
+                    if (teamName && regionName && appId) {
+                        const client = await resolvePendingMcpClient({
+                            actor: request.actor,
+                            sessionId: request.params.sessionId,
+                        });
+                        const snapshotListResult = await client.callTool("rainbond_list_app_version_snapshots", {
+                            team_name: teamName,
+                            region_name: regionName,
+                            app_id: appId,
+                        });
+                        const versionId = findSnapshotVersionId((snapshotListResult.structuredContent || {}), pendingSnapshotVersion);
+                        if (versionId > 0) {
+                            const nextArguments = {
+                                ...session.pendingWorkflowAction.arguments,
+                                version_id: versionId,
+                            };
+                            delete nextArguments.__await_version_input;
+                            delete nextArguments.suggested_version;
+                            await sessionStore.update({
+                                ...session,
+                                pendingWorkflowAction: {
+                                    ...session.pendingWorkflowAction,
+                                    arguments: nextArguments,
+                                },
+                            });
+                            await queuePendingActionApproval({
+                                actor: request.actor,
+                                sessionId: request.params.sessionId,
+                                runId: run.runId,
+                                pendingAction: {
+                                    ...session.pendingWorkflowAction,
+                                    description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                                    arguments: nextArguments,
+                                },
+                                description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                                risk: session.pendingWorkflowAction.risk || "high",
+                            });
+                            return {
+                                data: {
+                                    run_id: run.runId,
+                                    session_id: run.sessionId,
+                                    stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                                },
+                            };
+                        }
+                    }
+                }
+            }
             const targetSnapshotVersion = parseSnapshotRollbackVersion(request.body.message);
-            if (targetSnapshotVersion) {
+            const rollbackToPreviousSnapshot = requestsRollbackToPreviousSnapshot(request.body.message);
+            if (targetSnapshotVersion || rollbackToPreviousSnapshot) {
                 const teamName = readContextString(session.context, "teamName", "team_name") ||
                     request.actor.tenantName ||
                     request.actor.tenantId;
                 const regionName = readContextString(session.context, "regionName", "region_name") ||
                     request.actor.regionName ||
                     "";
-                const appId = readContextInt(session.context, "appId", "app_id");
+                const appId = readContextAppId(session.context, "appId", "app_id");
                 if (teamName && regionName && appId) {
                     const client = await resolvePendingMcpClient({
                         actor: request.actor,
@@ -650,7 +970,12 @@ export function createCopilotController(deps = {}) {
                         region_name: regionName,
                         app_id: appId,
                     });
-                    const versionId = findSnapshotVersionId((snapshotListResult.structuredContent || {}), targetSnapshotVersion);
+                    const snapshotPayload = (snapshotListResult.structuredContent ||
+                        {});
+                    const versionId = targetSnapshotVersion
+                        ? findSnapshotVersionId(snapshotPayload, targetSnapshotVersion)
+                        : findPreviousSnapshotVersionId(snapshotPayload);
+                    const resolvedVersion = targetSnapshotVersion || findPreviousSnapshotVersion(snapshotPayload);
                     if (versionId > 0) {
                         await queuePendingActionApproval({
                             actor: request.actor,
@@ -662,15 +987,33 @@ export function createCopilotController(deps = {}) {
                                 requiresApproval: true,
                                 risk: "high",
                                 scope: "app",
-                                description: `回滚当前应用到快照版本 ${targetSnapshotVersion}`,
+                                description: `回滚当前应用到快照版本 ${resolvedVersion}`,
                                 arguments: {
                                     team_name: teamName,
                                     region_name: regionName,
                                     app_id: appId,
                                     version_id: versionId,
                                 },
+                                followUpActions: requestsCloseWholeApp(request.body.message)
+                                    ? [
+                                        {
+                                            kind: "mcp_tool",
+                                            toolName: "rainbond_operate_app",
+                                            requiresApproval: true,
+                                            risk: "high",
+                                            scope: "app",
+                                            description: "关闭当前应用",
+                                            arguments: {
+                                                team_name: teamName,
+                                                region_name: regionName,
+                                                app_id: appId,
+                                                action: "stop",
+                                            },
+                                        },
+                                    ]
+                                    : undefined,
                             },
-                            description: `回滚当前应用到快照版本 ${targetSnapshotVersion}`,
+                            description: `回滚当前应用到快照版本 ${resolvedVersion}`,
                             risk: "high",
                         });
                         return {
@@ -704,16 +1047,9 @@ export function createCopilotController(deps = {}) {
                     sessionId: request.params.sessionId,
                 })
                 : deps.actionAdapter;
-            const llmExecutor = new ServerLlmExecutor({
-                broker,
-                eventPublisher,
-                llmClient: deps.llmClient,
-                actionAdapter,
-                queryToolClientFactory: deps.queryToolClientFactory,
-                enableLegacyActionSkills,
-                requestApproval: async (input) => {
-                    await queuePendingActionApproval(input);
-                },
+            const llmExecutor = await createLlmExecutor({
+                actor: request.actor,
+                sessionId: request.params.sessionId,
             });
             if (enableLegacyActionSkills) {
                 const runExecutor = new ServerRunExecutor({
@@ -823,6 +1159,7 @@ export function createCopilotController(deps = {}) {
                     await sessionStore.update({
                         ...session,
                         pendingWorkflowAction: undefined,
+                        pendingLlmContinuation: undefined,
                     });
                 }
             }

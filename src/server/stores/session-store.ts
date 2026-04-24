@@ -1,4 +1,5 @@
 import type { ApprovalScope, AuthMode, RiskLevel } from "../../shared/types.js";
+import type { ChatMessage } from "../../llm/types.js";
 import type { ResolvedExecutionScope } from "../workflows/types.js";
 
 export type SessionRecordStatus = "active" | "archived";
@@ -7,12 +8,18 @@ export type PendingWorkflowActionKind = "mcp_tool" | "action_skill";
 export interface PendingWorkflowAction {
   kind?: PendingWorkflowActionKind;
   toolName: string;
+  toolCallId?: string;
   requiresApproval: boolean;
   risk?: RiskLevel;
   scope?: ApprovalScope;
   description?: string;
   arguments: Record<string, unknown>;
   followUpActions?: PendingWorkflowAction[];
+}
+
+export interface PendingLlmContinuation {
+  iteration: number;
+  messages: ChatMessage[];
 }
 
 export interface SessionRecord {
@@ -28,6 +35,7 @@ export interface SessionRecord {
   lastVerifiedScopeSignature?: string;
   verifiedScope?: ResolvedExecutionScope;
   pendingWorkflowAction?: PendingWorkflowAction;
+  pendingLlmContinuation?: PendingLlmContinuation;
   status: SessionRecordStatus;
   latestRunId?: string;
   createdAt: string;
@@ -47,6 +55,7 @@ export interface CreateSessionRecordInput {
   lastVerifiedScopeSignature?: string;
   verifiedScope?: ResolvedExecutionScope;
   pendingWorkflowAction?: PendingWorkflowAction;
+  pendingLlmContinuation?: PendingLlmContinuation;
   status?: SessionRecordStatus;
   latestRunId?: string;
   createdAt?: string;
@@ -77,6 +86,7 @@ export function createSessionRecord(
     lastVerifiedScopeSignature: input.lastVerifiedScopeSignature,
     verifiedScope: input.verifiedScope,
     pendingWorkflowAction: input.pendingWorkflowAction,
+    pendingLlmContinuation: input.pendingLlmContinuation,
     status: input.status ?? "active",
     latestRunId: input.latestRunId,
     createdAt: now,
