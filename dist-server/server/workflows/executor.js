@@ -2,6 +2,7 @@ import { buildScopeSignature } from "./context-resolver.js";
 import { buildPendingWorkflowActionCompletion } from "./pending-action-result.js";
 import { executeRainbondAppAssistant } from "./rainbond-app-assistant.js";
 import { createWorkflowRegistry } from "./registry.js";
+import { createRunExecutionState, } from "../runtime/run-execution-state.js";
 function isSnapshotCreationRequested(message) {
     const normalized = (message || "").trim();
     if (!normalized) {
@@ -221,6 +222,45 @@ export function isContinueWorkflowActionPrompt(message) {
     }
     return /^(继续执行|确认执行|继续|立即执行|execute|confirm|run now|是的|是|好的|好|可以|行|没问题|没错|对)$/i.test(normalized);
 }
+function cloneRunExecutionState(state) {
+    return {
+        ...state,
+        messages: state.messages.map((message) => ({
+            ...message,
+            ...(message.tool_calls
+                ? {
+                    tool_calls: message.tool_calls.map((toolCall) => ({
+                        ...toolCall,
+                        function: {
+                            ...toolCall.function,
+                        },
+                    })),
+                }
+                : {}),
+        })),
+        pendingApprovals: state.pendingApprovals.map((approval) => ({
+            ...approval,
+            arguments: { ...approval.arguments },
+            followUpActions: approval.followUpActions?.map((item) => ({
+                ...item,
+                arguments: { ...item.arguments },
+            })),
+        })),
+        deferredAction: state.deferredAction
+            ? {
+                ...state.deferredAction,
+                arguments: { ...state.deferredAction.arguments },
+                resolutionTool: state.deferredAction.resolutionTool
+                    ? {
+                        ...state.deferredAction.resolutionTool,
+                        arguments: { ...state.deferredAction.resolutionTool.arguments },
+                    }
+                    : undefined,
+            }
+            : state.deferredAction,
+        completedToolCallIds: [...state.completedToolCallIds],
+    };
+}
 export class WorkflowExecutor {
     constructor(deps) {
         this.deps = deps;
@@ -232,6 +272,10 @@ export class WorkflowExecutor {
         const session = await this.deps.sessionStore.getById(params.sessionId, params.actor.tenantId);
         if (!session || session.userId !== params.actor.userId) {
             throw new Error("Session not found");
+        }
+        const run = await this.deps.runStore.getById(params.runId, params.actor.tenantId);
+        if (!run) {
+            throw new Error("Run not found");
         }
         if (session.pendingWorkflowAction &&
             isContinueWorkflowActionPrompt(params.message)) {
@@ -357,6 +401,22 @@ export class WorkflowExecutor {
                 pendingWorkflowAction: undefined,
             });
         }
+        const nextExecutionState = run.executionState
+            ? cloneRunExecutionState(run.executionState)
+            : createRunExecutionState({
+                runId: run.runId,
+                sessionId: run.sessionId,
+                tenantId: run.tenantId,
+                initialMessage: run.messageText,
+            });
+        nextExecutionState.status = "completed";
+        nextExecutionState.finalOutput = subflowExecution.summary || result.summary;
+        nextExecutionState.deferredAction =
+            subflowExecution.proposedToolAction?.deferredAction || null;
+        await this.deps.runStore.update({
+            ...run,
+            executionState: nextExecutionState,
+        });
         await this.deps.eventPublisher.publish({
             type: "run.status",
             tenantId: params.actor.tenantId,
@@ -494,6 +554,22 @@ export class WorkflowExecutor {
                                 __await_version_input: true,
                                 suggested_version: latestVersion,
                             },
+                            deferredAction: {
+                                toolName: "rainbond_install_app_model",
+                                requiresApproval: true,
+                                missingArgument: "app_model_version",
+                                suggestedValue: latestVersion,
+                                arguments: {
+                                    team_name: result.candidateScope.teamName || actor.tenantId,
+                                    region_name: result.candidateScope.regionName || actor.regionName || "",
+                                    app_id: parseAppId(result.candidateScope.appId),
+                                    source: "cloud",
+                                    market_name: marketName,
+                                    app_model_id: modelId,
+                                    app_model_version: latestVersion,
+                                    is_deploy: true,
+                                },
+                            },
                         },
                     };
                 }
@@ -593,6 +669,29 @@ export class WorkflowExecutor {
                                 versions.structuredContent.items.length > 0
                                 ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
                                 : "",
+                        },
+                        deferredAction: {
+                            toolName: "rainbond_install_app_model",
+                            requiresApproval: true,
+                            missingArgument: "app_model_version",
+                            suggestedValue: versions.structuredContent &&
+                                Array.isArray(versions.structuredContent.items) &&
+                                versions.structuredContent.items.length > 0
+                                ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
+                                : "",
+                            arguments: {
+                                team_name: result.candidateScope.teamName || actor.tenantId,
+                                region_name: result.candidateScope.regionName || actor.regionName || "",
+                                app_id: parseAppId(result.candidateScope.appId),
+                                source: "local",
+                                app_model_id: modelId,
+                                app_model_version: versions.structuredContent &&
+                                    Array.isArray(versions.structuredContent.items) &&
+                                    versions.structuredContent.items.length > 0
+                                    ? versions.structuredContent.items[versions.structuredContent.items.length - 1].version
+                                    : "",
+                                is_deploy: true,
+                            },
                         },
                     },
                 };
@@ -739,6 +838,13 @@ export class WorkflowExecutor {
                             __await_version_input: true,
                             suggested_version: suggestedSnapshotVersion,
                         },
+                        deferredAction: {
+                            toolName: "rainbond_create_app_version_snapshot",
+                            requiresApproval: false,
+                            missingArgument: "version",
+                            suggestedValue: suggestedSnapshotVersion,
+                            arguments: createSnapshotInput,
+                        },
                     },
                 };
             }
@@ -761,6 +867,17 @@ export class WorkflowExecutor {
                                 ...createSnapshotInput,
                                 __await_version_input: true,
                                 suggested_version: suggestedRollbackVersion,
+                            },
+                            deferredAction: {
+                                toolName: "rainbond_rollback_app_version_snapshot",
+                                requiresApproval: true,
+                                missingArgument: "version_id",
+                                suggestedValue: suggestedRollbackVersion,
+                                arguments: createSnapshotInput,
+                                resolutionTool: {
+                                    toolName: "rainbond_list_app_version_snapshots",
+                                    arguments: createSnapshotInput,
+                                },
                             },
                         },
                     };

@@ -8,13 +8,15 @@ export class InMemoryRunResumer {
     register(tenantId, runId, handler) {
         this.handlers.set(runKey(tenantId, runId), handler);
     }
+    unregister(tenantId, runId) {
+        this.handlers.delete(runKey(tenantId, runId));
+    }
     async resume(input) {
         const key = runKey(input.tenantId, input.runId);
         const handler = this.handlers.get(key);
         if (!handler) {
             return false;
         }
-        this.handlers.delete(key);
         await handler(input);
         return true;
     }

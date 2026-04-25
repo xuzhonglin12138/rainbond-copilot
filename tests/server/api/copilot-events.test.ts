@@ -1,6 +1,8 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
 import { createCopilotController } from "../../../src/server/controllers/copilot-controller";
+import { ServerLlmExecutor } from "../../../src/server/runtime/server-llm-executor";
+import { createInMemoryRunStore } from "../../../src/server/stores/run-store";
 import { createInMemorySessionStore } from "../../../src/server/stores/session-store";
 
 describe("copilot event stream", () => {
@@ -155,6 +157,43 @@ describe("copilot event stream", () => {
       role: "assistant",
       content: "你好！我是 Rainbond Copilot，我可以帮你检查组件状态、查看日志和处理审批操作。",
     });
+  });
+
+  it("tries the llm multi-step executor before falling back to the legacy planner when llm is not explicitly disabled", async () => {
+    const executeSpy = vi
+      .spyOn(ServerLlmExecutor.prototype, "execute")
+      .mockResolvedValueOnce(true);
+
+    const controller = createCopilotController({
+      actionAdapter: mockActionAdapter as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {},
+    });
+
+    await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: {
+        message:
+          "新增一个环境变量BB=w,然后将手动伸缩内存改为1GB,cpu改为1Core，然后建立快照，最后关闭这个应用",
+        stream: true,
+      },
+    });
+
+    expect(executeSpy).toHaveBeenCalled();
+    expect(mockActionAdapter.scaleComponentMemory).not.toHaveBeenCalled();
+
+    executeSpy.mockRestore();
   });
 
   it("injects current session context into the llm prompt and enriches query tool inputs from context", async () => {
@@ -493,7 +532,7 @@ describe("copilot event stream", () => {
     expect(stream.events[1]).toMatchObject({
       type: "approval.requested",
       data: {
-        description: "更新集群 rainbond",
+        description: "将集群 rainbond 的简介修改为 agent",
         risk: "medium",
         level_label: "警告",
         scope: "enterprise",
@@ -1569,9 +1608,13 @@ describe("copilot event stream", () => {
       }),
     };
 
+    const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
     const controller = createCopilotController({
       llmClient,
       queryToolClientFactory: async () => queryToolClient as any,
+      sessionStore,
+      runStore,
     });
     const actor = {
       tenantId: "team-a",
@@ -1614,6 +1657,11 @@ describe("copilot event stream", () => {
       query: { after_sequence: "0" },
     });
     const firstApprovalId = firstStream.events[1].data.approval_id;
+    const runAfterFirstPause = await runStore.getById(run.data.run_id, actor.tenantId);
+    expect(runAfterFirstPause?.executionState?.pendingApprovals[0]).toMatchObject({
+      toolName: "rainbond_operate_app",
+      toolCallId: "tool_start_1",
+    });
 
     await controller.decideApproval({
       actor,
@@ -1632,6 +1680,20 @@ describe("copilot event stream", () => {
     const secondApprovalId = secondApprovalStream.events.find(
       (event) => event.type === "approval.requested"
     ).data.approval_id;
+    const runAfterSecondPause = await runStore.getById(run.data.run_id, actor.tenantId);
+    expect(runAfterSecondPause?.executionState?.pendingApprovals[0]).toMatchObject({
+      toolName: "rainbond_manage_component_envs",
+      toolCallId: "tool_env_1",
+    });
+    expect(runAfterSecondPause?.executionState?.messages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "tool",
+          name: "rainbond_operate_app",
+          tool_call_id: "tool_start_1",
+        }),
+      ])
+    );
 
     await controller.decideApproval({
       actor,

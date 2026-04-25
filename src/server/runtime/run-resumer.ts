@@ -10,6 +10,7 @@ export type RunResumeHandler = (input: ResumeRunInput) => Promise<void>;
 
 export interface RunResumer {
   register(tenantId: string, runId: string, handler: RunResumeHandler): void;
+  unregister(tenantId: string, runId: string): void;
   resume(input: ResumeRunInput): Promise<boolean>;
 }
 
@@ -24,6 +25,10 @@ export class InMemoryRunResumer implements RunResumer {
     this.handlers.set(runKey(tenantId, runId), handler);
   }
 
+  unregister(tenantId: string, runId: string): void {
+    this.handlers.delete(runKey(tenantId, runId));
+  }
+
   async resume(input: ResumeRunInput): Promise<boolean> {
     const key = runKey(input.tenantId, input.runId);
     const handler = this.handlers.get(key);
@@ -32,7 +37,6 @@ export class InMemoryRunResumer implements RunResumer {
       return false;
     }
 
-    this.handlers.delete(key);
     await handler(input);
     return true;
   }

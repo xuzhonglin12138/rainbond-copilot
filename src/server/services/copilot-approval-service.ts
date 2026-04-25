@@ -12,16 +12,22 @@ import { createServerId } from "../utils/id.js";
 import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
 import type { SseBroker } from "../events/sse-broker.js";
 import {
+  createApprovalLedger,
+  type ApprovalLedgerAction,
+} from "../runtime/approval-ledger.js";
+import {
   createApprovalRecord,
   type ApprovalRecord,
   type ApprovalStore,
 } from "../stores/approval-store.js";
 import type { RunStore } from "../stores/run-store.js";
+import type { SessionStore } from "../stores/session-store.js";
 import type { RunResumer } from "../runtime/run-resumer.js";
 
 export interface CopilotApprovalServiceDeps {
   approvalStore: ApprovalStore;
   runStore: RunStore;
+  sessionStore: SessionStore;
   eventPublisher: PersistedEventPublisher;
   broker: SseBroker;
   runResumer: RunResumer;
@@ -46,6 +52,21 @@ export interface ApprovalDecisionInput {
 export class CopilotApprovalService {
   constructor(private readonly deps: CopilotApprovalServiceDeps) {}
 
+  private cloneFollowUpActions(
+    action?: ApprovalLedgerAction
+  ): ApprovalLedgerAction[] | undefined {
+    return action?.followUpActions?.map((item) => ({
+      kind: item.kind,
+      toolName: item.toolName,
+      toolCallId: item.toolCallId,
+      risk: item.risk,
+      scope: item.scope,
+      description: item.description,
+      arguments: item.arguments ? { ...item.arguments } : undefined,
+      followUpActions: this.cloneFollowUpActions(item),
+    }));
+  }
+
   async createPendingApproval(
     input: CreatePendingApprovalInput
   ): Promise<ApprovalRecord> {
@@ -53,6 +74,15 @@ export class CopilotApprovalService {
 
     if (!run) {
       throw new Error("Run not found");
+    }
+
+    const session = await this.deps.sessionStore.getById(
+      input.sessionId,
+      input.actor.tenantId
+    );
+
+    if (!session) {
+      throw new Error("Session not found");
     }
 
     const approval = createApprovalRecord({
@@ -71,6 +101,26 @@ export class CopilotApprovalService {
     await this.deps.runStore.update({
       ...run,
       status: "waiting_approval",
+    });
+
+    const pendingAction = session.pendingWorkflowAction;
+    const ledger = createApprovalLedger(session.approvalLedger);
+
+    ledger.request({
+      approvalId: approval.approvalId,
+      kind: pendingAction?.kind ?? "mcp_tool",
+      toolName: input.skillId,
+      toolCallId: pendingAction?.toolCallId ?? approval.approvalId,
+      risk: pendingAction?.risk ?? input.risk,
+      scope: pendingAction?.scope ?? input.scope,
+      description: pendingAction?.description ?? input.description,
+      arguments: pendingAction?.arguments,
+      followUpActions: this.cloneFollowUpActions(pendingAction),
+    });
+
+    await this.deps.sessionStore.update({
+      ...session,
+      approvalLedger: ledger.toJSON(),
     });
 
     const requestedSequence = await this.nextSequence(input.runId, input.actor.tenantId);
@@ -132,6 +182,11 @@ export class CopilotApprovalService {
       throw new Error("Run not found");
     }
 
+    const session = await this.deps.sessionStore.getById(
+      approval.sessionId,
+      input.actor.tenantId
+    );
+
     const updatedApproval: ApprovalRecord = {
       ...approval,
       status: input.decision,
@@ -140,6 +195,28 @@ export class CopilotApprovalService {
       comment: input.comment,
     };
     await this.deps.approvalStore.update(updatedApproval);
+
+    if (session) {
+      const ledger = createApprovalLedger(session.approvalLedger);
+      const ledgerEntry = ledger.getByApprovalId(approval.approvalId);
+
+      if (ledgerEntry) {
+        if (input.decision === "approved") {
+          ledger.approve(ledgerEntry.toolName, ledgerEntry.toolCallId);
+        } else {
+          ledger.reject(
+            ledgerEntry.toolName,
+            ledgerEntry.toolCallId,
+            input.comment
+          );
+        }
+
+        await this.deps.sessionStore.update({
+          ...session,
+          approvalLedger: ledger.toJSON(),
+        });
+      }
+    }
 
     const approvalResolvedSequence = await this.nextSequence(
       approval.runId,

@@ -1,22 +1,25 @@
 import { readJsonArray, resolveStoreFile, writeJsonArray } from "./file-store-utils.js";
+import { normalizeSessionRecord, } from "./session-store.js";
 export class FileSessionStore {
     constructor(dataDir) {
         this.filePath = resolveStoreFile(dataDir, "sessions");
     }
     async create(session) {
         const sessions = await readJsonArray(this.filePath);
-        sessions.push(session);
+        sessions.push(normalizeSessionRecord(session));
         await writeJsonArray(this.filePath, sessions);
     }
     async getById(sessionId, tenantId) {
         const sessions = await readJsonArray(this.filePath);
-        return (sessions.find((session) => session.sessionId === sessionId && session.tenantId === tenantId) ?? null);
+        const session = sessions.find((session) => session.sessionId === sessionId && session.tenantId === tenantId) ?? null;
+        return session ? normalizeSessionRecord(session) : null;
     }
     async update(session) {
         const sessions = await readJsonArray(this.filePath);
+        const normalizedSession = normalizeSessionRecord(session);
         const next = sessions.map((current) => current.sessionId === session.sessionId &&
             current.tenantId === session.tenantId
-            ? session
+            ? normalizedSession
             : current);
         await writeJsonArray(this.filePath, next);
     }

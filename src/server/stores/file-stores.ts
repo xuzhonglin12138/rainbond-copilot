@@ -2,7 +2,11 @@ import type { ApprovalRecord, ApprovalStore } from "./approval-store.js";
 import type { EventRecord, EventStore } from "./event-store.js";
 import { readJsonArray, resolveStoreFile, writeJsonArray } from "./file-store-utils.js";
 import type { RunRecord, RunStore } from "./run-store.js";
-import type { SessionRecord, SessionStore } from "./session-store.js";
+import {
+  normalizeSessionRecord,
+  type SessionRecord,
+  type SessionStore,
+} from "./session-store.js";
 
 export class FileSessionStore implements SessionStore {
   private readonly filePath: string;
@@ -13,26 +17,28 @@ export class FileSessionStore implements SessionStore {
 
   async create(session: SessionRecord): Promise<void> {
     const sessions = await readJsonArray<SessionRecord>(this.filePath);
-    sessions.push(session);
+    sessions.push(normalizeSessionRecord(session));
     await writeJsonArray(this.filePath, sessions);
   }
 
   async getById(sessionId: string, tenantId: string): Promise<SessionRecord | null> {
     const sessions = await readJsonArray<SessionRecord>(this.filePath);
-    return (
+    const session =
       sessions.find(
         (session) =>
           session.sessionId === sessionId && session.tenantId === tenantId
-      ) ?? null
-    );
+      ) ?? null;
+
+    return session ? normalizeSessionRecord(session) : null;
   }
 
   async update(session: SessionRecord): Promise<void> {
     const sessions = await readJsonArray<SessionRecord>(this.filePath);
+    const normalizedSession = normalizeSessionRecord(session);
     const next = sessions.map((current) =>
       current.sessionId === session.sessionId &&
       current.tenantId === session.tenantId
-        ? session
+        ? normalizedSession
         : current
     );
     await writeJsonArray(this.filePath, next);

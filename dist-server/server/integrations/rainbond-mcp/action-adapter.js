@@ -49,6 +49,7 @@ export class RainbondMcpActionAdapter {
             app_id: input.appId,
             service_id: input.serviceId,
             new_memory: input.memory,
+            new_gpu: 0,
             ...(typeof input.cpu === "number" ? { new_cpu: input.cpu } : {}),
         });
         return {

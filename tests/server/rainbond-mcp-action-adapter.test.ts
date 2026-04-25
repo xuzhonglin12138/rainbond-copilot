@@ -135,6 +135,7 @@ describe("RainbondMcpActionAdapter", () => {
         service_id: "svc-1",
         new_memory: 1024,
         new_cpu: 1000,
+        new_gpu: 0,
       }
     );
     expect(result).toMatchObject({

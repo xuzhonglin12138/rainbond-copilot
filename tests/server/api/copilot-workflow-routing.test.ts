@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
 import { createCopilotController as createBaseCopilotController } from "../../../src/server/controllers/copilot-controller";
+import { createInMemoryRunStore } from "../../../src/server/stores/run-store";
 import { createInMemorySessionStore } from "../../../src/server/stores/session-store";
 
 function createCopilotController(deps: Record<string, unknown> = {}) {
@@ -1489,10 +1490,12 @@ describe("copilot workflow routing", () => {
     };
 
     const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
     const controller = createCopilotController({
       llmClient,
       workflowToolClientFactory: async () => workflowClient as any,
       sessionStore,
+      runStore,
     });
 
     const actor = {
@@ -1515,7 +1518,7 @@ describe("copilot workflow routing", () => {
       },
     });
 
-    await controller.createMessageRun({
+    const initialRun = await controller.createMessageRun({
       actor,
       params: { sessionId: session.data.session_id },
       body: { message: "帮我创建快照", stream: true },
@@ -1528,6 +1531,15 @@ describe("copilot workflow routing", () => {
     expect(pendingSession?.pendingWorkflowAction).toMatchObject({
       toolName: "rainbond_create_app_version_snapshot",
       requiresApproval: false,
+      arguments: expect.objectContaining({
+        app_id: 1,
+      }),
+    });
+    const deferredRun = await runStore.getById(initialRun.data.run_id, actor.tenantId);
+    expect(deferredRun?.executionState?.deferredAction).toMatchObject({
+      toolName: "rainbond_create_app_version_snapshot",
+      missingArgument: "version",
+      suggestedValue: "v1.0.3",
       arguments: expect.objectContaining({
         app_id: 1,
       }),
@@ -1602,11 +1614,13 @@ describe("copilot workflow routing", () => {
       }),
     };
     const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
 
     const controller = createCopilotController({
       llmClient,
       workflowToolClientFactory: async () => workflowClient as any,
       sessionStore,
+      runStore,
     });
 
     const actor = {
@@ -1630,7 +1644,7 @@ describe("copilot workflow routing", () => {
       },
     });
 
-    await controller.createMessageRun({
+    const initialRun = await controller.createMessageRun({
       actor,
       params: { sessionId: session.data.session_id },
       body: { message: "帮我把这个模板安装到当前应用", stream: true },
@@ -1645,6 +1659,15 @@ describe("copilot workflow routing", () => {
       requiresApproval: true,
       arguments: expect.objectContaining({
         app_model_version: "1.1.0",
+      }),
+    });
+    const deferredRun = await runStore.getById(initialRun.data.run_id, actor.tenantId);
+    expect(deferredRun?.executionState?.deferredAction).toMatchObject({
+      toolName: "rainbond_install_app_model",
+      missingArgument: "app_model_version",
+      suggestedValue: "1.1.0",
+      arguments: expect.objectContaining({
+        app_model_id: "model-1",
       }),
     });
 
@@ -1728,12 +1751,14 @@ describe("copilot workflow routing", () => {
       }),
     };
     const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
 
     const controller = createCopilotController({
       llmClient,
       workflowToolClientFactory: async () => workflowClient as any,
       queryToolClientFactory: async () => workflowClient as any,
       sessionStore,
+      runStore,
     });
 
     const actor = {
@@ -1756,7 +1781,7 @@ describe("copilot workflow routing", () => {
       },
     });
 
-    await controller.createMessageRun({
+    const initialRun = await controller.createMessageRun({
       actor,
       params: { sessionId: session.data.session_id },
       body: { message: "帮我回滚快照", stream: true },
@@ -1771,6 +1796,15 @@ describe("copilot workflow routing", () => {
       requiresApproval: true,
       arguments: expect.objectContaining({
         __await_version_input: true,
+      }),
+    });
+    const deferredRun = await runStore.getById(initialRun.data.run_id, actor.tenantId);
+    expect(deferredRun?.executionState?.deferredAction).toMatchObject({
+      toolName: "rainbond_rollback_app_version_snapshot",
+      missingArgument: "version_id",
+      suggestedValue: "v1.0.1",
+      resolutionTool: expect.objectContaining({
+        toolName: "rainbond_list_app_version_snapshots",
       }),
     });
 

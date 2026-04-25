@@ -30,6 +30,7 @@ describe("copilot approval flow", () => {
     const approvalService = new CopilotApprovalService({
       approvalStore,
       runStore,
+      sessionStore,
       eventPublisher,
       broker,
       runResumer,
@@ -138,6 +139,7 @@ describe("copilot approval flow", () => {
     const approvalService = new CopilotApprovalService({
       approvalStore,
       runStore,
+      sessionStore,
       eventPublisher,
       broker,
       runResumer,
@@ -230,6 +232,7 @@ describe("copilot approval flow", () => {
     const approvalService = new CopilotApprovalService({
       approvalStore,
       runStore,
+      sessionStore,
       eventPublisher,
       broker,
       runResumer,

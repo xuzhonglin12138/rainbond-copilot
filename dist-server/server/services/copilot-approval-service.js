@@ -1,14 +1,31 @@
 import { getApprovalRiskLabel, getApprovalScopeLabel, } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createServerId } from "../utils/id.js";
+import { createApprovalLedger, } from "../runtime/approval-ledger.js";
 import { createApprovalRecord, } from "../stores/approval-store.js";
 export class CopilotApprovalService {
     constructor(deps) {
         this.deps = deps;
     }
+    cloneFollowUpActions(action) {
+        return action?.followUpActions?.map((item) => ({
+            kind: item.kind,
+            toolName: item.toolName,
+            toolCallId: item.toolCallId,
+            risk: item.risk,
+            scope: item.scope,
+            description: item.description,
+            arguments: item.arguments ? { ...item.arguments } : undefined,
+            followUpActions: this.cloneFollowUpActions(item),
+        }));
+    }
     async createPendingApproval(input) {
         const run = await this.deps.runStore.getById(input.runId, input.actor.tenantId);
         if (!run) {
             throw new Error("Run not found");
+        }
+        const session = await this.deps.sessionStore.getById(input.sessionId, input.actor.tenantId);
+        if (!session) {
+            throw new Error("Session not found");
         }
         const approval = createApprovalRecord({
             approvalId: createServerId("ap"),
@@ -25,6 +42,23 @@ export class CopilotApprovalService {
         await this.deps.runStore.update({
             ...run,
             status: "waiting_approval",
+        });
+        const pendingAction = session.pendingWorkflowAction;
+        const ledger = createApprovalLedger(session.approvalLedger);
+        ledger.request({
+            approvalId: approval.approvalId,
+            kind: pendingAction?.kind ?? "mcp_tool",
+            toolName: input.skillId,
+            toolCallId: pendingAction?.toolCallId ?? approval.approvalId,
+            risk: pendingAction?.risk ?? input.risk,
+            scope: pendingAction?.scope ?? input.scope,
+            description: pendingAction?.description ?? input.description,
+            arguments: pendingAction?.arguments,
+            followUpActions: this.cloneFollowUpActions(pendingAction),
+        });
+        await this.deps.sessionStore.update({
+            ...session,
+            approvalLedger: ledger.toJSON(),
         });
         const requestedSequence = await this.nextSequence(input.runId, input.actor.tenantId);
         await this.deps.eventPublisher.publish({
@@ -68,6 +102,7 @@ export class CopilotApprovalService {
         if (!run) {
             throw new Error("Run not found");
         }
+        const session = await this.deps.sessionStore.getById(approval.sessionId, input.actor.tenantId);
         const updatedApproval = {
             ...approval,
             status: input.decision,
@@ -76,6 +111,22 @@ export class CopilotApprovalService {
             comment: input.comment,
         };
         await this.deps.approvalStore.update(updatedApproval);
+        if (session) {
+            const ledger = createApprovalLedger(session.approvalLedger);
+            const ledgerEntry = ledger.getByApprovalId(approval.approvalId);
+            if (ledgerEntry) {
+                if (input.decision === "approved") {
+                    ledger.approve(ledgerEntry.toolName, ledgerEntry.toolCallId);
+                }
+                else {
+                    ledger.reject(ledgerEntry.toolName, ledgerEntry.toolCallId, input.comment);
+                }
+                await this.deps.sessionStore.update({
+                    ...session,
+                    approvalLedger: ledger.toJSON(),
+                });
+            }
+        }
         const approvalResolvedSequence = await this.nextSequence(approval.runId, input.actor.tenantId);
         await this.deps.eventPublisher.publish({
             type: "approval.resolved",

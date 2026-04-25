@@ -756,5 +756,686 @@
     "createdAt": "2026-04-24T07:54:03.591Z",
     "updatedAt": "2026-04-24T08:44:51.154Z",
     "latestRunId": "run_1777020291152_7"
+  },
+  {
+    "sessionId": "cs_1777024023337_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "134",
+      "app_name": "134",
+      "component_id": "b95d57325b9f28721f53ae0f1171871f",
+      "component_source": "query",
+      "page": "/team/default/region/rainbond/apps/134/overview",
+      "resource": {
+        "type": "component",
+        "id": "b95d57325b9f28721f53ae0f1171871f",
+        "name": "b95d57325b9f28721f53ae0f1171871f"
+      }
+    },
+    "contextSignature": "default|rainbond|134|b95d57325b9f28721f53ae0f1171871f|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T09:47:03.337Z",
+    "updatedAt": "2026-04-24T09:50:31.263Z",
+    "latestRunId": "run_1777024231262_3",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777024231397_4",
+        "kind": "action_skill",
+        "toolName": "scale-component-memory",
+        "toolCallId": "ap_1777024231397_4",
+        "risk": "high",
+        "description": "执行资源调整前需要确认：内存 1024MB，CPU 1000m",
+        "arguments": {
+          "name": "service-web",
+          "memory": 1024,
+          "cpu": 1000
+        },
+        "decision": "approved"
+      }
+    ]
+  },
+  {
+    "sessionId": "cs_1777024469732_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "134",
+      "app_name": "134",
+      "component_id": "gr71871f",
+      "component_source": "query",
+      "page": "/team/default/region/rainbond/apps/134/overview",
+      "resource": {
+        "type": "component",
+        "id": "gr71871f",
+        "name": "gr71871f"
+      }
+    },
+    "contextSignature": "default|rainbond|134|gr71871f|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T09:54:29.732Z",
+    "updatedAt": "2026-04-24T09:54:29.839Z",
+    "latestRunId": "run_1777024469838_2",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777024469959_3",
+        "kind": "action_skill",
+        "toolName": "scale-component-memory",
+        "toolCallId": "ap_1777024469959_3",
+        "risk": "high",
+        "description": "执行资源调整前需要确认：内存 1024MB，CPU 1000m",
+        "arguments": {
+          "name": "service-web",
+          "memory": 1024,
+          "cpu": 1000
+        },
+        "decision": "approved"
+      }
+    ]
+  },
+  {
+    "sessionId": "cs_1777025133482_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "134",
+      "app_name": "134",
+      "component_id": "b95d57325b9f28721f53ae0f1171871f",
+      "component_source": "query",
+      "page": "/team/default/region/rainbond/apps/134/overview",
+      "resource": {
+        "type": "component",
+        "id": "b95d57325b9f28721f53ae0f1171871f",
+        "name": "b95d57325b9f28721f53ae0f1171871f"
+      }
+    },
+    "contextSignature": "default|rainbond|134|b95d57325b9f28721f53ae0f1171871f|candidate",
+    "status": "active",
+    "createdAt": "2026-04-24T10:05:33.482Z",
+    "updatedAt": "2026-04-24T10:10:38.725Z",
+    "latestRunId": "run_1777025438723_6",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777025209388_3",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_manage_component_envs",
+        "toolCallId": "call_00_2ohic4AyTBiJPGU77sZBNAXI",
+        "risk": "medium",
+        "scope": "component",
+        "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的环境变量",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "operation": "upsert",
+          "attr_name": "BB",
+          "attr_value": "w",
+          "scope": "inner",
+          "name": "BB",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_vertical_scale_component",
+            "toolCallId": "call_01_1JbcAwjqww6w17oPja3d25Zu",
+            "risk": "medium",
+            "scope": "component",
+            "description": "调整组件 b95d57325b9f28721f53ae0f1171871f 的资源配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "new_memory": 1024,
+              "new_cpu": 1000,
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+              "new_gpu": 0
+            }
+          }
+        ],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025211779_4",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_vertical_scale_component",
+        "toolCallId": "call_01_1JbcAwjqww6w17oPja3d25Zu",
+        "risk": "medium",
+        "scope": "component",
+        "description": "调整组件 b95d57325b9f28721f53ae0f1171871f 的资源配置",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "new_memory": 1024,
+          "new_cpu": 1000,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "new_gpu": 0
+        },
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025229984_5",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_operate_app",
+        "toolCallId": "call_00_o9PGPcdKpqd2WcOBlQCTI0eD",
+        "risk": "high",
+        "scope": "component",
+        "description": "对应用执行 stop 操作",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "action": "stop",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "gr71871f"
+        },
+        "followUpActions": [],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025555406_7",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_operate_app",
+        "toolCallId": "call_00_wiffcnZ8vWe4aUDSg1AaDmy6",
+        "risk": "high",
+        "scope": "component",
+        "description": "对应用执行 start 操作",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "action": "start",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "service_id": "b95d57325b9f28721f53ae0f1171871f"
+        },
+        "followUpActions": [
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_manage_component_envs",
+            "toolCallId": "call_01_8vDvzfeTsmSpD7jhs8CGLgBL",
+            "risk": "medium",
+            "scope": "component",
+            "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的环境变量",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "operation": "delete",
+              "env_id": "6568",
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            },
+            "followUpActions": [
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_vertical_scale_component",
+                "toolCallId": "call_02_gcACK33qkI9RTBaEjbZnuxVp",
+                "risk": "medium",
+                "scope": "component",
+                "description": "调整组件 b95d57325b9f28721f53ae0f1171871f 的资源配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "new_memory": 512,
+                  "new_cpu": 500,
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+                  "new_gpu": 0
+                }
+              },
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_build_component",
+                "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+                "risk": "high",
+                "scope": "component",
+                "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "build_info": {
+                    "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+                  },
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              },
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_manage_component_ports",
+                "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+                "risk": "medium",
+                "scope": "component",
+                "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "operation": "add",
+                  "port": 8081,
+                  "protocol": "http",
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_vertical_scale_component",
+            "toolCallId": "call_02_gcACK33qkI9RTBaEjbZnuxVp",
+            "risk": "medium",
+            "scope": "component",
+            "description": "调整组件 b95d57325b9f28721f53ae0f1171871f 的资源配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "new_memory": 512,
+              "new_cpu": 500,
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+              "new_gpu": 0
+            },
+            "followUpActions": [
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_build_component",
+                "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+                "risk": "high",
+                "scope": "component",
+                "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "build_info": {
+                    "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+                  },
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              },
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_manage_component_ports",
+                "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+                "risk": "medium",
+                "scope": "component",
+                "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "operation": "add",
+                  "port": 8081,
+                  "protocol": "http",
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_build_component",
+            "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+            "risk": "high",
+            "scope": "component",
+            "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "build_info": {
+                "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+              },
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            },
+            "followUpActions": [
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_manage_component_ports",
+                "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+                "risk": "medium",
+                "scope": "component",
+                "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "operation": "add",
+                  "port": 8081,
+                  "protocol": "http",
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_manage_component_ports",
+            "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+            "risk": "medium",
+            "scope": "component",
+            "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "operation": "add",
+              "port": 8081,
+              "protocol": "http",
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            }
+          }
+        ],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025562985_8",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_manage_component_envs",
+        "toolCallId": "call_01_8vDvzfeTsmSpD7jhs8CGLgBL",
+        "risk": "medium",
+        "scope": "component",
+        "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的环境变量",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "operation": "delete",
+          "env_id": "6568",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_vertical_scale_component",
+            "toolCallId": "call_02_gcACK33qkI9RTBaEjbZnuxVp",
+            "risk": "medium",
+            "scope": "component",
+            "description": "调整组件 b95d57325b9f28721f53ae0f1171871f 的资源配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "new_memory": 512,
+              "new_cpu": 500,
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+              "new_gpu": 0
+            },
+            "followUpActions": [
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_build_component",
+                "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+                "risk": "high",
+                "scope": "component",
+                "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "build_info": {
+                    "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+                  },
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              },
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_manage_component_ports",
+                "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+                "risk": "medium",
+                "scope": "component",
+                "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "operation": "add",
+                  "port": 8081,
+                  "protocol": "http",
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_build_component",
+            "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+            "risk": "high",
+            "scope": "component",
+            "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "build_info": {
+                "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+              },
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            },
+            "followUpActions": [
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_manage_component_ports",
+                "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+                "risk": "medium",
+                "scope": "component",
+                "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "operation": "add",
+                  "port": 8081,
+                  "protocol": "http",
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_manage_component_ports",
+            "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+            "risk": "medium",
+            "scope": "component",
+            "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "operation": "add",
+              "port": 8081,
+              "protocol": "http",
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            }
+          }
+        ],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025564958_9",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_vertical_scale_component",
+        "toolCallId": "call_02_gcACK33qkI9RTBaEjbZnuxVp",
+        "risk": "medium",
+        "scope": "component",
+        "description": "调整组件 b95d57325b9f28721f53ae0f1171871f 的资源配置",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "new_memory": 512,
+          "new_cpu": 500,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "new_gpu": 0
+        },
+        "followUpActions": [
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_build_component",
+            "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+            "risk": "high",
+            "scope": "component",
+            "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "build_info": {
+                "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+              },
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            },
+            "followUpActions": [
+              {
+                "kind": "mcp_tool",
+                "toolName": "rainbond_manage_component_ports",
+                "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+                "risk": "medium",
+                "scope": "component",
+                "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+                "arguments": {
+                  "team_name": "default",
+                  "region_name": "rainbond",
+                  "app_id": 134,
+                  "service_id": "b95d57325b9f28721f53ae0f1171871f",
+                  "operation": "add",
+                  "port": 8081,
+                  "protocol": "http",
+                  "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_manage_component_ports",
+            "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+            "risk": "medium",
+            "scope": "component",
+            "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "operation": "add",
+              "port": 8081,
+              "protocol": "http",
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            }
+          }
+        ],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025566984_a",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_build_component",
+        "toolCallId": "call_03_W02etjpAdlSSenROhJL8fTjL",
+        "risk": "high",
+        "scope": "component",
+        "description": "构建并部署组件 b95d57325b9f28721f53ae0f1171871f",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "build_info": {
+            "repo_url": "https://ghproxy.vip/https://github.com/xuzhonglin12138/rainbond-copilot.git.com"
+          },
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [
+          {
+            "kind": "mcp_tool",
+            "toolName": "rainbond_manage_component_ports",
+            "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+            "risk": "medium",
+            "scope": "component",
+            "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+            "arguments": {
+              "team_name": "default",
+              "region_name": "rainbond",
+              "app_id": 134,
+              "service_id": "b95d57325b9f28721f53ae0f1171871f",
+              "operation": "add",
+              "port": 8081,
+              "protocol": "http",
+              "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+            }
+          }
+        ],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777025569227_b",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_manage_component_ports",
+        "toolCallId": "call_04_1hKQCgJwFBMSfJhrJ7265c9h",
+        "risk": "medium",
+        "scope": "component",
+        "description": "修改组件 b95d57325b9f28721f53ae0f1171871f 的端口配置",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 134,
+          "service_id": "b95d57325b9f28721f53ae0f1171871f",
+          "operation": "add",
+          "port": 8081,
+          "protocol": "http",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "decision": "approved"
+      }
+    ]
   }
 ]

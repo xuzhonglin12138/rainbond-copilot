@@ -5,6 +5,9 @@ import { summarizeLogs } from "../../runtime/runtime-helpers.js";
 import { buildReadOnlyMcpToolDefinitions, filterReadOnlyMcpTools, } from "../integrations/rainbond-mcp/query-tools.js";
 import { buildMutableMcpToolDefinitions, evaluateMutableToolApproval, filterMutableMcpTools, isMutableMcpToolName, } from "../integrations/rainbond-mcp/mutable-tools.js";
 import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
+import { cloneChatMessages, deriveCompletedToolCallIds, toPendingWorkflowActionFromRunApproval, toRunPendingApproval, } from "../stores/session-store.js";
+import { advanceRunLoop } from "./run-loop.js";
+import { createRunExecutionState, } from "./run-execution-state.js";
 import { createServerActionSkills } from "./server-action-skills.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
 function normalizeK8sAppNameSeed(value) {
@@ -40,8 +43,70 @@ export class ServerLlmExecutor {
         if (!llmClient) {
             return false;
         }
-        const messages = params.continuation?.messages
-            ? params.continuation.messages.map((message) => ({ ...message }))
+        const mcpToolContext = await this.resolveMcpToolContext(params);
+        const tools = this.buildTools(mcpToolContext.readOnlyDefinitions, mcpToolContext.mutableDefinitions);
+        const toolResultCache = new Map();
+        const state = await this.createExecutionState(params);
+        const result = await advanceRunLoop({
+            state,
+            tools,
+            chat: (messages, toolDefinitions) => llmClient.chat(messages, toolDefinitions),
+            maxIterations: 8,
+            maxIterationsFinalOutput: "本次分析轮次已达上限，请尝试缩小问题范围后重新提问。",
+            handleToolCall: (loopParams) => this.handleRunLoopToolCall({
+                executeParams: params,
+                loopParams,
+                mcpToolContext,
+                toolResultCache,
+            }),
+        });
+        if (result.nextStep.type === "interruption") {
+            if (!this.deps.requestApproval) {
+                throw new Error("requestApproval callback is required for protected tools");
+            }
+            const pendingApproval = result.pendingApprovals[0];
+            if (!pendingApproval) {
+                return true;
+            }
+            await this.deps.requestApproval({
+                actor: params.actor,
+                sessionId: params.sessionId,
+                runId: params.runId,
+                pendingAction: toPendingWorkflowActionFromRunApproval(pendingApproval),
+                continuation: {
+                    iteration: result.iteration,
+                    messages: cloneChatMessages(result.messages),
+                },
+                description: pendingApproval.description || `执行 ${pendingApproval.toolName}`,
+                risk: pendingApproval.risk,
+                scope: pendingApproval.scope,
+            });
+            return true;
+        }
+        if (result.nextStep.type === "failed") {
+            throw new Error(result.finalOutput || "Run loop failed");
+        }
+        const summaryMessages = result.messages.length > 0 &&
+            result.messages[result.messages.length - 1].role === "assistant" &&
+            !result.messages[result.messages.length - 1].tool_calls
+            ? result.messages.slice(0, -1)
+            : result.messages;
+        const synthesizedSummary = this.buildAssistantSummaryFromToolResults(summaryMessages, params.message);
+        const content = this.mergeAssistantContentWithToolResults(result.finalOutput || "", synthesizedSummary) ||
+            "我已经完成当前分析，但没有生成额外回复。";
+        await this.publishAssistantMessage(params, content);
+        await this.publishRunStatus(params, "done");
+        return true;
+    }
+    async createExecutionState(params) {
+        const state = createRunExecutionState({
+            runId: params.runId,
+            sessionId: params.sessionId,
+            tenantId: params.actor.tenantId,
+            initialMessage: params.message,
+        });
+        state.messages = params.continuation?.messages
+            ? cloneChatMessages(params.continuation.messages)
             : [
                 {
                     role: "system",
@@ -53,181 +118,128 @@ export class ServerLlmExecutor {
                     content: params.message,
                 },
             ];
-        const mcpToolContext = await this.resolveMcpToolContext(params);
-        const tools = this.buildTools(mcpToolContext.readOnlyDefinitions, mcpToolContext.mutableDefinitions);
-        let iteration = params.continuation?.iteration || 0;
-        const toolResultCache = new Map();
-        while (iteration < 8) {
-            iteration += 1;
-            const response = await llmClient.chat(messages, tools);
-            if (!response.tool_calls || response.tool_calls.length === 0) {
-                const synthesizedSummary = this.buildAssistantSummaryFromToolResults(messages, params.message);
-                const content = this.mergeAssistantContentWithToolResults(typeof response.content === "string" ? response.content : "", synthesizedSummary) ||
-                    "我已经完成当前分析，但没有生成额外回复。";
-                await this.publishAssistantMessage(params, content);
-                await this.publishRunStatus(params, "done");
-                return true;
+        state.iteration = params.continuation?.iteration || 0;
+        state.completedToolCallIds = deriveCompletedToolCallIds(state.messages);
+        return state;
+    }
+    async handleRunLoopToolCall(params) {
+        const { executeParams, loopParams, mcpToolContext, toolResultCache } = params;
+        const { toolCall, toolCalls, toolIndex } = loopParams;
+        const toolInput = JSON.parse(toolCall.function.arguments || "{}");
+        const skill = this.skills[toolCall.function.name];
+        if (skill) {
+            const skillCacheKey = this.buildToolCacheKey(toolCall.function.name, toolInput);
+            const cachedSkillResult = toolResultCache.get(skillCacheKey);
+            if (cachedSkillResult) {
+                return {
+                    type: "tool_output",
+                    content: cachedSkillResult.toolMessageContent,
+                    toolName: toolCall.function.name,
+                };
             }
-            messages.push({
-                role: "assistant",
-                content: response.content || null,
-                reasoning_content: response.reasoning_content || null,
-                tool_calls: response.tool_calls,
+            const approvalDecision = this.evaluateSkillApproval(skill, toolInput);
+            if (approvalDecision.requiresApproval) {
+                const followUpActions = await this.buildFollowUpActionsFromToolCalls({
+                    toolCalls,
+                    startIndex: toolIndex + 1,
+                    executeParams,
+                    mcpToolContext,
+                });
+                return {
+                    type: "interruption",
+                    pendingApproval: {
+                        kind: "action_skill",
+                        toolName: toolCall.function.name,
+                        toolCallId: toolCall.id,
+                        requiresApproval: true,
+                        risk: approvalDecision.risk,
+                        description: approvalDecision.reason,
+                        arguments: toolInput,
+                        followUpActions: followUpActions.map((item) => toRunPendingApproval(item)),
+                    },
+                };
+            }
+            await this.publishTrace(executeParams, {
+                tool_name: skill.name,
+                input: toolInput,
             });
-            for (let toolIndex = 0; toolIndex < response.tool_calls.length; toolIndex += 1) {
-                const toolCall = response.tool_calls[toolIndex];
-                const skill = this.skills[toolCall.function.name];
-                const toolInput = JSON.parse(toolCall.function.arguments || "{}");
-                if (skill) {
-                    const skillCacheKey = this.buildToolCacheKey(toolCall.function.name, toolInput);
-                    const cachedSkillResult = toolResultCache.get(skillCacheKey);
-                    if (cachedSkillResult) {
-                        messages.push({
-                            role: "tool",
-                            content: cachedSkillResult.toolMessageContent,
-                            name: toolCall.function.name,
-                            tool_call_id: toolCall.id,
-                        });
-                        continue;
-                    }
-                    const approvalDecision = this.evaluateSkillApproval(skill, toolInput);
-                    if (approvalDecision.requiresApproval) {
-                        if (!this.deps.requestApproval) {
-                            throw new Error("requestApproval callback is required for protected action skills");
-                        }
-                        const followUpActions = await this.buildFollowUpActionsFromToolCalls({
-                            toolCalls: response.tool_calls,
-                            startIndex: toolIndex + 1,
-                            executeParams: params,
-                            mcpToolContext,
-                        });
-                        await this.deps.requestApproval({
-                            actor: params.actor,
-                            sessionId: params.sessionId,
-                            runId: params.runId,
-                            pendingAction: {
-                                kind: "action_skill",
-                                toolName: toolCall.function.name,
-                                toolCallId: toolCall.id,
-                                requiresApproval: true,
-                                risk: approvalDecision.risk,
-                                description: approvalDecision.reason,
-                                arguments: toolInput,
-                                followUpActions,
-                            },
-                            continuation: {
-                                iteration,
-                                messages: messages.map((message) => ({ ...message })),
-                            },
-                            description: approvalDecision.reason,
-                            risk: approvalDecision.risk,
-                        });
-                        return true;
-                    }
-                    await this.publishTrace(params, {
-                        tool_name: skill.name,
-                        input: toolInput,
-                    });
-                    const output = await skill.execute(toolInput);
-                    const toolMessageContent = JSON.stringify(output);
-                    toolResultCache.set(skillCacheKey, {
-                        traceOutput: output,
-                        toolMessageContent,
-                    });
-                    await this.publishTrace(params, {
-                        tool_name: skill.name,
-                        input: toolInput,
-                        output,
-                    });
-                    messages.push({
-                        role: "tool",
-                        content: toolMessageContent,
-                        name: toolCall.function.name,
-                        tool_call_id: toolCall.id,
-                    });
-                    continue;
-                }
-                const mcpTool = mcpToolContext.byName.get(toolCall.function.name);
-                if (!mcpTool || !mcpToolContext.client) {
-                    continue;
-                }
-                const enrichedInput = this.enrichQueryToolInput(mcpTool.name, toolInput, params.sessionContext, params.actor);
-                const resolvedInput = await this.resolveComponentScopedInput(mcpTool.name, enrichedInput, mcpToolContext.client, params.sessionContext, params.actor);
-                if (isMutableMcpToolName(mcpTool.name)) {
-                    const approvalDecision = evaluateMutableToolApproval(mcpTool.name, resolvedInput);
-                    if (approvalDecision.requiresApproval) {
-                        if (!this.deps.requestApproval) {
-                            throw new Error("requestApproval callback is required for protected MCP tools");
-                        }
-                        const followUpActions = await this.buildFollowUpActionsFromToolCalls({
-                            toolCalls: response.tool_calls,
-                            startIndex: toolIndex + 1,
-                            executeParams: params,
-                            mcpToolContext,
-                        });
-                        await this.deps.requestApproval({
-                            actor: params.actor,
-                            sessionId: params.sessionId,
-                            runId: params.runId,
-                            pendingAction: {
-                                kind: "mcp_tool",
-                                toolName: mcpTool.name,
-                                toolCallId: toolCall.id,
-                                requiresApproval: true,
-                                risk: approvalDecision.risk,
-                                scope: approvalDecision.scope,
-                                description: approvalDecision.reason,
-                                arguments: resolvedInput,
-                                followUpActions,
-                            },
-                            continuation: {
-                                iteration,
-                                messages: messages.map((message) => ({ ...message })),
-                            },
-                            description: approvalDecision.reason,
-                            risk: approvalDecision.risk,
-                            scope: approvalDecision.scope,
-                        });
-                        return true;
-                    }
-                }
-                const mcpCacheKey = this.buildToolCacheKey(toolCall.function.name, resolvedInput);
-                const cachedMcpResult = toolResultCache.get(mcpCacheKey);
-                if (cachedMcpResult) {
-                    messages.push({
-                        role: "tool",
-                        content: cachedMcpResult.toolMessageContent,
-                        name: mcpTool.name,
-                        tool_call_id: toolCall.id,
-                    });
-                    continue;
-                }
-                await this.publishTrace(params, {
-                    tool_name: mcpTool.name,
-                    input: resolvedInput,
+            const output = await skill.execute(toolInput);
+            const toolMessageContent = JSON.stringify(output);
+            toolResultCache.set(skillCacheKey, {
+                traceOutput: output,
+                toolMessageContent,
+            });
+            await this.publishTrace(executeParams, {
+                tool_name: skill.name,
+                input: toolInput,
+                output,
+            });
+            return {
+                type: "tool_output",
+                content: toolMessageContent,
+                toolName: toolCall.function.name,
+            };
+        }
+        const mcpTool = mcpToolContext.byName.get(toolCall.function.name);
+        if (!mcpTool || !mcpToolContext.client) {
+            return { type: "continue" };
+        }
+        const enrichedInput = this.enrichQueryToolInput(mcpTool.name, toolInput, executeParams.sessionContext, executeParams.actor);
+        const resolvedInput = await this.resolveComponentScopedInput(mcpTool.name, enrichedInput, mcpToolContext.client, executeParams.sessionContext, executeParams.actor);
+        if (isMutableMcpToolName(mcpTool.name)) {
+            const approvalDecision = evaluateMutableToolApproval(mcpTool.name, resolvedInput);
+            if (approvalDecision.requiresApproval) {
+                const followUpActions = await this.buildFollowUpActionsFromToolCalls({
+                    toolCalls,
+                    startIndex: toolIndex + 1,
+                    executeParams,
+                    mcpToolContext,
                 });
-                const output = await mcpToolContext.client.callTool(mcpTool.name, resolvedInput);
-                const toolMessageContent = JSON.stringify(this.serializeMcpToolResult(output));
-                toolResultCache.set(mcpCacheKey, {
-                    traceOutput: output,
-                    toolMessageContent,
-                });
-                await this.publishTrace(params, {
-                    tool_name: mcpTool.name,
-                    input: resolvedInput,
-                    output,
-                });
-                messages.push({
-                    role: "tool",
-                    content: toolMessageContent,
-                    name: mcpTool.name,
-                    tool_call_id: toolCall.id,
-                });
+                return {
+                    type: "interruption",
+                    pendingApproval: {
+                        kind: "mcp_tool",
+                        toolName: mcpTool.name,
+                        toolCallId: toolCall.id,
+                        requiresApproval: true,
+                        risk: approvalDecision.risk,
+                        scope: approvalDecision.scope,
+                        description: approvalDecision.reason,
+                        arguments: resolvedInput,
+                        followUpActions: followUpActions.map((item) => toRunPendingApproval(item)),
+                    },
+                };
             }
         }
-        await this.publishAssistantMessage(params, "本次分析轮次已达上限，请尝试缩小问题范围后重新提问。");
-        await this.publishRunStatus(params, "done");
-        return true;
+        const mcpCacheKey = this.buildToolCacheKey(toolCall.function.name, resolvedInput);
+        const cachedMcpResult = toolResultCache.get(mcpCacheKey);
+        if (cachedMcpResult) {
+            return {
+                type: "tool_output",
+                content: cachedMcpResult.toolMessageContent,
+                toolName: mcpTool.name,
+            };
+        }
+        await this.publishTrace(executeParams, {
+            tool_name: mcpTool.name,
+            input: resolvedInput,
+        });
+        const output = await mcpToolContext.client.callTool(mcpTool.name, resolvedInput);
+        const toolMessageContent = JSON.stringify(this.serializeMcpToolResult(output));
+        toolResultCache.set(mcpCacheKey, {
+            traceOutput: output,
+            toolMessageContent,
+        });
+        await this.publishTrace(executeParams, {
+            tool_name: mcpTool.name,
+            input: resolvedInput,
+            output,
+        });
+        return {
+            type: "tool_output",
+            content: toolMessageContent,
+            toolName: mcpTool.name,
+        };
     }
     buildAssistantSummaryFromToolResults(messages, userMessage) {
         const trailingToolMessages = [];
@@ -414,18 +426,27 @@ export class ServerLlmExecutor {
         const nextInput = { ...(input || {}) };
         const enterpriseId = this.readContextString(nextInput.enterprise_id, sessionContext?.enterpriseId, sessionContext?.enterprise_id, actor.enterpriseId);
         const appIdRaw = this.readContextString(nextInput.app_id, sessionContext?.appId, sessionContext?.app_id);
+        const contextComponentId = this.readContextString(sessionContext?.componentId, sessionContext?.component_id);
+        const contextComponentSource = this.readContextString(sessionContext?.component_source);
+        const canTrustContextComponentId = !!contextComponentId && contextComponentSource.toLowerCase() !== "route";
         if (!enterpriseId || !appIdRaw) {
             return nextInput;
         }
         const parsedAppId = Number(appIdRaw);
         const appId = Number.isNaN(parsedAppId) ? appIdRaw : parsedAppId;
         if (typeof nextInput.service_id === "string" && nextInput.service_id) {
-            nextInput.service_id = await this.resolveServiceIdCandidate(client, enterpriseId, appId, nextInput.service_id);
+            nextInput.service_id =
+                canTrustContextComponentId && nextInput.service_id === contextComponentId
+                    ? contextComponentId
+                    : await this.resolveServiceIdCandidate(client, enterpriseId, appId, nextInput.service_id);
         }
         if (Array.isArray(nextInput.service_ids) && nextInput.service_ids.length > 0) {
             nextInput.service_ids = await Promise.all(nextInput.service_ids.map(async (item) => {
                 if (typeof item !== "string" || !item) {
                     return item;
+                }
+                if (canTrustContextComponentId && item === contextComponentId) {
+                    return contextComponentId;
                 }
                 return this.resolveServiceIdCandidate(client, enterpriseId, appId, item);
             }));

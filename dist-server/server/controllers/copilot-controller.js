@@ -2,13 +2,14 @@ import { PersistedEventPublisher } from "../events/persisted-event-publisher.js"
 import { createSseBroker } from "../events/sse-broker.js";
 import { copilotRoutes } from "../routes/copilot-routes.js";
 import { createInMemoryRunResumer, } from "../runtime/run-resumer.js";
+import { createRunExecutionState, } from "../runtime/run-execution-state.js";
 import { ServerLlmExecutor } from "../runtime/server-llm-executor.js";
 import { ServerRunExecutor } from "../runtime/server-run-executor.js";
 import { CopilotApprovalService } from "../services/copilot-approval-service.js";
 import { createInMemoryApprovalStore, } from "../stores/approval-store.js";
 import { createInMemoryEventStore } from "../stores/event-store.js";
-import { createInMemoryRunStore, } from "../stores/run-store.js";
-import { createInMemorySessionStore, } from "../stores/session-store.js";
+import { createInMemoryRunStore, cloneRunExecutionState, } from "../stores/run-store.js";
+import { cloneChatMessages, createInMemorySessionStore, deriveCompletedToolCallIds, toPendingWorkflowActionFromRunApproval, toRunPendingApproval, } from "../stores/session-store.js";
 import { CopilotSessionService, } from "../services/copilot-session-service.js";
 import { CopilotRunService } from "../services/copilot-run-service.js";
 import { createServerActionSkills } from "../runtime/server-action-skills.js";
@@ -359,7 +360,7 @@ function buildContextualOperateDescription(action, target, label) {
     return `重启当前应用 ${label}`;
 }
 export function createCopilotController(deps = {}) {
-    const enableLegacyActionSkills = deps.enableLegacyActionSkills === true;
+    const enableLegacyActionSkills = deps.enableLegacyActionSkills !== false;
     const sessionStore = deps.sessionStore ?? createInMemorySessionStore();
     const runStore = deps.runStore ?? createInMemoryRunStore();
     const approvalStore = deps.approvalStore ?? createInMemoryApprovalStore();
@@ -371,12 +372,14 @@ export function createCopilotController(deps = {}) {
     const workflowExecutor = new WorkflowExecutor({
         eventPublisher,
         sessionStore,
+        runStore,
         workflowToolClientFactory: deps.workflowToolClientFactory,
         enableRainbondAppAssistantWorkflow: deps.enableRainbondAppAssistantWorkflow,
     });
     const approvalService = new CopilotApprovalService({
         approvalStore,
         runStore,
+        sessionStore,
         eventPublisher,
         broker,
         runResumer,
@@ -419,8 +422,36 @@ export function createCopilotController(deps = {}) {
             structuredContent: params.output.structuredContent || {},
         });
     };
+    const buildRunExecutionState = (params) => {
+        const state = cloneRunExecutionState(params.existingState) ??
+            createRunExecutionState({
+                runId: params.runId,
+                sessionId: params.sessionId,
+                tenantId: params.tenantId,
+                initialMessage: params.messageText,
+            });
+        if (params.continuation) {
+            state.messages = cloneChatMessages(params.continuation.messages);
+            state.iteration = params.continuation.iteration;
+            state.completedToolCallIds = deriveCompletedToolCallIds(state.messages);
+        }
+        if (params.pendingAction) {
+            state.pendingApprovals = [toRunPendingApproval(params.pendingAction)];
+        }
+        state.nextStep = { type: "interruption" };
+        state.status = "waiting_approval";
+        state.finalOutput = null;
+        return state;
+    };
+    const toExecutionStateContinuation = (state) => ({
+        iteration: state.iteration,
+        messages: cloneChatMessages(state.messages),
+    });
+    const shouldResumeRunLoop = (state) => state.messages.some((message) => message.role === "assistant" &&
+        Array.isArray(message.tool_calls) &&
+        message.tool_calls.length > 0);
     const executePendingAction = async (params) => {
-        const currentRun = await runStore.getById(params.runId, params.actor.tenantId);
+        let currentRun = await runStore.getById(params.runId, params.actor.tenantId);
         if (!currentRun) {
             throw new Error("Run not found");
         }
@@ -428,7 +459,18 @@ export function createCopilotController(deps = {}) {
             tenantId: params.actor.tenantId,
             userId: params.actor.userId,
         });
-        let pendingAction = currentSession.pendingWorkflowAction;
+        let currentExecutionState = buildRunExecutionState({
+            runId: params.runId,
+            sessionId: params.sessionId,
+            tenantId: params.actor.tenantId,
+            messageText: currentRun.messageText,
+            continuation: currentSession.pendingLlmContinuation,
+            pendingAction: currentSession.pendingWorkflowAction,
+            existingState: currentRun.executionState,
+        });
+        let pendingAction = currentExecutionState.pendingApprovals[0]
+            ? toPendingWorkflowActionFromRunApproval(currentExecutionState.pendingApprovals[0])
+            : currentSession.pendingWorkflowAction;
         if (!pendingAction) {
             throw new Error("Pending workflow action not found");
         }
@@ -492,13 +534,20 @@ export function createCopilotController(deps = {}) {
                 await sessionStore.update({
                     ...currentSession,
                     pendingWorkflowAction: undefined,
+                    pendingLlmContinuation: undefined,
                 });
+                currentExecutionState.nextStep = { type: "failed" };
+                currentExecutionState.status = "failed";
+                currentExecutionState.finalOutput = errorMessage;
+                currentExecutionState.pendingApprovals = [];
                 await runStore.update({
                     ...currentRun,
+                    executionState: currentExecutionState,
                     status: "failed",
                     errorMessage,
                     finishedAt: new Date().toISOString(),
                 });
+                runResumer.unregister(params.actor.tenantId, params.runId);
                 await eventPublisher.publish({
                     type: "run.error",
                     tenantId: params.actor.tenantId,
@@ -542,25 +591,27 @@ export function createCopilotController(deps = {}) {
                 name: pendingAction.toolName,
                 status: output.isError ? "error" : "success",
             });
-            const nextPendingLlmContinuation = currentSession.pendingLlmContinuation && pendingAction.toolCallId
-                ? {
-                    iteration: currentSession.pendingLlmContinuation.iteration,
-                    messages: [
-                        ...currentSession.pendingLlmContinuation.messages.map((message) => ({
-                            ...message,
-                        })),
-                        {
-                            role: "tool",
-                            content: serializeToolResultForContinuation({
-                                pendingAction,
-                                output,
-                            }),
-                            name: pendingAction.toolName,
-                            tool_call_id: pendingAction.toolCallId,
-                        },
-                    ],
+            if (pendingAction.toolCallId) {
+                currentExecutionState.messages.push({
+                    role: "tool",
+                    content: serializeToolResultForContinuation({
+                        pendingAction,
+                        output,
+                    }),
+                    name: pendingAction.toolName,
+                    tool_call_id: pendingAction.toolCallId,
+                });
+                if (!currentExecutionState.completedToolCallIds.includes(pendingAction.toolCallId)) {
+                    currentExecutionState.completedToolCallIds.push(pendingAction.toolCallId);
                 }
-                : currentSession.pendingLlmContinuation;
+            }
+            currentExecutionState.pendingApprovals = [];
+            currentExecutionState.nextStep = { type: "run_again" };
+            currentExecutionState.status = "running";
+            currentExecutionState.finalOutput = null;
+            const nextPendingLlmContinuation = currentExecutionState.messages.length > 0
+                ? toExecutionStateContinuation(currentExecutionState)
+                : undefined;
             const nextPendingAction = pendingAction.followUpActions?.[0]
                 ? {
                     ...pendingAction.followUpActions[0],
@@ -570,11 +621,24 @@ export function createCopilotController(deps = {}) {
                 }
                 : undefined;
             if (nextPendingAction?.requiresApproval) {
+                currentExecutionState.pendingApprovals = [
+                    toRunPendingApproval(nextPendingAction),
+                ];
+                currentExecutionState.nextStep = { type: "interruption" };
+                currentExecutionState.status = "waiting_approval";
                 await sessionStore.update({
                     ...currentSession,
                     pendingWorkflowAction: nextPendingAction,
                     pendingLlmContinuation: nextPendingLlmContinuation,
                 });
+                await runStore.update({
+                    ...currentRun,
+                    executionState: currentExecutionState,
+                });
+                currentRun = {
+                    ...currentRun,
+                    executionState: currentExecutionState,
+                };
                 await eventPublisher.publish({
                     type: "chat.message",
                     tenantId: params.actor.tenantId,
@@ -608,11 +672,16 @@ export function createCopilotController(deps = {}) {
             }
             if (!nextPendingAction) {
                 if (nextPendingLlmContinuation &&
-                    pendingAction.toolCallId) {
+                    currentExecutionState.nextStep.type === "run_again" &&
+                    shouldResumeRunLoop(currentExecutionState)) {
                     await sessionStore.update({
                         ...currentSession,
                         pendingWorkflowAction: undefined,
                         pendingLlmContinuation: undefined,
+                    });
+                    await runStore.update({
+                        ...currentRun,
+                        executionState: currentExecutionState,
                     });
                     const llmExecutor = await createLlmExecutor({
                         actor: params.actor,
@@ -625,8 +694,8 @@ export function createCopilotController(deps = {}) {
                         message: currentRun.messageText,
                         sessionContext: currentSession.context,
                         continuation: {
-                            iteration: nextPendingLlmContinuation.iteration,
-                            messages: nextPendingLlmContinuation.messages,
+                            iteration: currentExecutionState.iteration,
+                            messages: currentExecutionState.messages,
                         },
                     });
                     if (handledByLlm) {
@@ -638,11 +707,17 @@ export function createCopilotController(deps = {}) {
                     pendingWorkflowAction: undefined,
                     pendingLlmContinuation: undefined,
                 });
+                currentExecutionState.pendingApprovals = [];
+                currentExecutionState.nextStep = { type: "final_output" };
+                currentExecutionState.status = "completed";
+                currentExecutionState.finalOutput = completedSummaries.join("\n");
                 await runStore.update({
                     ...currentRun,
+                    executionState: currentExecutionState,
                     status: "completed",
                     finishedAt: new Date().toISOString(),
                 });
+                runResumer.unregister(params.actor.tenantId, params.runId);
                 await eventPublisher.publish({
                     type: "chat.message",
                     tenantId: params.actor.tenantId,
@@ -690,10 +765,15 @@ export function createCopilotController(deps = {}) {
                 pendingWorkflowAction: nextPendingAction,
                 pendingLlmContinuation: nextPendingLlmContinuation,
             };
+            currentExecutionState.pendingApprovals = [];
             pendingAction = nextPendingAction;
         }
     };
     const queuePendingActionApproval = async (params) => {
+        const currentRun = await runStore.getById(params.runId, params.actor.tenantId);
+        if (!currentRun) {
+            throw new Error("Run not found");
+        }
         const currentSession = await sessionService.getSession(params.sessionId, {
             tenantId: params.actor.tenantId,
             userId: params.actor.userId,
@@ -710,10 +790,23 @@ export function createCopilotController(deps = {}) {
             arguments: params.pendingAction.arguments,
             followUpActions: params.pendingAction.followUpActions,
         };
+        const nextExecutionState = buildRunExecutionState({
+            runId: params.runId,
+            sessionId: params.sessionId,
+            tenantId: params.actor.tenantId,
+            messageText: currentRun.messageText,
+            continuation: params.continuation,
+            pendingAction: normalizedPendingAction,
+            existingState: currentRun.executionState,
+        });
         await sessionStore.update({
             ...currentSession,
             pendingWorkflowAction: normalizedPendingAction,
             pendingLlmContinuation: params.continuation,
+        });
+        await runStore.update({
+            ...currentRun,
+            executionState: nextExecutionState,
         });
         runResumer.register(params.actor.tenantId, params.runId, async ({ runId }) => {
             await executePendingAction({
@@ -731,6 +824,67 @@ export function createCopilotController(deps = {}) {
                 `执行 ${normalizedPendingAction.toolName}`,
             risk: normalizedPendingAction.risk || params.risk,
             scope: normalizedPendingAction.scope,
+        });
+    };
+    const executeLegacyPlannedRun = async (params) => {
+        const runExecutor = new ServerRunExecutor({
+            broker,
+            eventPublisher,
+            actionAdapter: params.actionAdapter,
+        });
+        const plan = runExecutor.plan(params.message);
+        if (plan.requiresApproval) {
+            await queuePendingActionApproval({
+                actor: params.actor,
+                sessionId: params.sessionId,
+                runId: params.runId,
+                pendingAction: {
+                    kind: "action_skill",
+                    toolName: plan.skillId,
+                    requiresApproval: true,
+                    risk: plan.risk,
+                    description: plan.description,
+                    arguments: plan.input,
+                },
+                description: plan.description,
+                risk: plan.risk,
+            });
+            return;
+        }
+        if (params.actionAdapter) {
+            await runExecutor.executeLowRisk({
+                actor: params.actor,
+                sessionId: params.sessionId,
+                runId: params.runId,
+                message: params.message,
+            });
+            return;
+        }
+        const fallbackEvents = await broker.replay(params.runId, params.actor.tenantId, {
+            afterSequence: 0,
+        });
+        let nextSequence = fallbackEvents.length + 1;
+        await eventPublisher.publish({
+            type: "chat.message",
+            tenantId: params.actor.tenantId,
+            sessionId: params.sessionId,
+            runId: params.runId,
+            sequence: nextSequence,
+            data: {
+                role: "assistant",
+                content: "当前没有可用的规则型执行适配器，请补充更明确的目标对象，或配置 LLM / MCP 工具后重试。",
+            },
+        });
+        nextSequence += 1;
+        await eventPublisher.publish({
+            type: "run.status",
+            tenantId: params.actor.tenantId,
+            sessionId: params.sessionId,
+            runId: params.runId,
+            sequence: nextSequence,
+            data: {
+                status: "done",
+            },
         });
     };
     return {
@@ -784,6 +938,10 @@ export function createCopilotController(deps = {}) {
                     tenantName: request.actor.tenantName,
                 }, request.body.context);
             }
+            const previousSession = await sessionService.getSession(request.params.sessionId, {
+                tenantId: request.actor.tenantId,
+                userId: request.actor.userId,
+            });
             const run = await runService.createRun({
                 actor: request.actor,
                 sessionId: request.params.sessionId,
@@ -803,6 +961,22 @@ export function createCopilotController(deps = {}) {
                 tenantId: request.actor.tenantId,
                 userId: request.actor.userId,
             });
+            const previousRun = previousSession.latestRunId
+                ? await runStore.getById(previousSession.latestRunId, request.actor.tenantId)
+                : null;
+            const deferredAction = previousRun?.executionState?.deferredAction;
+            const clearDeferredAction = async () => {
+                if (!previousRun?.executionState) {
+                    return;
+                }
+                await runStore.update({
+                    ...previousRun,
+                    executionState: {
+                        ...previousRun.executionState,
+                        deferredAction: null,
+                    },
+                });
+            };
             if (session.pendingWorkflowAction &&
                 session.pendingWorkflowAction.requiresApproval &&
                 isContinueWorkflowActionPrompt(request.body.message)) {
@@ -826,6 +1000,126 @@ export function createCopilotController(deps = {}) {
             }
             const pendingSnapshotVersion = parseSnapshotCreateVersionInput(request.body.message);
             if (session.pendingWorkflowAction &&
+                deferredAction &&
+                session.pendingWorkflowAction.toolName === deferredAction.toolName &&
+                pendingSnapshotVersion) {
+                if (deferredAction.toolName === "rainbond_create_app_version_snapshot" &&
+                    deferredAction.missingArgument === "version" &&
+                    !deferredAction.requiresApproval) {
+                    const nextArguments = {
+                        ...session.pendingWorkflowAction.arguments,
+                        version: pendingSnapshotVersion,
+                    };
+                    delete nextArguments.__await_version_input;
+                    delete nextArguments.suggested_version;
+                    await sessionStore.update({
+                        ...session,
+                        pendingWorkflowAction: {
+                            ...session.pendingWorkflowAction,
+                            arguments: nextArguments,
+                        },
+                    });
+                    await clearDeferredAction();
+                    const handledByWorkflow = await workflowExecutor.execute({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        message: "继续执行",
+                    });
+                    if (handledByWorkflow) {
+                        return {
+                            data: {
+                                run_id: run.runId,
+                                session_id: run.sessionId,
+                                stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                            },
+                        };
+                    }
+                }
+                if (deferredAction.toolName === "rainbond_install_app_model" &&
+                    deferredAction.missingArgument === "app_model_version") {
+                    const nextArguments = {
+                        ...session.pendingWorkflowAction.arguments,
+                        app_model_version: pendingSnapshotVersion,
+                    };
+                    delete nextArguments.__await_version_input;
+                    delete nextArguments.suggested_version;
+                    await sessionStore.update({
+                        ...session,
+                        pendingWorkflowAction: {
+                            ...session.pendingWorkflowAction,
+                            arguments: nextArguments,
+                        },
+                    });
+                    await clearDeferredAction();
+                    await queuePendingActionApproval({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        pendingAction: {
+                            ...session.pendingWorkflowAction,
+                            arguments: nextArguments,
+                        },
+                        description: session.pendingWorkflowAction.description ||
+                            `执行 ${session.pendingWorkflowAction.toolName}`,
+                        risk: session.pendingWorkflowAction.risk || "high",
+                    });
+                    return {
+                        data: {
+                            run_id: run.runId,
+                            session_id: run.sessionId,
+                            stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                        },
+                    };
+                }
+                if (deferredAction.toolName === "rainbond_rollback_app_version_snapshot" &&
+                    deferredAction.missingArgument === "version_id" &&
+                    deferredAction.resolutionTool) {
+                    const client = await resolvePendingMcpClient({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                    });
+                    const snapshotListResult = await client.callTool(deferredAction.resolutionTool.toolName, deferredAction.resolutionTool.arguments);
+                    const versionId = findSnapshotVersionId((snapshotListResult.structuredContent || {}), pendingSnapshotVersion);
+                    if (versionId > 0) {
+                        const nextArguments = {
+                            ...session.pendingWorkflowAction.arguments,
+                            version_id: versionId,
+                        };
+                        delete nextArguments.__await_version_input;
+                        delete nextArguments.suggested_version;
+                        await sessionStore.update({
+                            ...session,
+                            pendingWorkflowAction: {
+                                ...session.pendingWorkflowAction,
+                                arguments: nextArguments,
+                            },
+                        });
+                        await clearDeferredAction();
+                        await queuePendingActionApproval({
+                            actor: request.actor,
+                            sessionId: request.params.sessionId,
+                            runId: run.runId,
+                            pendingAction: {
+                                ...session.pendingWorkflowAction,
+                                description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                                arguments: nextArguments,
+                            },
+                            description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                            risk: session.pendingWorkflowAction.risk || "high",
+                        });
+                        return {
+                            data: {
+                                run_id: run.runId,
+                                session_id: run.sessionId,
+                                stream_url: copilotRoutes.streamRunEvents(request.params.sessionId, run.runId),
+                            },
+                        };
+                    }
+                }
+            }
+            if (!deferredAction &&
+                session.pendingWorkflowAction &&
                 !session.pendingWorkflowAction.requiresApproval &&
                 session.pendingWorkflowAction.toolName === "rainbond_create_app_version_snapshot" &&
                 session.pendingWorkflowAction.arguments &&
@@ -860,7 +1154,8 @@ export function createCopilotController(deps = {}) {
                     };
                 }
             }
-            if (session.pendingWorkflowAction &&
+            if (!deferredAction &&
+                session.pendingWorkflowAction &&
                 session.pendingWorkflowAction.arguments &&
                 session.pendingWorkflowAction.arguments.__await_version_input === true &&
                 pendingSnapshotVersion) {
@@ -1056,47 +1351,15 @@ export function createCopilotController(deps = {}) {
                 actor: request.actor,
                 sessionId: request.params.sessionId,
             });
-            if (enableLegacyActionSkills) {
-                const runExecutor = new ServerRunExecutor({
-                    broker,
-                    eventPublisher,
+            const preferLegacyPlanner = enableLegacyActionSkills && deps.llmClient === null;
+            if (preferLegacyPlanner) {
+                await executeLegacyPlannedRun({
+                    actor: request.actor,
+                    sessionId: request.params.sessionId,
+                    runId: run.runId,
+                    message: request.body.message,
                     actionAdapter,
                 });
-                const plan = runExecutor.plan(request.body.message);
-                if (plan.requiresApproval) {
-                    await queuePendingActionApproval({
-                        actor: request.actor,
-                        sessionId: request.params.sessionId,
-                        runId: run.runId,
-                        pendingAction: {
-                            kind: "action_skill",
-                            toolName: plan.skillId,
-                            requiresApproval: true,
-                            risk: plan.risk,
-                            description: plan.description,
-                            arguments: plan.input,
-                        },
-                        description: plan.description,
-                        risk: plan.risk,
-                    });
-                }
-                else {
-                    const handledByLlm = await llmExecutor.execute({
-                        actor: request.actor,
-                        sessionId: request.params.sessionId,
-                        runId: run.runId,
-                        message: request.body.message,
-                        sessionContext: session.context,
-                    });
-                    if (!handledByLlm) {
-                        await runExecutor.executeLowRisk({
-                            actor: request.actor,
-                            sessionId: request.params.sessionId,
-                            runId: run.runId,
-                            message: request.body.message,
-                        });
-                    }
-                }
             }
             else {
                 const handledByLlm = await llmExecutor.execute({
@@ -1106,7 +1369,16 @@ export function createCopilotController(deps = {}) {
                     message: request.body.message,
                     sessionContext: session.context,
                 });
-                if (!handledByLlm) {
+                if (!handledByLlm && enableLegacyActionSkills) {
+                    await executeLegacyPlannedRun({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        message: request.body.message,
+                        actionAdapter,
+                    });
+                }
+                else if (!handledByLlm) {
                     const fallbackEvents = await broker.replay(run.runId, request.actor.tenantId, { afterSequence: 0 });
                     let nextSequence = fallbackEvents.length + 1;
                     await eventPublisher.publish({
@@ -1158,6 +1430,7 @@ export function createCopilotController(deps = {}) {
             });
             if (approval.status === "rejected") {
                 const session = await sessionStore.getById(approval.sessionId, request.actor.tenantId);
+                const run = await runStore.getById(approval.runId, request.actor.tenantId);
                 if (session &&
                     session.userId === request.actor.userId &&
                     session.pendingWorkflowAction?.toolName === approval.skillId) {
@@ -1167,6 +1440,19 @@ export function createCopilotController(deps = {}) {
                         pendingLlmContinuation: undefined,
                     });
                 }
+                if (run?.executionState) {
+                    await runStore.update({
+                        ...run,
+                        executionState: {
+                            ...run.executionState,
+                            pendingApprovals: [],
+                            nextStep: { type: "failed" },
+                            status: "failed",
+                            finalOutput: request.body.comment || "Approval rejected",
+                        },
+                    });
+                }
+                runResumer.unregister(request.actor.tenantId, approval.runId);
             }
             return {
                 data: {

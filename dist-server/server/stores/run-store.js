@@ -1,9 +1,41 @@
+import { cloneChatMessages } from "./session-store.js";
+export function cloneRunExecutionState(state) {
+    if (!state) {
+        return undefined;
+    }
+    return {
+        ...state,
+        messages: cloneChatMessages(state.messages),
+        pendingApprovals: state.pendingApprovals.map((approval) => ({
+            ...approval,
+            arguments: { ...approval.arguments },
+            followUpActions: approval.followUpActions?.map((item) => ({
+                ...item,
+                arguments: { ...item.arguments },
+            })),
+        })),
+        deferredAction: state.deferredAction
+            ? {
+                ...state.deferredAction,
+                arguments: { ...state.deferredAction.arguments },
+                resolutionTool: state.deferredAction.resolutionTool
+                    ? {
+                        ...state.deferredAction.resolutionTool,
+                        arguments: { ...state.deferredAction.resolutionTool.arguments },
+                    }
+                    : undefined,
+            }
+            : state.deferredAction,
+        completedToolCallIds: [...state.completedToolCallIds],
+    };
+}
 export function createRunRecord(input) {
     return {
         runId: input.runId,
         tenantId: input.tenantId,
         sessionId: input.sessionId,
         messageText: input.messageText,
+        executionState: input.executionState,
         status: input.status ?? "pending",
         errorMessage: input.errorMessage,
         startedAt: input.startedAt ?? new Date().toISOString(),
