@@ -182,8 +182,22 @@ export function createCopilotApiClient(options: CreateCopilotApiClientOptions) {
 }
 
 export async function readCopilotSseStream(
-  response: Response
+  response: Response,
+  options: {
+    onEvent?: (event: PublicCopilotEvent) => void;
+  } = {}
 ): Promise<PublicCopilotEvent[]> {
+  return consumeCopilotSseStream(response, options);
+}
+
+export async function consumeCopilotSseStream(
+  response: Response
+  ,
+  options: {
+    onEvent?: (event: PublicCopilotEvent) => void;
+  } = {}
+): Promise<PublicCopilotEvent[]> {
+  const { onEvent } = options;
   if (!response.ok) {
     throw new Error(
       `Copilot SSE request failed with ${response.status} ${response.statusText}`
@@ -221,6 +235,7 @@ export async function readCopilotSseStream(
           JSON.parse(dataLine.slice(6))
         );
         events.push(parsed);
+        onEvent?.(parsed);
       }
 
       boundaryIndex = buffer.indexOf("\n\n");

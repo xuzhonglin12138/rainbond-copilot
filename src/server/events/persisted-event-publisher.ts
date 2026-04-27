@@ -4,6 +4,7 @@ import {
 } from "../../shared/contracts.js";
 import { createEventRecord } from "../stores/event-store.js";
 import type { SseBroker } from "./sse-broker.js";
+import { logCopilotDebug, summarizeCopilotEvent } from "../utils/copilot-debug.js";
 
 export interface PublishCopilotEventInput {
   type: string;
@@ -40,6 +41,8 @@ export class PersistedEventPublisher {
         createdAt: event.timestamp,
       })
     );
+
+    logCopilotDebug("event:publish", summarizeCopilotEvent(event));
 
     return event;
   }

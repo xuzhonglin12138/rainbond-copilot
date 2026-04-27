@@ -2,6 +2,23 @@
 import { describe, expect, it, vi } from "vitest";
 import { createCopilotController } from "../../../src/server/controllers/copilot-controller";
 
+function createDeferred<T>() {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  return { promise, resolve, reject };
+}
+
+async function wait(ms: number) {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 describe("copilot api controller", () => {
   const noopLlmClient = {
     chat: vi.fn(async () => ({
@@ -62,6 +79,48 @@ describe("copilot api controller", () => {
     expect(response.data.stream_url).toContain(
       `/api/v1/copilot/sessions/${session.data.session_id}/runs/`
     );
+  });
+
+  it("returns the run handle before llm execution finishes", async () => {
+    const deferred = createDeferred<{
+      content: string;
+      finish_reason: string;
+    }>();
+    const llmClient = {
+      chat: vi.fn(async () => deferred.promise),
+    };
+    const controller = createCopilotController({ llmClient: llmClient as any });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {},
+    });
+
+    const responsePromise = controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "你好", stream: true },
+    });
+
+    const resolvedWithinDeadline = await Promise.race([
+      responsePromise.then(() => true),
+      wait(25).then(() => false),
+    ]);
+
+    expect(resolvedWithinDeadline).toBe(true);
+
+    deferred.resolve({
+      content: "你好！",
+      finish_reason: "stop",
+    });
+    await responsePromise;
   });
 
   it("rejects reading a session from another user in the same tenant", async () => {

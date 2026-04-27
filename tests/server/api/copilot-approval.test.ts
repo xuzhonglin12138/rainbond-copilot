@@ -12,6 +12,23 @@ import {
   createSessionRecord,
 } from "../../../src/server/stores/session-store";
 
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  return { promise, resolve, reject };
+}
+
+async function wait(ms) {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 describe("copilot approval flow", () => {
   it("approves a pending approval and resumes the waiting run", async () => {
     const actor = {
@@ -120,6 +137,88 @@ describe("copilot approval flow", () => {
       "approval.resolved",
       "run.status",
     ]);
+  });
+
+  it("returns the approval decision before resumed execution finishes", async () => {
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+    const sessionStore = createInMemorySessionStore();
+    const runStore = createInMemoryRunStore();
+    const approvalStore = createInMemoryApprovalStore();
+    const broker = createSseBroker();
+    const eventPublisher = new PersistedEventPublisher(broker);
+    const deferred = createDeferred();
+    const runResumer = {
+      register() {},
+      unregister() {},
+      async resume() {
+        await deferred.promise;
+        return true;
+      },
+    };
+    const approvalService = new CopilotApprovalService({
+      approvalStore,
+      runStore,
+      sessionStore,
+      eventPublisher,
+      broker,
+      runResumer,
+    });
+    const controller = createCopilotController({
+      sessionStore,
+      runStore,
+      approvalStore,
+      broker,
+      runResumer,
+    });
+
+    await sessionStore.create(
+      createSessionRecord({
+        sessionId: "cs_approval_async",
+        tenantId: actor.tenantId,
+        userId: actor.userId,
+        sourceSystem: actor.sourceSystem,
+      })
+    );
+    await runStore.create(
+      createRunRecord({
+        runId: "run_approval_async",
+        tenantId: actor.tenantId,
+        sessionId: "cs_approval_async",
+        messageText: "restart frontend-ui",
+        status: "waiting_approval",
+      })
+    );
+
+    const approval = await approvalService.createPendingApproval({
+      actor,
+      sessionId: "cs_approval_async",
+      runId: "run_approval_async",
+      skillId: "restart-component",
+      description: "重启 frontend-ui 会导致短暂中断",
+      risk: "high",
+    });
+
+    const decisionPromise = controller.decideApproval({
+      actor,
+      params: { approvalId: approval.approvalId },
+      body: { decision: "approved", comment: "确认执行" },
+    });
+
+    const resolvedWithinDeadline = await Promise.race([
+      decisionPromise.then(() => true),
+      wait(25).then(() => false),
+    ]);
+
+    deferred.resolve();
+    await decisionPromise;
+
+    expect(resolvedWithinDeadline).toBe(true);
   });
 
   it("rejects a pending approval and cancels the run without resuming", async () => {

@@ -9,6 +9,7 @@ import type { ActionAdapter } from "./skill-types.js";
 import { PersistedEventPublisher } from "../events/persisted-event-publisher.js";
 import type { SseBroker } from "../events/sse-broker.js";
 import { createServerActionSkills } from "./server-action-skills.js";
+import { createServerId } from "../utils/id.js";
 
 export interface PlannedServerAction {
   requiresApproval: boolean;
@@ -123,6 +124,7 @@ export class ServerRunExecutor {
     const plan = this.plan(params.message);
     const statusSkill = this.mustGetSkill(plan.skillId);
     const statusInput = plan.input;
+    const statusTraceId = createServerId("trace");
 
     const traceCallSequence = await this.nextSequence(
       params.runId,
@@ -135,6 +137,7 @@ export class ServerRunExecutor {
       runId: params.runId,
       sequence: traceCallSequence,
       data: {
+        trace_id: statusTraceId,
         tool_name: statusSkill.name,
         input: statusInput,
       },
@@ -153,6 +156,7 @@ export class ServerRunExecutor {
       runId: params.runId,
       sequence: traceResultSequence,
       data: {
+        trace_id: statusTraceId,
         tool_name: statusSkill.name,
         input: statusInput,
         output: statusOutput as Record<string, unknown>,
@@ -172,6 +176,7 @@ export class ServerRunExecutor {
         name: (statusOutput as { name: string }).name,
         lines: 20,
       };
+      const logsTraceId = createServerId("trace");
 
       const logsCallSequence = await this.nextSequence(
         params.runId,
@@ -184,6 +189,7 @@ export class ServerRunExecutor {
         runId: params.runId,
         sequence: logsCallSequence,
         data: {
+          trace_id: logsTraceId,
           tool_name: logsSkill.name,
           input: logsInput,
         },
@@ -204,6 +210,7 @@ export class ServerRunExecutor {
         runId: params.runId,
         sequence: logsResultSequence,
         data: {
+          trace_id: logsTraceId,
           tool_name: logsSkill.name,
           input: logsInput,
           output: logsOutput,

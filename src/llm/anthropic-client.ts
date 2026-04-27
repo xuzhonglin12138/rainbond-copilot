@@ -100,7 +100,7 @@ export class AnthropicClient {
   async streamChat(
     messages: ChatMessage[],
     tools?: ToolDefinition[],
-    _onChunk?: (chunk: string) => void
+    _onChunk?: (chunk: string) => void | Promise<void>
   ): Promise<ChatCompletionResponse> {
     // For now, use non-streaming version
     // Streaming can be implemented later if needed

@@ -3,6 +3,7 @@ import { PersistedEventPublisher } from "../events/persisted-event-publisher.js"
 import { createSseBroker, type SseBroker } from "../events/sse-broker.js";
 import type { RainbondQueryToolClient } from "../integrations/rainbond-mcp/query-tools.js";
 import { copilotRoutes } from "../routes/copilot-routes.js";
+import { createServerId } from "../utils/id.js";
 import {
   createInMemoryRunResumer,
   type RunResumer,
@@ -48,6 +49,7 @@ import type {
   PendingWorkflowAction,
 } from "../stores/session-store.js";
 import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
+import { logCopilotDebug } from "../utils/copilot-debug.js";
 
 interface ControllerDeps {
   sessionStore?: SessionStore;
@@ -158,181 +160,6 @@ function readContextAppId(
 
   const matched = raw.match(/(\d+)/);
   return matched && matched[1] ? Number(matched[1]) : 0;
-}
-
-function isDeleteCurrentAppIntent(
-  message: string,
-  context?: Record<string, unknown>
-): boolean {
-  const normalized = (message || "").trim();
-  if (!normalized) {
-    return false;
-  }
-
-  const hasAppContext = !!readContextInt(context, "appId", "app_id");
-  if (!hasAppContext) {
-    return false;
-  }
-
-  const mentionsDelete = /(删除|delete|remove|移除)/i.test(normalized);
-  const mentionsApp = /(应用|app)/i.test(normalized);
-  const mentionsCurrentApp = /(这个应用|当前应用|当前这个应用|该应用)/.test(normalized);
-
-  return mentionsDelete && (mentionsCurrentApp || mentionsApp);
-}
-
-function readContextResourceType(
-  context?: Record<string, unknown>
-): string {
-  if (!context || typeof context.resource !== "object" || !context.resource) {
-    return "";
-  }
-  const type = (context.resource as Record<string, unknown>).type;
-  return typeof type === "string" ? type.trim() : "";
-}
-
-function looksLikeMutationQuestion(message: string): boolean {
-  const normalized = (message || "").trim();
-  if (!normalized) {
-    return false;
-  }
-
-  if (/确认/.test(normalized)) {
-    return false;
-  }
-
-  return (
-    /[？?]$/.test(normalized) ||
-    /(如何|怎么|为什么|是否|会不会|能否|可否|是什么)/i.test(normalized)
-  );
-}
-
-type ContextualMutationAction = "delete" | "stop" | "start" | "restart";
-type ContextualMutationTarget = "app" | "component";
-
-function parseMemoryScaleTarget(message: string): number | null {
-  const normalized = (message || "").trim().toLowerCase();
-  if (!normalized) {
-    return null;
-  }
-  if (!/(内存|memory|扩容|scale)/i.test(normalized)) {
-    return null;
-  }
-
-  const matched = normalized.match(/(\d{1,5})\s*(gb|g|mb|m)?/i);
-  if (!matched) {
-    return null;
-  }
-
-  const value = Number(matched[1]);
-  if (!Number.isFinite(value) || value <= 0) {
-    return null;
-  }
-
-  const unit = (matched[2] || "mb").toLowerCase();
-  if (unit === "gb" || unit === "g") {
-    return value * 1024;
-  }
-  return value;
-}
-
-function parseImageTarget(message: string): string {
-  const normalized = (message || "").trim();
-  if (!normalized || !/(镜像|image)/i.test(normalized)) {
-    return "";
-  }
-
-  const patterns = [
-    /(?:镜像|image)[^。，“”"'`]*?(?:改成|换成|设置为|设为|to)\s*([A-Za-z0-9./:_-]+)/i,
-    /(?:改成|换成|设置为|设为)\s*([A-Za-z0-9./:_-]+)[^。，“”"'`]*?(?:镜像|image)/i,
-  ];
-
-  for (const pattern of patterns) {
-    const matched = normalized.match(pattern);
-    if (matched && matched[1]) {
-      return matched[1];
-    }
-  }
-
-  return "";
-}
-
-function parsePortManagementIntent(message: string): {
-  operation: "enable_inner" | "disable_inner" | "enable_outer" | "disable_outer";
-  port: number;
-} | null {
-  const normalized = (message || "").trim();
-  if (!normalized || !/(端口|port)/i.test(normalized)) {
-    return null;
-  }
-
-  const portMatch = normalized.match(/(\d{2,5})/);
-  if (!portMatch) {
-    return null;
-  }
-  const port = Number(portMatch[1]);
-  if (!Number.isFinite(port) || port <= 0) {
-    return null;
-  }
-
-  if (/(开启|打开|启用).*(对内|内网|inner)/i.test(normalized)) {
-    return { operation: "enable_inner", port };
-  }
-  if (/(关闭|禁用).*(对内|内网|inner)/i.test(normalized)) {
-    return { operation: "disable_inner", port };
-  }
-  if (/(开启|打开|启用).*(对外|外网|outer)/i.test(normalized)) {
-    return { operation: "enable_outer", port };
-  }
-  if (/(关闭|禁用).*(对外|外网|outer)/i.test(normalized)) {
-    return { operation: "disable_outer", port };
-  }
-
-  return null;
-}
-
-function parseConnectionEnvIntent(message: string): {
-  attrName: string;
-  attrValue: string;
-} | null {
-  const normalized = (message || "").trim();
-  if (!normalized || !/(连接信息|outer env|connection env|连接变量)/i.test(normalized)) {
-    return null;
-  }
-  const match = normalized.match(/\b([A-Z][A-Z0-9_]+)\s*=\s*([^\s]+)/);
-  if (!match) {
-    return null;
-  }
-  return {
-    attrName: match[1],
-    attrValue: match[2],
-  };
-}
-
-function parseInnerEnvIntent(message: string): {
-  attrName: string;
-  attrValue: string;
-} | null {
-  const normalized = (message || "").trim();
-  if (!normalized || !/(环境变量|env)/i.test(normalized)) {
-    return null;
-  }
-  const match = normalized.match(/\b([A-Z][A-Z0-9_]+)\s*=\s*([A-Za-z0-9._:/-]+)/);
-  if (!match) {
-    return null;
-  }
-  return {
-    attrName: match[1],
-    attrValue: match[2],
-  };
-}
-
-function requestsSnapshotCreation(message: string): boolean {
-  const normalized = (message || "").trim();
-  if (!normalized) {
-    return false;
-  }
-  return /(创建.*快照|生成.*快照|create.*snapshot)/i.test(normalized);
 }
 
 function parseSnapshotRollbackVersion(message: string): string {
@@ -475,114 +302,6 @@ function findSnapshotVersionId(
   return readContextInt(matched, "version_id", "ID", "id");
 }
 
-function detectContextualMutationIntent(
-  message: string,
-  context?: Record<string, unknown>
-): {
-  action: ContextualMutationAction;
-  target: ContextualMutationTarget;
-} | null {
-  const normalized = (message || "").trim();
-  if (!normalized || looksLikeMutationQuestion(normalized)) {
-    return null;
-  }
-
-  let action: ContextualMutationAction | null = null;
-  if (/(删除|移除|remove|delete)/i.test(normalized)) {
-    action = "delete";
-  } else if (/(重启|restart|reboot)/i.test(normalized)) {
-    action = "restart";
-  } else if (/(关闭|停止|stop|shutdown)/i.test(normalized)) {
-    action = "stop";
-  } else if (/(启动|开启|start)/i.test(normalized)) {
-    action = "start";
-  }
-
-  if (!action) {
-    return null;
-  }
-
-  const resourceType = readContextResourceType(context);
-  const hasComponentContext = !!readContextString(
-    context,
-    "componentId",
-    "component_id"
-  );
-  const hasAppContext = !!readContextInt(context, "appId", "app_id");
-  const currentComponentCommand =
-    /(确认关闭|确认启动|确认重启|确认删除|关闭当前组件|启动当前组件|重启当前组件|删除当前组件|关闭组件|启动组件|重启组件|删除组件)/i.test(
-      normalized
-    );
-  const currentAppCommand =
-    /(删除这个应用|删除当前应用|关闭当前应用|启动当前应用|重启当前应用|删除应用|关闭应用|启动应用|重启应用)/i.test(
-      normalized
-    );
-
-  if ((resourceType === "component" || hasComponentContext) && currentComponentCommand) {
-    return {
-      action,
-      target: "component",
-    };
-  }
-
-  if ((resourceType === "app" || hasAppContext) && currentAppCommand) {
-    return {
-      action,
-      target: "app",
-    };
-  }
-
-  const explicitComponent =
-    /(当前组件|这个组件|该组件|当前服务|这个服务|该服务|组件|服务|component|service)/i.test(
-      normalized
-    );
-  const explicitApp = /(当前应用|这个应用|该应用|应用|app)/i.test(normalized);
-
-  let target: ContextualMutationTarget | null = null;
-  if (explicitComponent) {
-    target = "component";
-  } else if (explicitApp) {
-    target = "app";
-  } else if (resourceType === "component" || hasComponentContext) {
-    target = "component";
-  } else if (resourceType === "app" || hasAppContext) {
-    target = "app";
-  }
-
-  if (!target) {
-    return null;
-  }
-
-  return {
-    action,
-    target,
-  };
-}
-
-function buildContextualOperateDescription(
-  action: Exclude<ContextualMutationAction, "delete">,
-  target: ContextualMutationTarget,
-  label: string
-): string {
-  if (target === "component") {
-    if (action === "stop") {
-      return `关闭当前组件 ${label}`;
-    }
-    if (action === "start") {
-      return `启动当前组件 ${label}`;
-    }
-    return `重启当前组件 ${label}`;
-  }
-
-  if (action === "stop") {
-    return `关闭当前应用 ${label}`;
-  }
-  if (action === "start") {
-    return `启动当前应用 ${label}`;
-  }
-  return `重启当前应用 ${label}`;
-}
-
 export function createCopilotController(deps: ControllerDeps = {}) {
   const enableLegacyActionSkills = deps.enableLegacyActionSkills !== false;
   const sessionStore = deps.sessionStore ?? createInMemorySessionStore();
@@ -629,6 +348,14 @@ export function createCopilotController(deps: ControllerDeps = {}) {
       throw new Error("MCP tool client factory is required");
     }
     return factory(params);
+  };
+
+  const nextRunSequence = async (tenantId: string, runId: string) => {
+    const events = await broker.replay(runId, tenantId, {
+      afterSequence: 0,
+    });
+
+    return events.length + 1;
   };
 
   const createLlmExecutor = async (params: {
@@ -770,6 +497,7 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         structuredContent: Record<string, unknown>;
         content: Array<{ type: string; text: string }>;
       };
+      const traceId = createServerId("trace");
 
       await eventPublisher.publish({
         type: "chat.trace",
@@ -778,6 +506,8 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         runId: params.runId,
         sequence: nextSequence,
         data: {
+          trace_id: traceId,
+          tool_call_id: pendingAction.toolCallId,
           tool_name: traceToolName,
           input: pendingAction.arguments,
         },
@@ -879,6 +609,8 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         runId: params.runId,
         sequence: nextSequence,
         data: {
+          trace_id: traceId,
+          tool_call_id: pendingAction.toolCallId,
           tool_name: traceToolName,
           input: pendingAction.arguments,
           output,
@@ -1304,6 +1036,13 @@ export function createCopilotController(deps: ControllerDeps = {}) {
     },
 
     async createMessageRun(request: CreateMessageRunRequest) {
+      logCopilotDebug("controller:createMessageRun:start", {
+        sessionId: request.params.sessionId,
+        tenantId: request.actor.tenantId,
+        userId: request.actor.userId,
+        messageLength: request.body.message ? request.body.message.length : 0,
+        hasContext: !!(request.body.context && Object.keys(request.body.context).length),
+      });
       if (request.body.context && Object.keys(request.body.context).length > 0) {
         await sessionService.updateSessionContext(
           request.params.sessionId,
@@ -1341,175 +1080,168 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         },
       });
 
-      const session = await sessionService.getSession(request.params.sessionId, {
-        tenantId: request.actor.tenantId,
-        userId: request.actor.userId,
-      });
-      const previousRun = previousSession.latestRunId
-        ? await runStore.getById(previousSession.latestRunId, request.actor.tenantId)
-        : null;
-      const deferredAction = previousRun?.executionState?.deferredAction;
-      const clearDeferredAction = async () => {
-        if (!previousRun?.executionState) {
+      const response = {
+        data: {
+          run_id: run.runId,
+          session_id: run.sessionId,
+          stream_url: copilotRoutes.streamRunEvents(
+            request.params.sessionId,
+            run.runId
+          ),
+        },
+      };
+
+      const failRunInBackground = async (error: unknown) => {
+        logCopilotDebug("controller:createMessageRun:background-error", {
+          runId: run.runId,
+          sessionId: request.params.sessionId,
+          message:
+            error instanceof Error ? error.message : "Copilot run failed",
+        });
+        const currentRun = await runStore.getById(run.runId, request.actor.tenantId);
+        if (
+          !currentRun ||
+          currentRun.status === "completed" ||
+          currentRun.status === "failed" ||
+          currentRun.status === "cancelled"
+        ) {
           return;
         }
 
         await runStore.update({
-          ...previousRun,
-          executionState: {
-            ...previousRun.executionState,
-            deferredAction: null,
+          ...currentRun,
+          status: "failed",
+          errorMessage:
+            error instanceof Error ? error.message : "Copilot run failed",
+          finishedAt: new Date().toISOString(),
+        });
+
+        const nextSequence = await nextRunSequence(
+          request.actor.tenantId,
+          run.runId
+        );
+        await eventPublisher.publish({
+          type: "run.error",
+          tenantId: request.actor.tenantId,
+          sessionId: request.params.sessionId,
+          runId: run.runId,
+          sequence: nextSequence,
+          data: {
+            message:
+              error instanceof Error ? error.message : "Copilot run failed",
+          },
+        });
+        await eventPublisher.publish({
+          type: "run.status",
+          tenantId: request.actor.tenantId,
+          sessionId: request.params.sessionId,
+          runId: run.runId,
+          sequence: nextSequence + 1,
+          data: {
+            status: "error",
           },
         });
       };
 
-      if (
-        session.pendingWorkflowAction &&
-        session.pendingWorkflowAction.requiresApproval &&
-        isContinueWorkflowActionPrompt(request.body.message)
-      ) {
-        await queuePendingActionApproval({
-          actor: request.actor,
-          sessionId: request.params.sessionId,
+      const executeRunInBackground = async () => {
+        logCopilotDebug("controller:createMessageRun:background-start", {
           runId: run.runId,
-          pendingAction: session.pendingWorkflowAction,
-          continuation: session.pendingLlmContinuation,
-          description:
-            session.pendingWorkflowAction.description ||
-            `执行 ${session.pendingWorkflowAction.toolName}`,
-          risk: session.pendingWorkflowAction.risk || "high",
+          sessionId: request.params.sessionId,
         });
-
-        return {
-          data: {
-            run_id: run.runId,
-            session_id: run.sessionId,
-            stream_url: copilotRoutes.streamRunEvents(
-              request.params.sessionId,
-              run.runId
-            ),
-          },
-        };
-      }
-
-      const pendingSnapshotVersion = parseSnapshotCreateVersionInput(
-        request.body.message
-      );
-      if (
-        session.pendingWorkflowAction &&
-        deferredAction &&
-        session.pendingWorkflowAction.toolName === deferredAction.toolName &&
-        pendingSnapshotVersion
-      ) {
-        if (
-          deferredAction.toolName === "rainbond_create_app_version_snapshot" &&
-          deferredAction.missingArgument === "version" &&
-          !deferredAction.requiresApproval
-        ) {
-          const nextArguments: Record<string, unknown> = {
-            ...session.pendingWorkflowAction.arguments,
-            version: pendingSnapshotVersion,
-          };
-          delete nextArguments.__await_version_input;
-          delete nextArguments.suggested_version;
-
-          await sessionStore.update({
-            ...session,
-            pendingWorkflowAction: {
-              ...session.pendingWorkflowAction,
-              arguments: nextArguments,
-            },
-          });
-          await clearDeferredAction();
-
-          const handledByWorkflow = await workflowExecutor.execute({
-            actor: request.actor,
-            sessionId: request.params.sessionId,
-            runId: run.runId,
-            message: "继续执行",
-          });
-          if (handledByWorkflow) {
-            return {
-              data: {
-                run_id: run.runId,
-                session_id: run.sessionId,
-                stream_url: copilotRoutes.streamRunEvents(
-                  request.params.sessionId,
-                  run.runId
-                ),
-              },
-            };
+        const session = await sessionService.getSession(request.params.sessionId, {
+          tenantId: request.actor.tenantId,
+          userId: request.actor.userId,
+        });
+        const previousRun = previousSession.latestRunId
+          ? await runStore.getById(previousSession.latestRunId, request.actor.tenantId)
+          : null;
+        const deferredAction = previousRun?.executionState?.deferredAction;
+        const clearDeferredAction = async () => {
+          if (!previousRun?.executionState) {
+            return;
           }
-        }
 
-        if (
-          deferredAction.toolName === "rainbond_install_app_model" &&
-          deferredAction.missingArgument === "app_model_version"
-        ) {
-          const nextArguments: Record<string, unknown> = {
-            ...session.pendingWorkflowAction.arguments,
-            app_model_version: pendingSnapshotVersion,
-          };
-          delete nextArguments.__await_version_input;
-          delete nextArguments.suggested_version;
-
-          await sessionStore.update({
-            ...session,
-            pendingWorkflowAction: {
-              ...session.pendingWorkflowAction,
-              arguments: nextArguments,
+          await runStore.update({
+            ...previousRun,
+            executionState: {
+              ...previousRun.executionState,
+              deferredAction: null,
             },
           });
-          await clearDeferredAction();
+        };
 
+        if (
+          session.pendingWorkflowAction &&
+          session.pendingWorkflowAction.requiresApproval &&
+          isContinueWorkflowActionPrompt(request.body.message)
+        ) {
+          logCopilotDebug("controller:createMessageRun:queue-pending-approval", {
+            runId: run.runId,
+            toolName: session.pendingWorkflowAction.toolName,
+          });
           await queuePendingActionApproval({
             actor: request.actor,
             sessionId: request.params.sessionId,
             runId: run.runId,
-            pendingAction: {
-              ...session.pendingWorkflowAction,
-              arguments: nextArguments,
-            },
+            pendingAction: session.pendingWorkflowAction,
+            continuation: session.pendingLlmContinuation,
             description:
               session.pendingWorkflowAction.description ||
               `执行 ${session.pendingWorkflowAction.toolName}`,
             risk: session.pendingWorkflowAction.risk || "high",
           });
 
-          return {
-            data: {
-              run_id: run.runId,
-              session_id: run.sessionId,
-              stream_url: copilotRoutes.streamRunEvents(
-                request.params.sessionId,
-                run.runId
-              ),
-            },
-          };
+          return;
         }
 
+        const pendingSnapshotVersion = parseSnapshotCreateVersionInput(
+          request.body.message
+        );
         if (
-          deferredAction.toolName === "rainbond_rollback_app_version_snapshot" &&
-          deferredAction.missingArgument === "version_id" &&
-          deferredAction.resolutionTool
+          session.pendingWorkflowAction &&
+          deferredAction &&
+          session.pendingWorkflowAction.toolName === deferredAction.toolName &&
+          pendingSnapshotVersion
         ) {
-          const client = await resolvePendingMcpClient({
-            actor: request.actor,
-            sessionId: request.params.sessionId,
-          });
-          const snapshotListResult = await client.callTool<Record<string, unknown>>(
-            deferredAction.resolutionTool.toolName,
-            deferredAction.resolutionTool.arguments
-          );
-          const versionId = findSnapshotVersionId(
-            (snapshotListResult.structuredContent || {}) as Record<string, unknown>,
-            pendingSnapshotVersion
-          );
-
-          if (versionId > 0) {
+          if (
+            deferredAction.toolName === "rainbond_create_app_version_snapshot" &&
+            deferredAction.missingArgument === "version" &&
+            !deferredAction.requiresApproval
+          ) {
             const nextArguments: Record<string, unknown> = {
               ...session.pendingWorkflowAction.arguments,
-              version_id: versionId,
+              version: pendingSnapshotVersion,
+            };
+            delete nextArguments.__await_version_input;
+            delete nextArguments.suggested_version;
+
+            await sessionStore.update({
+              ...session,
+              pendingWorkflowAction: {
+                ...session.pendingWorkflowAction,
+                arguments: nextArguments,
+              },
+            });
+            await clearDeferredAction();
+
+            const handledByWorkflow = await workflowExecutor.execute({
+              actor: request.actor,
+              sessionId: request.params.sessionId,
+              runId: run.runId,
+              message: "继续执行",
+            });
+            if (handledByWorkflow) {
+              return;
+            }
+          }
+
+          if (
+            deferredAction.toolName === "rainbond_install_app_model" &&
+            deferredAction.missingArgument === "app_model_version"
+          ) {
+            const nextArguments: Record<string, unknown> = {
+              ...session.pendingWorkflowAction.arguments,
+              app_model_version: pendingSnapshotVersion,
             };
             delete nextArguments.__await_version_input;
             delete nextArguments.suggested_version;
@@ -1529,82 +1261,82 @@ export function createCopilotController(deps: ControllerDeps = {}) {
               runId: run.runId,
               pendingAction: {
                 ...session.pendingWorkflowAction,
-                description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
                 arguments: nextArguments,
               },
-              description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+              description:
+                session.pendingWorkflowAction.description ||
+                `执行 ${session.pendingWorkflowAction.toolName}`,
               risk: session.pendingWorkflowAction.risk || "high",
             });
 
-            return {
-              data: {
-                run_id: run.runId,
-                session_id: run.sessionId,
-                stream_url: copilotRoutes.streamRunEvents(
-                  request.params.sessionId,
-                  run.runId
-                ),
-              },
-            };
+            return;
+          }
+
+          if (
+            deferredAction.toolName === "rainbond_rollback_app_version_snapshot" &&
+            deferredAction.missingArgument === "version_id" &&
+            deferredAction.resolutionTool
+          ) {
+            const client = await resolvePendingMcpClient({
+              actor: request.actor,
+              sessionId: request.params.sessionId,
+            });
+            const snapshotListResult = await client.callTool<Record<string, unknown>>(
+              deferredAction.resolutionTool.toolName,
+              deferredAction.resolutionTool.arguments
+            );
+            const versionId = findSnapshotVersionId(
+              (snapshotListResult.structuredContent || {}) as Record<string, unknown>,
+              pendingSnapshotVersion
+            );
+
+            if (versionId > 0) {
+              const nextArguments: Record<string, unknown> = {
+                ...session.pendingWorkflowAction.arguments,
+                version_id: versionId,
+              };
+              delete nextArguments.__await_version_input;
+              delete nextArguments.suggested_version;
+
+              await sessionStore.update({
+                ...session,
+                pendingWorkflowAction: {
+                  ...session.pendingWorkflowAction,
+                  arguments: nextArguments,
+                },
+              });
+              await clearDeferredAction();
+
+              await queuePendingActionApproval({
+                actor: request.actor,
+                sessionId: request.params.sessionId,
+                runId: run.runId,
+                pendingAction: {
+                  ...session.pendingWorkflowAction,
+                  description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                  arguments: nextArguments,
+                },
+                description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                risk: session.pendingWorkflowAction.risk || "high",
+              });
+
+              return;
+            }
           }
         }
-      }
 
-      if (
-        !deferredAction &&
-        session.pendingWorkflowAction &&
-        !session.pendingWorkflowAction.requiresApproval &&
-        session.pendingWorkflowAction.toolName === "rainbond_create_app_version_snapshot" &&
-        session.pendingWorkflowAction.arguments &&
-        session.pendingWorkflowAction.arguments.__await_version_input === true &&
-        pendingSnapshotVersion
-      ) {
-        const nextArguments: Record<string, unknown> = {
-          ...session.pendingWorkflowAction.arguments,
-          version: pendingSnapshotVersion,
-        };
-        delete nextArguments.__await_version_input;
-        delete nextArguments.suggested_version;
-
-        await sessionStore.update({
-          ...session,
-          pendingWorkflowAction: {
-            ...session.pendingWorkflowAction,
-            arguments: nextArguments,
-          },
-        });
-
-        const handledByWorkflow = await workflowExecutor.execute({
-          actor: request.actor,
-          sessionId: request.params.sessionId,
-          runId: run.runId,
-          message: "继续执行",
-        });
-        if (handledByWorkflow) {
-          return {
-            data: {
-              run_id: run.runId,
-              session_id: run.sessionId,
-              stream_url: copilotRoutes.streamRunEvents(
-                request.params.sessionId,
-                run.runId
-              ),
-            },
-          };
-        }
-      }
-
-      if (
-        !deferredAction &&
-        session.pendingWorkflowAction &&
-        session.pendingWorkflowAction.arguments &&
-        session.pendingWorkflowAction.arguments.__await_version_input === true &&
-        pendingSnapshotVersion
-      ) {
-        if (session.pendingWorkflowAction.toolName === "rainbond_install_app_model") {
+        if (
+          !deferredAction &&
+          session.pendingWorkflowAction &&
+          !session.pendingWorkflowAction.requiresApproval &&
+          session.pendingWorkflowAction.toolName === "rainbond_create_app_version_snapshot" &&
+          session.pendingWorkflowAction.arguments &&
+          session.pendingWorkflowAction.arguments.__await_version_input === true &&
+          pendingSnapshotVersion
+        ) {
           const nextArguments: Record<string, unknown> = {
             ...session.pendingWorkflowAction.arguments,
-            app_model_version: pendingSnapshotVersion,
+            version: pendingSnapshotVersion,
           };
           delete nextArguments.__await_version_input;
           delete nextArguments.suggested_version;
@@ -1617,36 +1349,131 @@ export function createCopilotController(deps: ControllerDeps = {}) {
             },
           });
 
-          await queuePendingActionApproval({
+          const handledByWorkflow = await workflowExecutor.execute({
             actor: request.actor,
             sessionId: request.params.sessionId,
             runId: run.runId,
-            pendingAction: {
-              ...session.pendingWorkflowAction,
-              arguments: nextArguments,
-            },
-            description:
-              session.pendingWorkflowAction.description ||
-              `执行 ${session.pendingWorkflowAction.toolName}`,
-            risk: session.pendingWorkflowAction.risk || "high",
+            message: "继续执行",
           });
-
-          return {
-            data: {
-              run_id: run.runId,
-              session_id: run.sessionId,
-              stream_url: copilotRoutes.streamRunEvents(
-                request.params.sessionId,
-                run.runId
-              ),
-            },
-          };
+          if (handledByWorkflow) {
+            return;
+          }
         }
 
         if (
-          session.pendingWorkflowAction.toolName ===
-          "rainbond_rollback_app_version_snapshot"
+          !deferredAction &&
+          session.pendingWorkflowAction &&
+          session.pendingWorkflowAction.arguments &&
+          session.pendingWorkflowAction.arguments.__await_version_input === true &&
+          pendingSnapshotVersion
         ) {
+          if (session.pendingWorkflowAction.toolName === "rainbond_install_app_model") {
+            const nextArguments: Record<string, unknown> = {
+              ...session.pendingWorkflowAction.arguments,
+              app_model_version: pendingSnapshotVersion,
+            };
+            delete nextArguments.__await_version_input;
+            delete nextArguments.suggested_version;
+
+            await sessionStore.update({
+              ...session,
+              pendingWorkflowAction: {
+                ...session.pendingWorkflowAction,
+                arguments: nextArguments,
+              },
+            });
+
+            await queuePendingActionApproval({
+              actor: request.actor,
+              sessionId: request.params.sessionId,
+              runId: run.runId,
+              pendingAction: {
+                ...session.pendingWorkflowAction,
+                arguments: nextArguments,
+              },
+              description:
+                session.pendingWorkflowAction.description ||
+                `执行 ${session.pendingWorkflowAction.toolName}`,
+              risk: session.pendingWorkflowAction.risk || "high",
+            });
+
+            return;
+          }
+
+          if (
+            session.pendingWorkflowAction.toolName ===
+            "rainbond_rollback_app_version_snapshot"
+          ) {
+            const teamName =
+              readContextString(session.context, "teamName", "team_name") ||
+              request.actor.tenantName ||
+              request.actor.tenantId;
+            const regionName =
+              readContextString(session.context, "regionName", "region_name") ||
+              request.actor.regionName ||
+              "";
+            const appId = readContextAppId(session.context, "appId", "app_id");
+
+            if (teamName && regionName && appId) {
+              const client = await resolvePendingMcpClient({
+                actor: request.actor,
+                sessionId: request.params.sessionId,
+              });
+              const snapshotListResult = await client.callTool<Record<string, unknown>>(
+                "rainbond_list_app_version_snapshots",
+                {
+                  team_name: teamName,
+                  region_name: regionName,
+                  app_id: appId,
+                }
+              );
+              const versionId = findSnapshotVersionId(
+                (snapshotListResult.structuredContent || {}) as Record<string, unknown>,
+                pendingSnapshotVersion
+              );
+
+              if (versionId > 0) {
+                const nextArguments: Record<string, unknown> = {
+                  ...session.pendingWorkflowAction.arguments,
+                  version_id: versionId,
+                };
+                delete nextArguments.__await_version_input;
+                delete nextArguments.suggested_version;
+
+                await sessionStore.update({
+                  ...session,
+                  pendingWorkflowAction: {
+                    ...session.pendingWorkflowAction,
+                    arguments: nextArguments,
+                  },
+                });
+
+                await queuePendingActionApproval({
+                  actor: request.actor,
+                  sessionId: request.params.sessionId,
+                  runId: run.runId,
+                  pendingAction: {
+                    ...session.pendingWorkflowAction,
+                    description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                    arguments: nextArguments,
+                  },
+                  description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
+                  risk: session.pendingWorkflowAction.risk || "high",
+                });
+
+                return;
+              }
+            }
+          }
+        }
+
+        const targetSnapshotVersion = parseSnapshotRollbackVersion(
+          request.body.message
+        );
+        const rollbackToPreviousSnapshot = requestsRollbackToPreviousSnapshot(
+          request.body.message
+        );
+        if (targetSnapshotVersion || rollbackToPreviousSnapshot) {
           const teamName =
             readContextString(session.context, "teamName", "team_name") ||
             request.actor.tenantName ||
@@ -1670,199 +1497,91 @@ export function createCopilotController(deps: ControllerDeps = {}) {
                 app_id: appId,
               }
             );
-            const versionId = findSnapshotVersionId(
-              (snapshotListResult.structuredContent || {}) as Record<string, unknown>,
-              pendingSnapshotVersion
+            const snapshotPayload = (snapshotListResult.structuredContent ||
+              {}) as Record<string, unknown>;
+            const versionId = targetSnapshotVersion
+              ? findSnapshotVersionId(snapshotPayload, targetSnapshotVersion)
+              : findPreviousSnapshotVersionId(snapshotPayload);
+            const resolvedVersion = targetSnapshotVersion || findPreviousSnapshotVersion(
+              snapshotPayload
             );
 
             if (versionId > 0) {
-              const nextArguments: Record<string, unknown> = {
-                ...session.pendingWorkflowAction.arguments,
-                version_id: versionId,
-              };
-              delete nextArguments.__await_version_input;
-              delete nextArguments.suggested_version;
-
-              await sessionStore.update({
-                ...session,
-                pendingWorkflowAction: {
-                  ...session.pendingWorkflowAction,
-                  arguments: nextArguments,
-                },
-              });
-
               await queuePendingActionApproval({
                 actor: request.actor,
                 sessionId: request.params.sessionId,
                 runId: run.runId,
                 pendingAction: {
-                  ...session.pendingWorkflowAction,
-                  description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
-                  arguments: nextArguments,
+                  kind: "mcp_tool",
+                  toolName: "rainbond_rollback_app_version_snapshot",
+                  requiresApproval: true,
+                  risk: "high",
+                  scope: "app",
+                  description: `回滚当前应用到快照版本 ${resolvedVersion}`,
+                  arguments: {
+                    team_name: teamName,
+                    region_name: regionName,
+                    app_id: appId,
+                    version_id: versionId,
+                  },
+                  followUpActions: requestsCloseWholeApp(request.body.message)
+                    ? [
+                        {
+                          kind: "mcp_tool",
+                          toolName: "rainbond_operate_app",
+                          requiresApproval: true,
+                          risk: "high",
+                          scope: "app",
+                          description: "关闭当前应用",
+                          arguments: {
+                            team_name: teamName,
+                            region_name: regionName,
+                            app_id: appId,
+                            action: "stop",
+                          },
+                        },
+                      ]
+                    : undefined,
                 },
-                description: `回滚当前应用到快照版本 ${pendingSnapshotVersion}`,
-                risk: session.pendingWorkflowAction.risk || "high",
+                description: `回滚当前应用到快照版本 ${resolvedVersion}`,
+                risk: "high",
               });
 
-              return {
-                data: {
-                  run_id: run.runId,
-                  session_id: run.sessionId,
-                  stream_url: copilotRoutes.streamRunEvents(
-                    request.params.sessionId,
-                    run.runId
-                  ),
-                },
-              };
+              return;
             }
           }
         }
-      }
 
-      const targetSnapshotVersion = parseSnapshotRollbackVersion(
-        request.body.message
-      );
-      const rollbackToPreviousSnapshot = requestsRollbackToPreviousSnapshot(
-        request.body.message
-      );
-      if (targetSnapshotVersion || rollbackToPreviousSnapshot) {
-        const teamName =
-          readContextString(session.context, "teamName", "team_name") ||
-          request.actor.tenantName ||
-          request.actor.tenantId;
-        const regionName =
-          readContextString(session.context, "regionName", "region_name") ||
-          request.actor.regionName ||
-          "";
-        const appId = readContextAppId(session.context, "appId", "app_id");
-
-        if (teamName && regionName && appId) {
-          const client = await resolvePendingMcpClient({
-            actor: request.actor,
-            sessionId: request.params.sessionId,
+        const handledByWorkflow = await workflowExecutor.execute({
+          actor: request.actor,
+          sessionId: request.params.sessionId,
+          runId: run.runId,
+          message: request.body.message,
+        });
+        if (handledByWorkflow) {
+          logCopilotDebug("controller:createMessageRun:handled-by-workflow", {
+            runId: run.runId,
           });
-          const snapshotListResult = await client.callTool<Record<string, unknown>>(
-            "rainbond_list_app_version_snapshots",
-            {
-              team_name: teamName,
-              region_name: regionName,
-              app_id: appId,
-            }
-          );
-          const snapshotPayload = (snapshotListResult.structuredContent ||
-            {}) as Record<string, unknown>;
-          const versionId = targetSnapshotVersion
-            ? findSnapshotVersionId(snapshotPayload, targetSnapshotVersion)
-            : findPreviousSnapshotVersionId(snapshotPayload);
-          const resolvedVersion = targetSnapshotVersion || findPreviousSnapshotVersion(
-            snapshotPayload
-          );
+          return;
+        }
 
-          if (versionId > 0) {
-            await queuePendingActionApproval({
+        const actionAdapter = deps.actionAdapterFactory
+          ? await deps.actionAdapterFactory({
               actor: request.actor,
               sessionId: request.params.sessionId,
-              runId: run.runId,
-              pendingAction: {
-                kind: "mcp_tool",
-                toolName: "rainbond_rollback_app_version_snapshot",
-                requiresApproval: true,
-                risk: "high",
-                scope: "app",
-                description: `回滚当前应用到快照版本 ${resolvedVersion}`,
-                arguments: {
-                  team_name: teamName,
-                  region_name: regionName,
-                  app_id: appId,
-                  version_id: versionId,
-                },
-                followUpActions: requestsCloseWholeApp(request.body.message)
-                  ? [
-                      {
-                        kind: "mcp_tool",
-                        toolName: "rainbond_operate_app",
-                        requiresApproval: true,
-                        risk: "high",
-                        scope: "app",
-                        description: "关闭当前应用",
-                        arguments: {
-                          team_name: teamName,
-                          region_name: regionName,
-                          app_id: appId,
-                          action: "stop",
-                        },
-                      },
-                    ]
-                  : undefined,
-              },
-              description: `回滚当前应用到快照版本 ${resolvedVersion}`,
-              risk: "high",
-            });
-
-            return {
-              data: {
-                run_id: run.runId,
-                session_id: run.sessionId,
-                stream_url: copilotRoutes.streamRunEvents(
-                  request.params.sessionId,
-                  run.runId
-                ),
-              },
-            };
-          }
-        }
-      }
-
-      const handledByWorkflow = await workflowExecutor.execute({
-        actor: request.actor,
-        sessionId: request.params.sessionId,
-        runId: run.runId,
-        message: request.body.message,
-      });
-      if (handledByWorkflow) {
-        return {
-          data: {
-            run_id: run.runId,
-            session_id: run.sessionId,
-            stream_url: copilotRoutes.streamRunEvents(
-              request.params.sessionId,
-              run.runId
-            ),
-          },
-        };
-      }
-
-      const actionAdapter = deps.actionAdapterFactory
-        ? await deps.actionAdapterFactory({
-            actor: request.actor,
-            sessionId: request.params.sessionId,
-          })
-        : deps.actionAdapter;
-      const llmExecutor = await createLlmExecutor({
-        actor: request.actor,
-        sessionId: request.params.sessionId,
-      });
-      const preferLegacyPlanner =
-        enableLegacyActionSkills && deps.llmClient === null;
-
-      if (preferLegacyPlanner) {
-        await executeLegacyPlannedRun({
+            })
+          : deps.actionAdapter;
+        const llmExecutor = await createLlmExecutor({
           actor: request.actor,
           sessionId: request.params.sessionId,
-          runId: run.runId,
-          message: request.body.message,
-          actionAdapter,
         });
-      } else {
-        const handledByLlm = await llmExecutor.execute({
-          actor: request.actor,
-          sessionId: request.params.sessionId,
-          runId: run.runId,
-          message: request.body.message,
-          sessionContext: session.context,
-        });
+        const preferLegacyPlanner =
+          enableLegacyActionSkills && deps.llmClient === null;
 
-        if (!handledByLlm && enableLegacyActionSkills) {
+        if (preferLegacyPlanner) {
+          logCopilotDebug("controller:createMessageRun:use-legacy-planner", {
+            runId: run.runId,
+          });
           await executeLegacyPlannedRun({
             actor: request.actor,
             sessionId: request.params.sessionId,
@@ -1870,7 +1589,39 @@ export function createCopilotController(deps: ControllerDeps = {}) {
             message: request.body.message,
             actionAdapter,
           });
-        } else if (!handledByLlm) {
+          return;
+        }
+
+        const handledByLlm = await llmExecutor.execute({
+          actor: request.actor,
+          sessionId: request.params.sessionId,
+          runId: run.runId,
+          message: request.body.message,
+          sessionContext: session.context,
+        });
+        logCopilotDebug("controller:createMessageRun:llm-finished", {
+          runId: run.runId,
+          handledByLlm,
+        });
+
+        if (!handledByLlm && enableLegacyActionSkills) {
+          logCopilotDebug("controller:createMessageRun:llm-fallback-to-legacy", {
+            runId: run.runId,
+          });
+          await executeLegacyPlannedRun({
+            actor: request.actor,
+            sessionId: request.params.sessionId,
+            runId: run.runId,
+            message: request.body.message,
+            actionAdapter,
+          });
+          return;
+        }
+
+        if (!handledByLlm) {
+          logCopilotDebug("controller:createMessageRun:no-handler-fallback", {
+            runId: run.runId,
+          });
           const fallbackEvents = await broker.replay(
             run.runId,
             request.actor.tenantId,
@@ -1901,18 +1652,20 @@ export function createCopilotController(deps: ControllerDeps = {}) {
             },
           });
         }
-      }
-
-      return {
-        data: {
-          run_id: run.runId,
-          session_id: run.sessionId,
-          stream_url: copilotRoutes.streamRunEvents(
-            request.params.sessionId,
-            run.runId
-          ),
-        },
       };
+
+      void executeRunInBackground().catch(async (error) => {
+        await failRunInBackground(error);
+      });
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      logCopilotDebug("controller:createMessageRun:return", {
+        runId: run.runId,
+        sessionId: run.sessionId,
+      });
+      return response;
     },
 
     async streamRunEvents(request: StreamRunEventsRequest) {
@@ -1924,6 +1677,13 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         }
       );
 
+      logCopilotDebug("controller:streamRunEvents:replay", {
+        runId: request.params.runId,
+        sessionId: request.params.sessionId,
+        afterSequence: Number(request.query?.after_sequence ?? 0),
+        replayCount: events.length,
+      });
+
       return {
         contentType: "text/event-stream",
         events: events.map((event) => event.payload),
@@ -1931,6 +1691,11 @@ export function createCopilotController(deps: ControllerDeps = {}) {
     },
 
     async decideApproval(request: DecideApprovalRequest) {
+      logCopilotDebug("controller:decideApproval:start", {
+        approvalId: request.params.approvalId,
+        decision: request.body.decision,
+        actorUserId: request.actor.userId,
+      });
       const approval = await approvalService.decide(
         request.params.approvalId,
         {
@@ -1972,6 +1737,12 @@ export function createCopilotController(deps: ControllerDeps = {}) {
         }
         runResumer.unregister(request.actor.tenantId, approval.runId);
       }
+
+      logCopilotDebug("controller:decideApproval:return", {
+        approvalId: approval.approvalId,
+        status: approval.status,
+        runId: approval.runId,
+      });
 
       return {
         data: {

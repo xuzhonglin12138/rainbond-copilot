@@ -614,5 +614,21 @@
     "resolvedBy": 1,
     "resolvedAt": "2026-04-24T10:12:51.000Z",
     "comment": ""
+  },
+  {
+    "approvalId": "ap_1777104119062_6",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777103199717_1",
+    "runId": "run_1777104096516_1",
+    "skillId": "rainbond_operate_app",
+    "description": "对应用执行 start 操作",
+    "risk": "high",
+    "scope": "component",
+    "status": "approved",
+    "requestedBy": 1,
+    "requestedAt": "2026-04-25T08:01:59.062Z",
+    "resolvedBy": 1,
+    "resolvedAt": "2026-04-25T08:02:01.856Z",
+    "comment": ""
   }
 ]

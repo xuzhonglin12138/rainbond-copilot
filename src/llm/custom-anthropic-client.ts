@@ -143,7 +143,7 @@ export class CustomAnthropicClient {
   async streamChat(
     messages: ChatMessage[],
     tools?: ToolDefinition[],
-    _onChunk?: (chunk: string) => void
+    _onChunk?: (chunk: string) => void | Promise<void>
   ): Promise<ChatCompletionResponse> {
     return this.chat(messages, tools);
   }

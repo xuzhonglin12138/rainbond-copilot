@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildCopilotActorHeaders,
+  consumeCopilotSseStream,
   createCopilotApiClient,
   readCopilotSseStream,
 } from "../../src/shared/copilot-api-client";
@@ -129,6 +130,42 @@ describe("copilot api client", () => {
       role: "assistant",
       content: "done",
     });
+  });
+
+  it("supports incremental SSE callbacks while still aggregating events", async () => {
+    const encoder = new TextEncoder();
+    const seen: string[] = [];
+    const response = new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(
+            encoder.encode(
+              'event: run.status\ndata: {"type":"run.status","tenantId":"t_123","sessionId":"cs_123","runId":"run_123","sequence":1,"timestamp":"2026-04-20T10:00:00Z","data":{"status":"thinking"}}\n\n'
+            )
+          );
+          controller.enqueue(
+            encoder.encode(
+              'event: run.status\ndata: {"type":"run.status","tenantId":"t_123","sessionId":"cs_123","runId":"run_123","sequence":2,"timestamp":"2026-04-20T10:00:01Z","data":{"status":"done"}}\n\n'
+            )
+          );
+          controller.close();
+        },
+      }),
+      {
+        headers: {
+          "content-type": "text/event-stream",
+        },
+      }
+    );
+
+    const events = await consumeCopilotSseStream(response, {
+      onEvent(event) {
+        seen.push(event.type);
+      },
+    });
+
+    expect(seen).toEqual(["run.status", "run.status"]);
+    expect(events).toHaveLength(2);
   });
 
   it("builds trusted actor headers without optional fields", () => {

@@ -31,6 +31,8 @@ export interface Message {
   status?: "pending" | "approved" | "rejected" | "completed";
   importance?: number;
   relatedEntries?: string[];
+  streamMessageId?: string;
+  streaming?: boolean;
 }
 
 interface CopilotDrawerProps {

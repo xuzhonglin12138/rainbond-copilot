@@ -5,6 +5,36 @@ import { ServerLlmExecutor } from "../../../src/server/runtime/server-llm-execut
 import { createInMemoryRunStore } from "../../../src/server/stores/run-store";
 import { createInMemorySessionStore } from "../../../src/server/stores/session-store";
 
+async function waitForEvents(
+  controller: ReturnType<typeof createCopilotController>,
+  actor: any,
+  params: { sessionId: string; runId: string },
+  afterSequence: string,
+  predicate: (events: Array<{ type: string; data: Record<string, any> }>) => boolean
+) {
+  let lastStream = await controller.streamRunEvents({
+    actor,
+    params,
+    query: { after_sequence: afterSequence },
+  });
+
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    if (predicate(lastStream.events as any)) {
+      return lastStream;
+    }
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5);
+    });
+    lastStream = await controller.streamRunEvents({
+      actor,
+      params,
+      query: { after_sequence: afterSequence },
+    });
+  }
+
+  return lastStream;
+}
+
 describe("copilot event stream", () => {
   const mockActionAdapter = {
     getComponentStatus: vi.fn(async (input: { name: string }) => ({
@@ -87,14 +117,16 @@ describe("copilot event stream", () => {
       body: { message: "check frontend-ui status", stream: true },
     });
 
-    const stream = await controller.streamRunEvents({
+    const stream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "0" },
-    });
+      "0",
+      (events) => events.some((event) => event.type === "chat.message")
+    );
 
     expect(stream.events.map((event) => event.type)).toEqual([
       "run.status",
@@ -103,6 +135,14 @@ describe("copilot event stream", () => {
       "chat.message",
       "run.status",
     ]);
+    expect(stream.events[1].data).toMatchObject({
+      trace_id: expect.any(String),
+      tool_name: expect.any(String),
+    });
+    expect(stream.events[2].data).toMatchObject({
+      trace_id: stream.events[1].data.trace_id,
+      tool_name: stream.events[1].data.tool_name,
+    });
     expect(stream.events.at(-1)).toMatchObject({
       type: "run.status",
       data: { status: "done" },
@@ -137,15 +177,20 @@ describe("copilot event stream", () => {
       params: { sessionId: session.data.session_id },
       body: { message: "你好", stream: true },
     });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
-    const stream = await controller.streamRunEvents({
+    const stream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "0" },
-    });
+      "0",
+      (events) => events.some((event) => event.type === "chat.message.completed")
+    );
 
     expect(llmClient.chat).toHaveBeenCalled();
     expect(stream.events.map((event) => event.type)).toEqual([
@@ -157,6 +202,86 @@ describe("copilot event stream", () => {
       role: "assistant",
       content: "你好！我是 Rainbond Copilot，我可以帮你检查组件状态、查看日志和处理审批操作。",
     });
+  });
+
+  it("emits assistant message started, delta, and completed events for streamed llm text", async () => {
+    const llmClient = {
+      streamChat: vi.fn(async (_messages, _tools, onChunk) => {
+        await onChunk?.("你好");
+        await onChunk?.("，");
+        await onChunk?.("Rainbond");
+        return {
+          content: "你好，Rainbond",
+          finish_reason: "stop",
+        };
+      }),
+      chat: vi.fn(async () => ({
+        content: "fallback",
+        finish_reason: "stop",
+      })),
+    };
+    const controller = createCopilotController({
+      llmClient: llmClient as any,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {},
+    });
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "你好", stream: true },
+    });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+    const stream = await waitForEvents(
+      controller,
+      actor,
+      {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      "0",
+      (events) => events.some((event) => event.type === "chat.message")
+    );
+
+    expect(stream.events.map((event) => event.type)).toEqual([
+      "run.status",
+      "chat.message.started",
+      "chat.message.delta",
+      "chat.message.delta",
+      "chat.message.delta",
+      "chat.message.completed",
+      "chat.message",
+      "run.status",
+    ]);
+    expect(stream.events[1].data).toMatchObject({
+      message_id: expect.any(String),
+      role: "assistant",
+    });
+    expect(stream.events[2].data).toMatchObject({
+      message_id: stream.events[1].data.message_id,
+      delta: "你好",
+    });
+    expect(stream.events[5].data).toMatchObject({
+      message_id: stream.events[1].data.message_id,
+      content: "你好，Rainbond",
+    });
+    expect(stream.events[6].data).toMatchObject({
+      message_id: stream.events[1].data.message_id,
+      content: "你好，Rainbond",
+    });
+    expect(llmClient.streamChat).toHaveBeenCalled();
   });
 
   it("tries the llm multi-step executor before falling back to the legacy planner when llm is not explicitly disabled", async () => {
@@ -515,14 +640,16 @@ describe("copilot event stream", () => {
       body: { message: "把默认集群的集群简介修改为 agent", stream: true },
     });
 
-    const stream = await controller.streamRunEvents({
+    const stream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "0" },
-    });
+      "0",
+      (events) => events.some((event) => event.type === "chat.message.completed")
+    );
 
     expect(stream.events.map((event) => event.type)).toEqual([
       "run.status",
@@ -759,6 +886,14 @@ describe("copilot event stream", () => {
       "chat.message",
       "run.status",
     ]);
+    expect(stream.events[1].data).toMatchObject({
+      trace_id: expect.any(String),
+      tool_name: "rainbond_check_helm_app",
+    });
+    expect(stream.events[2].data).toMatchObject({
+      trace_id: stream.events[1].data.trace_id,
+      tool_name: "rainbond_check_helm_app",
+    });
     expect(queryToolClient.callTool).toHaveBeenCalledWith(
       "rainbond_check_helm_app",
       expect.objectContaining({
@@ -1220,14 +1355,16 @@ describe("copilot event stream", () => {
       },
     });
 
-    const initialStream = await controller.streamRunEvents({
+    const initialStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "0" },
-    });
+      "0",
+      (events) => events.some((event) => event.type === "approval.requested")
+    );
 
     expect(initialStream.events.map((event) => event.type)).toEqual([
       "run.status",
@@ -1255,15 +1392,20 @@ describe("copilot event stream", () => {
       params: { approvalId: firstApprovalId },
       body: { decision: "approved", comment: "先执行第一步" },
     });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
-    const resumedAfterFirstApproval = await controller.streamRunEvents({
+    const resumedAfterFirstApproval = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "3" },
-    });
+      "3",
+      (events) => events.some((event) => event.type === "approval.requested")
+    );
 
     expect(resumedAfterFirstApproval.events.map((event) => event.type)).toContain(
       "approval.requested"
@@ -1416,14 +1558,16 @@ describe("copilot event stream", () => {
       },
     });
 
-    const initialStream = await controller.streamRunEvents({
+    const initialStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "0" },
-    });
+      "0",
+      (events) => events.some((event) => event.type === "approval.requested")
+    );
 
     expect(initialStream.events.map((event) => event.type)).toEqual([
       "run.status",
@@ -1437,15 +1581,20 @@ describe("copilot event stream", () => {
       params: { approvalId },
       body: { decision: "approved", comment: "执行并继续" },
     });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
-    const resumedStream = await controller.streamRunEvents({
+    const resumedStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "3" },
-    });
+      "3",
+      () => llmClient.chat.mock.calls.length >= 3
+    );
 
     expect(llmClient.chat).toHaveBeenCalledTimes(3);
     expect(llmClient.chat.mock.calls[1][0]).toEqual(
@@ -1668,15 +1817,20 @@ describe("copilot event stream", () => {
       params: { approvalId: firstApprovalId },
       body: { decision: "approved", comment: "先启动" },
     });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
-    const secondApprovalStream = await controller.streamRunEvents({
+    const secondApprovalStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "3" },
-    });
+      "3",
+      (events) => events.some((event) => event.type === "approval.requested")
+    );
     const secondApprovalId = secondApprovalStream.events.find(
       (event) => event.type === "approval.requested"
     ).data.approval_id;
@@ -1701,14 +1855,18 @@ describe("copilot event stream", () => {
       body: { decision: "approved", comment: "再改环境变量" },
     });
 
-    const finalStream = await controller.streamRunEvents({
+    const finalStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: String(secondApprovalStream.events.at(-1).sequence) },
-    });
+      String(secondApprovalStream.events.at(-1).sequence),
+      (events) =>
+        llmClient.chat.mock.calls.length >= 3 &&
+        events.some((event) => event.type === "run.status")
+    );
 
     expect(llmClient.chat).toHaveBeenCalledTimes(3);
     expect(queryToolClient.callTool).toHaveBeenCalledWith(
@@ -2549,14 +2707,16 @@ describe("copilot event stream", () => {
 
     expect(llmClient.chat).not.toHaveBeenCalled();
 
-    const initialStream = await controller.streamRunEvents({
+    const initialStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "0" },
-    });
+      "0",
+      (events) => events.some((event) => event.type === "approval.requested")
+    );
 
     expect(initialStream.events.map((event) => event.type)).toEqual([
       "run.status",
@@ -2571,14 +2731,18 @@ describe("copilot event stream", () => {
       body: { decision: "approved", comment: "确认关闭" },
     });
 
-    const resumedStream = await controller.streamRunEvents({
+    const resumedStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "3" },
-    });
+      "3",
+      (events) =>
+        actionAdapter.restartComponent.mock.calls.length > 0 &&
+        events.some((event) => event.type === "chat.message")
+    );
 
     expect(queryToolClient.callTool).toHaveBeenCalledWith(
       "rainbond_operate_app",
@@ -2686,14 +2850,16 @@ describe("copilot event stream", () => {
       body: { decision: "approved", comment: "确认删除" },
     });
 
-    const resumedStream = await controller.streamRunEvents({
+    const resumedStream = await waitForEvents(
+      controller,
       actor,
-      params: {
+      {
         sessionId: session.data.session_id,
         runId: run.data.run_id,
       },
-      query: { after_sequence: "3" },
-    });
+      "3",
+      () => actionAdapter.restartComponent.mock.calls.length > 0
+    );
 
     expect(queryToolClient.callTool).toHaveBeenCalledWith(
       "rainbond_delete_component",
@@ -3583,7 +3749,7 @@ describe("copilot event stream", () => {
   });
 
   it("emits an approval lifecycle for high-risk restart requests", async () => {
-    const controller = createCopilotController();
+    const controller = createCopilotController({ llmClient: null });
     const actor = {
       tenantId: "t_123",
       userId: "u_456",
@@ -3644,6 +3810,7 @@ describe("copilot event stream", () => {
     };
 
     const controller = createCopilotController({
+      llmClient: null,
       actionAdapter: actionAdapter as any,
     });
     const actor = {
@@ -3678,6 +3845,9 @@ describe("copilot event stream", () => {
       actor,
       params: { approvalId },
       body: { decision: "approved", comment: "确认重启" },
+    });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
     });
 
     const resumedStream = await controller.streamRunEvents({

@@ -10,6 +10,8 @@ import { advanceRunLoop } from "./run-loop.js";
 import { createRunExecutionState, } from "./run-execution-state.js";
 import { createServerActionSkills } from "./server-action-skills.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
+import { createServerId } from "../utils/id.js";
+import { logCopilotDebug } from "../utils/copilot-debug.js";
 function normalizeK8sAppNameSeed(value) {
     const lowered = (value || "").trim().toLowerCase();
     const replaced = lowered.replace(/[^a-z0-9-]+/g, "-").replace(/-+/g, "-");
@@ -41,16 +43,75 @@ export class ServerLlmExecutor {
     async execute(params) {
         const llmClient = this.getClient();
         if (!llmClient) {
+            logCopilotDebug("llm:execute:no-client", {
+                runId: params.runId,
+                sessionId: params.sessionId,
+            });
             return false;
         }
+        logCopilotDebug("llm:execute:start", {
+            runId: params.runId,
+            sessionId: params.sessionId,
+            hasStreamChat: typeof llmClient.streamChat === "function",
+            messageLength: params.message.length,
+        });
         const mcpToolContext = await this.resolveMcpToolContext(params);
         const tools = this.buildTools(mcpToolContext.readOnlyDefinitions, mcpToolContext.mutableDefinitions);
         const toolResultCache = new Map();
+        let lastStreamedAssistantMessageId = null;
         const state = await this.createExecutionState(params);
         const result = await advanceRunLoop({
             state,
             tools,
-            chat: (messages, toolDefinitions) => llmClient.chat(messages, toolDefinitions),
+            chat: async (messages, toolDefinitions) => {
+                if (typeof llmClient.streamChat !== "function") {
+                    logCopilotDebug("llm:execute:chat-nonstream", {
+                        runId: params.runId,
+                        messageCount: messages.length,
+                        toolCount: toolDefinitions ? toolDefinitions.length : 0,
+                    });
+                    return llmClient.chat(messages, toolDefinitions);
+                }
+                let streamedMessageId = "";
+                let streamedContent = "";
+                logCopilotDebug("llm:execute:chat-stream", {
+                    runId: params.runId,
+                    messageCount: messages.length,
+                    toolCount: toolDefinitions ? toolDefinitions.length : 0,
+                });
+                const response = await llmClient.streamChat(messages, toolDefinitions, async (chunk) => {
+                    if (!chunk) {
+                        return;
+                    }
+                    logCopilotDebug("llm:execute:chunk", {
+                        runId: params.runId,
+                        chunkLength: chunk.length,
+                    });
+                    streamedContent += chunk;
+                    if (!streamedMessageId) {
+                        streamedMessageId = createServerId("msg");
+                        await this.publishAssistantMessageStarted(params, streamedMessageId);
+                    }
+                    await this.publishAssistantMessageDelta(params, streamedMessageId, chunk);
+                });
+                if (streamedMessageId) {
+                    const completedContent = typeof response.content === "string" && response.content
+                        ? response.content
+                        : streamedContent;
+                    await this.publishAssistantMessageCompleted(params, streamedMessageId, completedContent);
+                    if (!response.tool_calls || response.tool_calls.length === 0) {
+                        lastStreamedAssistantMessageId = streamedMessageId;
+                    }
+                }
+                logCopilotDebug("llm:execute:chat-stream:done", {
+                    runId: params.runId,
+                    streamedMessageId,
+                    contentLength: typeof response.content === "string" ? response.content.length : 0,
+                    toolCallCount: response.tool_calls ? response.tool_calls.length : 0,
+                    finishReason: response.finish_reason || "",
+                });
+                return response;
+            },
             maxIterations: 8,
             maxIterationsFinalOutput: "本次分析轮次已达上限，请尝试缩小问题范围后重新提问。",
             handleToolCall: (loopParams) => this.handleRunLoopToolCall({
@@ -61,6 +122,10 @@ export class ServerLlmExecutor {
             }),
         });
         if (result.nextStep.type === "interruption") {
+            logCopilotDebug("llm:execute:interruption", {
+                runId: params.runId,
+                pendingApprovals: result.pendingApprovals.length,
+            });
             if (!this.deps.requestApproval) {
                 throw new Error("requestApproval callback is required for protected tools");
             }
@@ -84,6 +149,10 @@ export class ServerLlmExecutor {
             return true;
         }
         if (result.nextStep.type === "failed") {
+            logCopilotDebug("llm:execute:failed", {
+                runId: params.runId,
+                finalOutput: result.finalOutput || "",
+            });
             throw new Error(result.finalOutput || "Run loop failed");
         }
         const summaryMessages = result.messages.length > 0 &&
@@ -94,8 +163,13 @@ export class ServerLlmExecutor {
         const synthesizedSummary = this.buildAssistantSummaryFromToolResults(summaryMessages, params.message);
         const content = this.mergeAssistantContentWithToolResults(result.finalOutput || "", synthesizedSummary) ||
             "我已经完成当前分析，但没有生成额外回复。";
-        await this.publishAssistantMessage(params, content);
+        await this.publishAssistantMessage(params, content, lastStreamedAssistantMessageId || undefined);
         await this.publishRunStatus(params, "done");
+        logCopilotDebug("llm:execute:done", {
+            runId: params.runId,
+            lastStreamedAssistantMessageId: lastStreamedAssistantMessageId || "",
+            finalContentLength: content.length,
+        });
         return true;
     }
     async createExecutionState(params) {
@@ -159,7 +233,10 @@ export class ServerLlmExecutor {
                     },
                 };
             }
+            const traceId = createServerId("trace");
             await this.publishTrace(executeParams, {
+                trace_id: traceId,
+                tool_call_id: toolCall.id,
                 tool_name: skill.name,
                 input: toolInput,
             });
@@ -170,6 +247,8 @@ export class ServerLlmExecutor {
                 toolMessageContent,
             });
             await this.publishTrace(executeParams, {
+                trace_id: traceId,
+                tool_call_id: toolCall.id,
                 tool_name: skill.name,
                 input: toolInput,
                 output,
@@ -220,7 +299,10 @@ export class ServerLlmExecutor {
                 toolName: mcpTool.name,
             };
         }
+        const traceId = createServerId("trace");
         await this.publishTrace(executeParams, {
+            trace_id: traceId,
+            tool_call_id: toolCall.id,
             tool_name: mcpTool.name,
             input: resolvedInput,
         });
@@ -231,6 +313,8 @@ export class ServerLlmExecutor {
             toolMessageContent,
         });
         await this.publishTrace(executeParams, {
+            trace_id: traceId,
+            tool_call_id: toolCall.id,
             tool_name: mcpTool.name,
             input: resolvedInput,
             output,
@@ -1088,16 +1172,23 @@ export class ServerLlmExecutor {
         });
     }
     async publishTrace(params, data) {
+        const traceId = typeof data.trace_id === "string" && data.trace_id
+            ? data.trace_id
+            : createServerId("trace");
+        const tracePayload = {
+            ...data,
+            trace_id: traceId,
+        };
         await this.deps.eventPublisher.publish({
             type: "chat.trace",
             tenantId: params.actor.tenantId,
             sessionId: params.sessionId,
             runId: params.runId,
             sequence: await this.nextSequence(params.runId, params.actor.tenantId),
-            data,
+            data: tracePayload,
         });
     }
-    async publishAssistantMessage(params, content) {
+    async publishAssistantMessage(params, content, messageId) {
         await this.deps.eventPublisher.publish({
             type: "chat.message",
             tenantId: params.actor.tenantId,
@@ -1106,6 +1197,46 @@ export class ServerLlmExecutor {
             sequence: await this.nextSequence(params.runId, params.actor.tenantId),
             data: {
                 role: "assistant",
+                content,
+                ...(messageId ? { message_id: messageId } : {}),
+            },
+        });
+    }
+    async publishAssistantMessageStarted(params, messageId) {
+        await this.deps.eventPublisher.publish({
+            type: "chat.message.started",
+            tenantId: params.actor.tenantId,
+            sessionId: params.sessionId,
+            runId: params.runId,
+            sequence: await this.nextSequence(params.runId, params.actor.tenantId),
+            data: {
+                message_id: messageId,
+                role: "assistant",
+            },
+        });
+    }
+    async publishAssistantMessageDelta(params, messageId, delta) {
+        await this.deps.eventPublisher.publish({
+            type: "chat.message.delta",
+            tenantId: params.actor.tenantId,
+            sessionId: params.sessionId,
+            runId: params.runId,
+            sequence: await this.nextSequence(params.runId, params.actor.tenantId),
+            data: {
+                message_id: messageId,
+                delta,
+            },
+        });
+    }
+    async publishAssistantMessageCompleted(params, messageId, content) {
+        await this.deps.eventPublisher.publish({
+            type: "chat.message.completed",
+            tenantId: params.actor.tenantId,
+            sessionId: params.sessionId,
+            runId: params.runId,
+            sequence: await this.nextSequence(params.runId, params.actor.tenantId),
+            data: {
+                message_id: messageId,
                 content,
             },
         });

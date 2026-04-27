@@ -1,5 +1,6 @@
 import { extractComponentName, shouldInspectLogs, summarizeLogs, } from "../../runtime/runtime-helpers.js";
 import { createServerActionSkills } from "./server-action-skills.js";
+import { createServerId } from "../utils/id.js";
 function parseMemoryTarget(normalized) {
     const matched = normalized.match(/(\d+(?:\.\d+)?)\s*(gb|g|mb|m)/i);
     if (!matched) {
@@ -79,6 +80,7 @@ export class ServerRunExecutor {
         const plan = this.plan(params.message);
         const statusSkill = this.mustGetSkill(plan.skillId);
         const statusInput = plan.input;
+        const statusTraceId = createServerId("trace");
         const traceCallSequence = await this.nextSequence(params.runId, params.actor.tenantId);
         await this.deps.eventPublisher.publish({
             type: "chat.trace",
@@ -87,6 +89,7 @@ export class ServerRunExecutor {
             runId: params.runId,
             sequence: traceCallSequence,
             data: {
+                trace_id: statusTraceId,
                 tool_name: statusSkill.name,
                 input: statusInput,
             },
@@ -100,6 +103,7 @@ export class ServerRunExecutor {
             runId: params.runId,
             sequence: traceResultSequence,
             data: {
+                trace_id: statusTraceId,
                 tool_name: statusSkill.name,
                 input: statusInput,
                 output: statusOutput,
@@ -112,6 +116,7 @@ export class ServerRunExecutor {
                 name: statusOutput.name,
                 lines: 20,
             };
+            const logsTraceId = createServerId("trace");
             const logsCallSequence = await this.nextSequence(params.runId, params.actor.tenantId);
             await this.deps.eventPublisher.publish({
                 type: "chat.trace",
@@ -120,6 +125,7 @@ export class ServerRunExecutor {
                 runId: params.runId,
                 sequence: logsCallSequence,
                 data: {
+                    trace_id: logsTraceId,
                     tool_name: logsSkill.name,
                     input: logsInput,
                 },
@@ -133,6 +139,7 @@ export class ServerRunExecutor {
                 runId: params.runId,
                 sequence: logsResultSequence,
                 data: {
+                    trace_id: logsTraceId,
                     tool_name: logsSkill.name,
                     input: logsInput,
                     output: logsOutput,

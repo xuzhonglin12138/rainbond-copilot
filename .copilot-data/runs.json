@@ -926,5 +926,215 @@
       "finalOutput": null,
       "status": "running"
     }
+  },
+  {
+    "runId": "run_1777097166689_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777097166573_1",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-25T06:06:06.689Z"
+  },
+  {
+    "runId": "run_1777097233718_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777097233601_4",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-25T06:07:13.718Z"
+  },
+  {
+    "runId": "run_1777097289904_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777097289785_7",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-25T06:08:09.905Z"
+  },
+  {
+    "runId": "run_1777098828833_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777098828718_1",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-25T06:33:48.833Z"
+  },
+  {
+    "runId": "run_1777100074243_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777100074132_1",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-25T06:54:34.243Z"
+  },
+  {
+    "runId": "run_1777102670748_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777102670642_1",
+    "messageText": "你好",
+    "status": "pending",
+    "startedAt": "2026-04-25T07:37:50.748Z"
+  },
+  {
+    "runId": "run_1777102711841_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777102670642_1",
+    "messageText": "帮我开启这个应用",
+    "status": "failed",
+    "startedAt": "2026-04-25T07:38:31.841Z",
+    "errorMessage": "Expected property name or '}' in JSON at position 1",
+    "finishedAt": "2026-04-25T07:38:47.410Z"
+  },
+  {
+    "runId": "run_1777102759549_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777102759419_7",
+    "messageText": "帮我开启这个应用",
+    "status": "failed",
+    "startedAt": "2026-04-25T07:39:19.549Z",
+    "errorMessage": "Expected property name or '}' in JSON at position 1",
+    "finishedAt": "2026-04-25T07:39:31.103Z"
+  },
+  {
+    "runId": "run_1777102806367_b",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777102759419_7",
+    "messageText": "帮我排查这个 组件起不来的原因",
+    "status": "failed",
+    "startedAt": "2026-04-25T07:40:06.367Z",
+    "errorMessage": "Expected property name or '}' in JSON at position 1",
+    "finishedAt": "2026-04-25T07:40:21.869Z"
+  },
+  {
+    "runId": "run_1777103199830_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777103199717_1",
+    "messageText": "帮我启动这个组件",
+    "status": "failed",
+    "startedAt": "2026-04-25T07:46:39.830Z",
+    "errorMessage": "Expected property name or '}' in JSON at position 1",
+    "finishedAt": "2026-04-25T07:46:48.465Z"
+  },
+  {
+    "runId": "run_1777103230868_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777103199717_1",
+    "messageText": "帮我启动这个组件",
+    "status": "failed",
+    "startedAt": "2026-04-25T07:47:10.868Z",
+    "errorMessage": "Expected property name or '}' in JSON at position 1",
+    "finishedAt": "2026-04-25T07:47:19.654Z"
+  },
+  {
+    "runId": "run_1777104096516_1",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777103199717_1",
+    "messageText": "帮我开启这个应用",
+    "status": "running",
+    "startedAt": "2026-04-25T08:01:36.516Z",
+    "executionState": {
+      "runId": "run_1777104096516_1",
+      "sessionId": "cs_1777103199717_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "你是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n## 你的角色和能力\n\n- 深入理解 Rainbond 的核心概念、架构和操作\n- 帮助用户部署、配置、管理和诊断 Rainbond 应用\n- 使用工具执行实际操作（查询状态、查看日志、重启组件等）\n- 在信息不足时先澄清，再执行\n- 回答要专业、清晰、结构化\n\n## 工具使用原则\n\n- 低风险操作（例如查询状态、查看日志）可以直接执行\n- 高风险操作（例如重启、扩容）要先明确影响，再通过审批流处理\n- 所有会修改 Rainbond 资源状态、配置、部署、升级、删除、分享、安装的写操作，都必须先确认是否需要审批\n- 对任何需要审批的写操作，不要先用自然语言询问“是否确认执行”；应直接调用相应工具，让系统进入统一审批流\n- 优先先查后改；如果上下文已经足够，不要为了凑参数重复调用上游列表接口\n- 如果工具结果能帮助回答，就先看结果再回答，不要跳过分析\n\n## 回答原则\n\n- 先理解用户问题，再决定是否用工具\n- 能直接回答的普通问题，就直接回答\n- 如果用户在问故障、状态、日志、部署问题，优先结合工具结果给结论\n- 回答时尽量解释原因，不只给结论\n- 一旦调用了工具，你的最终回复必须基于工具返回结果明确回答用户问题\n- 禁止在已有工具结果时输出空泛占位语句，例如“我已经完成当前分析，但没有生成额外回复”\n- 如果工具结果不足以完整回答，就明确说明目前已知信息、未知信息以及建议的下一步\n\n## Rainbond 知识\n\n# Rainbond 核心概念\n\n## 基本概念\n\n### 组件 (Component)\n组件是 Rainbond 中最小的可部署单元，对应一个容器化应用。\n\n**组件类型**：\n- **无状态服务**：可以水平扩展，无持久化数据（如 Web 应用、API 服务）\n- **有状态服务**：需要持久化存储，有固定网络标识（如数据库、消息队列）\n- **任务型组件**：一次性或定时执行的任务（如数据处理、定时备份）\n\n**组件状态**：\n- `running`: 运行中，健康检查通过\n- `stopped`: 已停止\n- `abnormal`: 运行异常，可能是 OOMKilled、CrashLoopBackOff 等\n- `building`: 正在构建或部署中\n- `starting`: 正在启动\n\n### 应用 (Application)\n应用是一组相关组件的集合，通常代表一个完整的业务系统。\n\n**应用特性**：\n- 包含多个组件（前端、后端、数据库等）\n- 组件间可以通过服务发现互相访问\n- 可以整体管理（启动、停止、备份、恢复）\n- 支持应用模板和一键部署\n\n### 团队 (Team)\n团队是资源隔离和权限管理的基本单位。\n\n**团队功能**：\n- 资源配额管理（CPU、内存、存储）\n- 成员权限管理（管理员、开发者、观察者）\n- 应用和组件归属于团队\n- 团队间资源隔离\n\n### 集群 (Cluster)\n集群是底层 Kubernetes 集群的抽象。\n\n**集群类型**：\n- **本地集群**：Rainbond 安装所在的集群\n- **远程集群**：通过 kubeconfig 接入的外部集群\n- **边缘集群**：部署在边缘节点的轻量级集群\n\n## 组件生命周期\n\n### 1. 创建组件\n**方式**：\n- 源码构建（Git、SVN）\n- Docker 镜像\n- Docker Compose\n- Helm Chart\n- 应用市场\n\n### 2. 配置组件\n**配置项**：\n- 环境变量\n- 端口映射\n- 存储挂载\n- 健康检查\n- 资源限制（CPU、内存）\n- 自动伸缩策略\n\n### 3. 部署组件\n**部署流程**：\n1. 构建镜像（如果是源码）\n2. 推送到镜像仓库\n3. 创建 Kubernetes 资源（Deployment/StatefulSet）\n4. 等待 Pod 启动\n5. 执行健康检查\n6. 更新组件状态\n\n### 4. 运维组件\n**常见操作**：\n- 启动/停止/重启\n- 扩容/缩容\n- 更新配置\n- 查看日志\n- 查看监控指标\n- 进入容器终端\n\n## 关键概念对比\n\n| 概念 | Kubernetes 对应 | 说明 |\n|------|----------------|------|\n| 组件 | Deployment/StatefulSet | 应用的最小部署单元 |\n| 应用 | Namespace (部分) | 一组相关组件的集合 |\n| 团队 | Namespace | 资源隔离和权限管理 |\n| 端口 | Service | 服务访问入口 |\n| 存储 | PVC | 持久化数据存储 |\n\n## 最佳实践\n\n### 组件设计\n- 遵循单一职责原则，一个组件只做一件事\n- 无状态组件优先，便于水平扩展\n- 合理设置资源限制，避免资源争抢\n- 配置健康检查，确保服务可用性\n\n### 应用架构\n- 前后端分离，独立部署\n- 数据库使用有状态组件\n- 缓存和消息队列独立部署\n- 使用服务网格管理服务间通信\n\n### 资源管理\n- 为团队设置合理的资源配额\n- 监控资源使用情况，及时调整\n- 使用自动伸缩应对流量波动\n- 定期清理不用的资源\n\n\n---\n\n# Rainbond 故障排查指南\n\n## 常见问题诊断流程\n\n### 1. 组件启动失败\n\n**症状**：组件状态显示 `abnormal`，无法正常访问\n\n**诊断步骤**：\n1. **查看组件状态**\n   - 使用 `get-component-status` 工具\n   - 检查状态字段和错误信息\n\n2. **查看日志**\n   - 使用 `get-component-logs` 工具\n   - 重点关注最后 50-100 行日志\n   - 查找 ERROR、FATAL、Exception 等关键词\n\n3. **常见原因**：\n   - **OOMKilled**: 内存不足，需要扩容\n   - **CrashLoopBackOff**: 启动失败，检查配置和依赖\n   - **ImagePullBackOff**: 镜像拉取失败，检查镜像地址和权限\n   - **配置错误**: 环境变量、端口、挂载路径等配置错误\n\n### 2. 内存溢出 (OOM)\n\n**症状**：\n- 日志中出现 \"out of memory\"、\"heap limit\" 等关键词\n- 组件频繁重启\n- 状态显示 OOMKilled\n\n**解决方案**：\n1. **确认内存使用情况**\n   - 查看监控指标，确认内存使用率\n   - 分析是否有内存泄漏\n\n2. **扩容内存**\n   - 使用 `scale-component-memory` 工具\n   - 建议扩容 50%-100%（如 512MB → 1024MB）\n   - **注意**：扩容需要重启组件，属于高风险操作，需要用户审批\n\n3. **优化应用**\n   - 检查代码是否有内存泄漏\n   - 优化数据结构和算法\n   - 增加垃圾回收频率\n\n### 3. 服务无法访问\n\n**症状**：\n- 组件状态正常，但无法通过域名或 IP 访问\n- 返回 502、503、504 等错误\n\n**诊断步骤**：\n1. **检查组件状态**\n   - 确认组件是否真的在运行\n   - 检查健康检查是否通过\n\n2. **检查端口配置**\n   - 确认端口是否正确开放\n   - 检查端口协议（HTTP/TCP/UDP）\n   - 验证容器内端口和对外端口映射\n\n3. **检查网络策略**\n   - 确认是否有网络策略限制\n   - 检查防火墙规则\n   - 验证服务发现是否正常\n\n4. **检查网关配置**\n   - 确认域名解析是否正确\n   - 检查网关路由规则\n   - 验证 SSL 证书是否有效\n\n### 4. 性能问题\n\n**症状**：\n- 响应时间长\n- CPU 使用率高\n- 请求超时\n\n**诊断步骤**：\n1. **查看监控指标**\n   - CPU 使用率\n   - 内存使用率\n   - 网络流量\n   - 请求响应时间\n\n2. **分析日志**\n   - 查找慢查询\n   - 检查错误率\n   - 分析请求分布\n\n3. **优化方案**：\n   - **水平扩容**：增加实例数量\n   - **垂直扩容**：增加 CPU 和内存\n   - **代码优化**：优化算法和数据库查询\n   - **缓存优化**：增加缓存层，减少数据库压力\n\n### 5. 存储问题\n\n**症状**：\n- 磁盘空间不足\n- 数据丢失\n- 读写性能差\n\n**诊断步骤**：\n1. **检查存储使用情况**\n   - 查看存储卷使用率\n   - 确认是否达到配额上限\n\n2. **检查存储配置**\n   - 确认存储类型（本地存储/网络存储）\n   - 检查挂载路径是否正确\n   - 验证持久化配置\n\n3. **解决方案**：\n   - **扩容存储**：增加存储卷大小\n   - **清理数据**：删除不必要的文件\n   - **优化存储**：使用更快的存储类型\n   - **数据备份**：定期备份重要数据\n\n## 诊断工具使用\n\n### get-component-status\n**用途**：获取组件当前状态\n\n**返回信息**：\n- 组件名称\n- 运行状态（running/stopped/abnormal）\n- 内存配置\n- CPU 配置\n- 实例数量\n\n### get-component-logs\n**用途**：获取组件日志\n\n**参数**：\n- `name`: 组件名称\n- `lines`: 日志行数（默认 50）\n\n**使用场景**：\n- 启动失败时查看错误信息\n- 运行异常时分析原因\n- 性能问题时查找慢查询\n\n### restart-component\n**用途**：重启组件\n\n**风险等级**：高\n\n**使用场景**：\n- 配置更新后需要重启\n- 组件卡死需要强制重启\n- 内存泄漏需要释放资源\n\n**注意事项**：\n- 会导致服务短暂中断\n- 需要用户审批\n- 建议在低峰期操作\n\n### scale-component-memory\n**用途**：调整组件内存配置\n\n**风险等级**：中\n\n**使用场景**：\n- OOM 错误需要扩容\n- 内存使用率过高\n- 性能优化\n\n**注意事项**：\n- 需要重启组件\n- 需要用户审批\n- 建议逐步扩容，避免资源浪费\n\n## 最佳实践\n\n### 预防性监控\n- 设置合理的告警阈值\n- 定期检查资源使用情况\n- 关注错误日志和异常指标\n- 建立故障响应流程\n\n### 快速定位问题\n1. 先看状态，再看日志\n2. 从最近的变更入手\n3. 对比正常和异常时的差异\n4. 使用排除法缩小范围\n\n### 安全操作\n- 高风险操作必须审批\n- 重要操作前先备份\n- 在测试环境验证方案\n- 准备回滚预案\n"
+        },
+        {
+          "role": "system",
+          "content": "## Current Session Context\n- enterprise_id: 8948f3fcf66e0cd91bf1045e8ca4a965\n- team_name: pdt0yhfe\n- region_name: rainbond\n- app_id: 76\n- component_id: grb0e9c3\n- page: /team/pdt0yhfe/region/rainbond/apps/76/overview\n当 team_name、region_name、app_id、component_id 已经在当前上下文中存在时，优先直接使用这些上下文值。\n除非用户明确要求查看团队列表、切换团队或跨团队比较，否则不要为了确认当前团队再次调用 rainbond_query_teams。\n除非用户明确要求查看集群列表、切换集群或跨集群比较，否则不要为了确认当前集群再次调用 rainbond_query_regions。\n如果上下文已经能唯一定位当前团队、集群、应用或组件，就直接进入对应查询，不要重复向用户索要这些参数。"
+        },
+        {
+          "role": "user",
+          "content": "帮我开启这个应用"
+        },
+        {
+          "role": "assistant",
+          "content": "好的，我先查看一下当前应用和组件的状态。",
+          "reasoning_content": "用户想要开启这个应用。根据上下文，我们有：\n- team_name: pdt0yhfe\n- region_name: rainbond\n- app_id: 76\n\n用户说\"开启这个应用\"，意思是启动应用。这是一个写操作，需要审批。不过让我先确认一下当前应用的状态，看看有哪些组件，它们当前的状态如何。\n\n首先，让我获取应用详情和组件列表。",
+          "tool_calls": [
+            {
+              "id": "call_00_m3qeUNoYCJOmhQM78h3O7c5s",
+              "type": "function",
+              "function": {
+                "name": "rainbond_get_app_detail",
+                "arguments": "{\"team_name\": \"pdt0yhfe\", \"region_name\": \"rainbond\", \"app_id\": 76}"
+              }
+            },
+            {
+              "id": "call_01_rWeai6CV5tfSfwEs8N8YEMs3",
+              "type": "function",
+              "function": {
+                "name": "rainbond_query_components",
+                "arguments": "{\"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"app_id\": 76}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"ID\":76,\"tenant_id\":\"d9eb4c41d8a840ab89b74fdb520846fd\",\"group_name\":\"rainbond-demo\",\"region_name\":\"rainbond\",\"is_default\":false,\"order_index\":0,\"note\":\"Initialized from local repo /Users/yangk/go/src/github.com/goodrain/rainbond-demo\",\"username\":\"admin\",\"governance_mode\":\"KUBERNETES_NATIVE_SERVICE\",\"create_time\":\"2026-04-14 23:29:54\",\"update_time\":\"2026-04-25 15:42:43\",\"app_type\":\"rainbond\",\"app_store_name\":\"\",\"app_store_url\":\"\",\"app_template_name\":\"\",\"version\":\"\",\"logo\":\"\",\"k8s_app\":\"default\",\"service_count\":3,\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"running_service_count\":0,\"status\":\"closed\",\"team_name\":\"pdt0yhfe\",\"used_cpu\":360,\"used_memory\":1536,\"app_id\":76}}",
+          "name": "rainbond_get_app_detail",
+          "tool_call_id": "call_00_m3qeUNoYCJOmhQM78h3O7c5s"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"items\":[{\"service_id\":\"2cbd897d62baa6bbee8df8672bcc298a\",\"service_alias\":\"grcc298a\",\"service_cname\":\"postgres\",\"service_region\":\"rainbond\",\"service_source\":\"docker_image\",\"create_status\":\"complete\",\"app_id\":76,\"app_name\":\"rainbond-demo\",\"team_id\":\"d9eb4c41d8a840ab89b74fdb520846fd\",\"team_name\":\"pdt0yhfe\",\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"create_time\":\"2026-04-15 00:11:03\",\"update_time\":\"2026-04-24 00:19:39\"},{\"service_id\":\"88e0e2068ab78416b41cf48eb5b0e9c3\",\"service_alias\":\"grb0e9c3\",\"service_cname\":\"web\",\"service_region\":\"rainbond\",\"service_source\":\"source_code\",\"create_status\":\"complete\",\"app_id\":76,\"app_name\":\"rainbond-demo\",\"team_id\":\"d9eb4c41d8a840ab89b74fdb520846fd\",\"team_name\":\"pdt0yhfe\",\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"create_time\":\"2026-04-15 00:11:57\",\"update_time\":\"2026-04-24 11:24:22\"},{\"service_id\":\"9af9a0217e6d9be73b0da3d29b6fed2f\",\"service_alias\":\"gr6fed2f\",\"service_cname\":\"api\",\"service_region\":\"rainbond\",\"service_source\":\"source_code\",\"create_status\":\"complete\",\"app_id\":76,\"app_name\":\"rainbond-demo\",\"team_id\":\"d9eb4c41d8a840ab89b74fdb520846fd\",\"team_name\":\"pdt0yhfe\",\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"create_time\":\"2026-04-15 00:11:57\",\"update_time\":\"2026-04-15 00:11:59\"}],\"total\":3,\"page\":1,\"page_size\":20}}",
+          "name": "rainbond_query_components",
+          "tool_call_id": "call_01_rWeai6CV5tfSfwEs8N8YEMs3"
+        },
+        {
+          "role": "assistant",
+          "content": "当前应用 **rainbond-demo** 处于 **已关闭** 状态，共 3 个组件（postgres、web、api）均未运行。我现在为你触发启动操作。",
+          "reasoning_content": "现在我了解了当前的应用状况：\n\n- 应用名：rainbond-demo\n- 状态：closed（已关闭）\n- 运行中组件数：0\n- 共3个组件：\n  1. postgres (grcc298a) - Docker 镜像\n  2. web (grb0e9c3) - 源码构建\n  3. api (gr6fed2f) - 源码构建\n\n用户想要\"开启这个应用\"，即启动所有组件。这是一个写操作，需要使用 `rainbond_operate_app` 来执行 start 操作。\n\n但是，根据规则，写操作需要审批。我应该直接调用 `rainbond_operate_app` 工具，因为它会触发审批流程。不过让我确认：`rainbond_operate_app` 操作是写操作，需要审批。\n\n让我直接调用审批相关的操作。不对，系统说\"对任何需要审批的写操作，不要先用自然语言询问'是否确认执行'；应直接调用相应工具，让系统进入统一审批流。\"\n\n所以让我直接调用 `rainbond_operate_app` 来启动应用的所有组件。\n\n参数：\n- team_name: pdt0yhfe\n- region_name: rainbond\n- app_id: 76\n- action: start\n- service_ids: 不指定（启动所有组件）或指定所有三个组件的 service_id\n\n让我直接调用，不指定 service_ids，这样应该启动所有组件。",
+          "tool_calls": [
+            {
+              "id": "call_00_QZOeQKBjDgpzc8c13oWQA5G3",
+              "type": "function",
+              "function": {
+                "name": "rainbond_operate_app",
+                "arguments": "{\"team_name\": \"pdt0yhfe\", \"region_name\": \"rainbond\", \"app_id\": 76, \"action\": \"start\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"app_id\":76,\"action\":\"start\",\"service_ids\":[\"2cbd897d62baa6bbee8df8672bcc298a\",\"88e0e2068ab78416b41cf48eb5b0e9c3\",\"9af9a0217e6d9be73b0da3d29b6fed2f\"],\"result\":[{\"service_id\":\"2cbd897d62baa6bbee8df8672bcc298a\",\"operation\":\"start\",\"event_id\":\"32edbcde00484536b0aa657ae4cf9459\",\"status\":\"success\",\"err_message\":\"\",\"deploy_version\":\"\"},{\"service_id\":\"88e0e2068ab78416b41cf48eb5b0e9c3\",\"operation\":\"start\",\"event_id\":\"d9566b2645624d93b8523250778bcf1a\",\"status\":\"success\",\"err_message\":\"\",\"deploy_version\":\"\"},{\"service_id\":\"9af9a0217e6d9be73b0da3d29b6fed2f\",\"operation\":\"start\",\"event_id\":\"8b96397a595649e89366221ee0c2725b\",\"status\":\"success\",\"err_message\":\"\",\"deploy_version\":\"\"}]}}",
+          "name": "rainbond_operate_app",
+          "tool_call_id": "call_00_QZOeQKBjDgpzc8c13oWQA5G3"
+        }
+      ],
+      "iteration": 2,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "call_00_m3qeUNoYCJOmhQM78h3O7c5s",
+        "call_01_rWeai6CV5tfSfwEs8N8YEMs3",
+        "call_00_QZOeQKBjDgpzc8c13oWQA5G3"
+      ],
+      "finalOutput": null,
+      "status": "running"
+    }
+  },
+  {
+    "runId": "run_1777104271010_9",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777103199717_1",
+    "messageText": "这个组件为啥启动异常",
+    "status": "pending",
+    "startedAt": "2026-04-25T08:04:31.010Z"
+  },
+  {
+    "runId": "run_1777254390285_q",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777103199717_1",
+    "messageText": "帮我排查这个组件为啥运行异常",
+    "status": "pending",
+    "startedAt": "2026-04-27T01:46:30.285Z"
   }
 ]

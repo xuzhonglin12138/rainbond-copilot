@@ -5,8 +5,8 @@ import {
 } from "lucide-react";
 import { CopilotDrawer, type Message } from "./ui/CopilotDrawer";
 import {
+  consumeCopilotSseStream,
   createCopilotApiClient,
-  readCopilotSseStream,
   type CopilotApiActor,
 } from "./shared/copilot-api-client";
 import type { PublicCopilotEvent } from "./shared/contracts";
@@ -163,98 +163,174 @@ function buildWorkflowEventMessage(event: PublicCopilotEvent): Message | null {
   return null;
 }
 
-function applyPublicEvents(
+function findStreamMessageIndex(messages: Message[], messageId: string): number {
+  return messages.findIndex(
+    (message) => message.streamMessageId === messageId
+  );
+}
+
+function applyPublicEvent(
   previousMessages: Message[],
   previousApprovals: Record<string, ApprovalState>,
-  events: PublicCopilotEvent[]
+  event: PublicCopilotEvent
 ): {
   messages: Message[];
   approvals: Record<string, ApprovalState>;
 } {
   const nextMessages = previousMessages.slice();
   const nextApprovals = { ...previousApprovals };
+  const data = event.data || {};
 
-  for (const event of events) {
-    const data = event.data || {};
-
-    switch (event.type) {
-      case "chat.message":
+  switch (event.type) {
+    case "chat.message.started": {
+      const messageId = String(data.message_id || "");
+      if (!messageId) {
+        break;
+      }
+      if (findStreamMessageIndex(nextMessages, messageId) === -1) {
         nextMessages.push({
           role: data.role === "user" ? "user" : "ai",
           type: "text",
-          content: String(data.content || ""),
+          content: "",
+          streamMessageId: messageId,
+          streaming: true,
         });
+      }
+      break;
+    }
+    case "chat.message.delta": {
+      const messageId = String(data.message_id || "");
+      if (!messageId) {
         break;
-      case "chat.trace":
-        nextMessages.push({
-          role: "system",
-          type: "tool_call",
-          content: `调用工具: ${String(data.tool_name || "tool")}(${JSON.stringify(
-            data.input || {}
-          )})`,
-        });
-        break;
-      case "approval.requested": {
-        const approvalId = String(data.approval_id || "");
-        if (!approvalId) {
-          break;
-        }
-        nextApprovals[approvalId] = {
-          approvalId,
-          sessionId: event.sessionId,
-          runId: event.runId,
-          lastSequence: event.sequence,
-        };
+      }
+      const index = findStreamMessageIndex(nextMessages, messageId);
+      if (index === -1) {
         nextMessages.push({
           role: "ai",
-          type: "approval",
-          actionId: approvalId,
-          summary: String(data.description || "待审批操作"),
-          api: `Skill: ${String(data.skill_id || "")}`,
-          status: "pending",
+          type: "text",
+          content: String(data.delta || ""),
+          streamMessageId: messageId,
+          streaming: true,
         });
-        break;
+      } else {
+        nextMessages[index] = {
+          ...nextMessages[index],
+          content: `${nextMessages[index].content || ""}${String(data.delta || "")}`,
+          streaming: true,
+        };
       }
-      case "approval.resolved": {
-        const approvalId = String(data.approval_id || "");
-        const status = data.status === "approved" ? "approved" : "rejected";
-        nextMessages.forEach((message) => {
-          if (message.actionId === approvalId && message.type === "approval") {
-            message.status = status;
-          }
-        });
-        delete nextApprovals[approvalId];
-        break;
-      }
-      case "workflow.selected":
-      case "workflow.stage":
-      case "workflow.completed": {
-        const workflowMessage = buildWorkflowEventMessage(event);
-        if (workflowMessage) {
-          nextMessages.push(workflowMessage);
-        }
-
-        if (event.type === "workflow.completed") {
-          const structuredResult = data.structured_result as
-            | Record<string, unknown>
-            | undefined;
-          const summary =
-            structuredResult && typeof structuredResult.summary === "string"
-              ? structuredResult.summary
-              : "";
-          if (summary) {
-            nextMessages.push({
-              role: "ai",
-              type: "text",
-              content: summary,
-            });
-          }
-        }
-        break;
-      }
-      default:
-        break;
+      break;
     }
+    case "chat.message.completed": {
+      const messageId = String(data.message_id || "");
+      if (!messageId) {
+        break;
+      }
+      const index = findStreamMessageIndex(nextMessages, messageId);
+      if (index === -1) {
+        nextMessages.push({
+          role: "ai",
+          type: "text",
+          content: String(data.content || ""),
+          streamMessageId: messageId,
+          streaming: false,
+        });
+      } else {
+        nextMessages[index] = {
+          ...nextMessages[index],
+          content: String(data.content || nextMessages[index].content || ""),
+          streaming: false,
+        };
+      }
+      break;
+    }
+    case "chat.message":
+      if (typeof data.message_id === "string" && data.message_id) {
+        const index = findStreamMessageIndex(nextMessages, data.message_id);
+        if (index > -1) {
+          nextMessages[index] = {
+            ...nextMessages[index],
+            content: String(data.content || nextMessages[index].content || ""),
+            streaming: false,
+          };
+          break;
+        }
+      }
+      nextMessages.push({
+        role: data.role === "user" ? "user" : "ai",
+        type: "text",
+        content: String(data.content || ""),
+      });
+      break;
+    case "chat.trace":
+      nextMessages.push({
+        role: "system",
+        type: "tool_call",
+        content: `调用工具: ${String(data.tool_name || "tool")}(${JSON.stringify(
+          data.input || {}
+        )})`,
+      });
+      break;
+    case "approval.requested": {
+      const approvalId = String(data.approval_id || "");
+      if (!approvalId) {
+        break;
+      }
+      nextApprovals[approvalId] = {
+        approvalId,
+        sessionId: event.sessionId,
+        runId: event.runId,
+        lastSequence: event.sequence,
+      };
+      nextMessages.push({
+        role: "ai",
+        type: "approval",
+        actionId: approvalId,
+        summary: String(data.description || "待审批操作"),
+        api: `Skill: ${String(data.skill_id || "")}`,
+        status: "pending",
+      });
+      break;
+    }
+    case "approval.resolved": {
+      const approvalId = String(data.approval_id || "");
+      const status = data.status === "approved" ? "approved" : "rejected";
+      nextMessages.forEach((message) => {
+        if (message.actionId === approvalId && message.type === "approval") {
+          message.status = status;
+        }
+      });
+      delete nextApprovals[approvalId];
+      break;
+    }
+    case "workflow.selected":
+    case "workflow.stage":
+    case "workflow.completed": {
+      const workflowMessage = buildWorkflowEventMessage(event);
+      if (workflowMessage) {
+        nextMessages.push(workflowMessage);
+      }
+
+      if (event.type === "workflow.completed") {
+        const structuredResult = data.structured_result as
+          | Record<string, unknown>
+          | undefined;
+        const summary =
+          structuredResult && typeof structuredResult.summary === "string"
+            ? structuredResult.summary
+            : "";
+        if (summary) {
+          nextMessages.push({
+            role: "ai",
+            type: "text",
+            content: summary,
+          });
+        }
+      }
+      break;
+    }
+    default:
+      break;
   }
 
   return {
@@ -329,14 +405,19 @@ export default function App() {
         resolvedSessionId,
         run.data.run_id
       );
-      const events = await readCopilotSseStream(response);
-      const applied = applyPublicEvents(
-        messagesRef.current,
-        approvalsRef.current,
-        events
-      );
-      setApprovalStates(applied.approvals);
-      setMessages(applied.messages);
+      await consumeCopilotSseStream(response, {
+        onEvent(event) {
+          const applied = applyPublicEvent(
+            messagesRef.current,
+            approvalsRef.current,
+            event
+          );
+          approvalsRef.current = applied.approvals;
+          messagesRef.current = applied.messages;
+          setApprovalStates(applied.approvals);
+          setMessages(applied.messages);
+        },
+      });
     } catch (error: any) {
       console.error("Error handling message:", error);
       setMessages((prev) => [
@@ -392,14 +473,19 @@ export default function App() {
       const response = await client.openEventStream(approval.sessionId, approval.runId, {
         afterSequence: approval.lastSequence,
       });
-      const events = await readCopilotSseStream(response);
-      const applied = applyPublicEvents(
-        messagesRef.current,
-        approvalsRef.current,
-        events
-      );
-      setApprovalStates(applied.approvals);
-      setMessages(applied.messages);
+      await consumeCopilotSseStream(response, {
+        onEvent(event) {
+          const applied = applyPublicEvent(
+            messagesRef.current,
+            approvalsRef.current,
+            event
+          );
+          approvalsRef.current = applied.approvals;
+          messagesRef.current = applied.messages;
+          setApprovalStates(applied.approvals);
+          setMessages(applied.messages);
+        },
+      });
     } catch (error: any) {
       setMessages((prev) => [
         ...prev,

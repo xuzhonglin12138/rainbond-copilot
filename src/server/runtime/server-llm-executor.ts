@@ -41,11 +41,18 @@ import {
 } from "./run-execution-state.js";
 import { createServerActionSkills } from "./server-action-skills.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
+import { createServerId } from "../utils/id.js";
+import { logCopilotDebug } from "../utils/copilot-debug.js";
 
 export interface ServerChatClient {
   chat: (
     messages: ChatMessage[],
     tools?: ToolDefinition[]
+  ) => Promise<ChatCompletionResponse>;
+  streamChat?: (
+    messages: ChatMessage[],
+    tools?: ToolDefinition[],
+    onChunk?: (chunk: string) => void | Promise<void>
   ) => Promise<ChatCompletionResponse>;
 }
 
@@ -137,8 +144,18 @@ export class ServerLlmExecutor {
   async execute(params: ExecuteServerLlmRunParams): Promise<boolean> {
     const llmClient = this.getClient();
     if (!llmClient) {
+      logCopilotDebug("llm:execute:no-client", {
+        runId: params.runId,
+        sessionId: params.sessionId,
+      });
       return false;
     }
+    logCopilotDebug("llm:execute:start", {
+      runId: params.runId,
+      sessionId: params.sessionId,
+      hasStreamChat: typeof llmClient.streamChat === "function",
+      messageLength: params.message.length,
+    });
 
     const mcpToolContext = await this.resolveMcpToolContext(params);
     const tools = this.buildTools(
@@ -152,11 +169,82 @@ export class ServerLlmExecutor {
         toolMessageContent: string;
       }
     >();
+    let lastStreamedAssistantMessageId: string | null = null;
     const state = await this.createExecutionState(params);
     const result = await advanceRunLoop({
       state,
       tools,
-      chat: (messages, toolDefinitions) => llmClient.chat(messages, toolDefinitions),
+      chat: async (messages, toolDefinitions) => {
+        if (typeof llmClient.streamChat !== "function") {
+          logCopilotDebug("llm:execute:chat-nonstream", {
+            runId: params.runId,
+            messageCount: messages.length,
+            toolCount: toolDefinitions ? toolDefinitions.length : 0,
+          });
+          return llmClient.chat(messages, toolDefinitions);
+        }
+
+        let streamedMessageId = "";
+        let streamedContent = "";
+        logCopilotDebug("llm:execute:chat-stream", {
+          runId: params.runId,
+          messageCount: messages.length,
+          toolCount: toolDefinitions ? toolDefinitions.length : 0,
+        });
+        const response = await llmClient.streamChat(
+          messages,
+          toolDefinitions,
+          async (chunk) => {
+            if (!chunk) {
+              return;
+            }
+            logCopilotDebug("llm:execute:chunk", {
+              runId: params.runId,
+              chunkLength: chunk.length,
+            });
+            streamedContent += chunk;
+            if (!streamedMessageId) {
+              streamedMessageId = createServerId("msg");
+              await this.publishAssistantMessageStarted(
+                params,
+                streamedMessageId
+              );
+            }
+            await this.publishAssistantMessageDelta(
+              params,
+              streamedMessageId,
+              chunk
+            );
+          }
+        );
+
+        if (streamedMessageId) {
+          const completedContent =
+            typeof response.content === "string" && response.content
+              ? response.content
+              : streamedContent;
+          await this.publishAssistantMessageCompleted(
+            params,
+            streamedMessageId,
+            completedContent
+          );
+
+          if (!response.tool_calls || response.tool_calls.length === 0) {
+            lastStreamedAssistantMessageId = streamedMessageId;
+          }
+        }
+
+        logCopilotDebug("llm:execute:chat-stream:done", {
+          runId: params.runId,
+          streamedMessageId,
+          contentLength:
+            typeof response.content === "string" ? response.content.length : 0,
+          toolCallCount: response.tool_calls ? response.tool_calls.length : 0,
+          finishReason: response.finish_reason || "",
+        });
+
+        return response;
+      },
       maxIterations: 8,
       maxIterationsFinalOutput:
         "本次分析轮次已达上限，请尝试缩小问题范围后重新提问。",
@@ -170,6 +258,10 @@ export class ServerLlmExecutor {
     });
 
     if (result.nextStep.type === "interruption") {
+      logCopilotDebug("llm:execute:interruption", {
+        runId: params.runId,
+        pendingApprovals: result.pendingApprovals.length,
+      });
       if (!this.deps.requestApproval) {
         throw new Error("requestApproval callback is required for protected tools");
       }
@@ -197,6 +289,10 @@ export class ServerLlmExecutor {
     }
 
     if (result.nextStep.type === "failed") {
+      logCopilotDebug("llm:execute:failed", {
+        runId: params.runId,
+        finalOutput: result.finalOutput || "",
+      });
       throw new Error(result.finalOutput || "Run loop failed");
     }
 
@@ -216,8 +312,17 @@ export class ServerLlmExecutor {
     ) ||
       "我已经完成当前分析，但没有生成额外回复。";
 
-    await this.publishAssistantMessage(params, content);
+    await this.publishAssistantMessage(
+      params,
+      content,
+      lastStreamedAssistantMessageId || undefined
+    );
     await this.publishRunStatus(params, "done");
+    logCopilotDebug("llm:execute:done", {
+      runId: params.runId,
+      lastStreamedAssistantMessageId: lastStreamedAssistantMessageId || "",
+      finalContentLength: content.length,
+    });
     return true;
   }
 
@@ -317,7 +422,10 @@ export class ServerLlmExecutor {
         };
       }
 
+      const traceId = createServerId("trace");
       await this.publishTrace(executeParams, {
+        trace_id: traceId,
+        tool_call_id: toolCall.id,
         tool_name: skill.name,
         input: toolInput,
       });
@@ -330,6 +438,8 @@ export class ServerLlmExecutor {
       });
 
       await this.publishTrace(executeParams, {
+        trace_id: traceId,
+        tool_call_id: toolCall.id,
         tool_name: skill.name,
         input: toolInput,
         output,
@@ -405,7 +515,10 @@ export class ServerLlmExecutor {
       };
     }
 
+    const traceId = createServerId("trace");
     await this.publishTrace(executeParams, {
+      trace_id: traceId,
+      tool_call_id: toolCall.id,
       tool_name: mcpTool.name,
       input: resolvedInput,
     });
@@ -421,6 +534,8 @@ export class ServerLlmExecutor {
     });
 
     await this.publishTrace(executeParams, {
+      trace_id: traceId,
+      tool_call_id: toolCall.id,
       tool_name: mcpTool.name,
       input: resolvedInput,
       output,
@@ -1634,19 +1749,29 @@ export class ServerLlmExecutor {
     params: ExecuteServerLlmRunParams,
     data: Record<string, unknown>
   ): Promise<void> {
+    const traceId =
+      typeof data.trace_id === "string" && data.trace_id
+        ? data.trace_id
+        : createServerId("trace");
+    const tracePayload = {
+      ...data,
+      trace_id: traceId,
+    };
+
     await this.deps.eventPublisher.publish({
       type: "chat.trace",
       tenantId: params.actor.tenantId,
       sessionId: params.sessionId,
       runId: params.runId,
       sequence: await this.nextSequence(params.runId, params.actor.tenantId),
-      data,
+      data: tracePayload,
     });
   }
 
   private async publishAssistantMessage(
     params: ExecuteServerLlmRunParams,
-    content: string
+    content: string,
+    messageId?: string
   ): Promise<void> {
     await this.deps.eventPublisher.publish({
       type: "chat.message",
@@ -1656,6 +1781,60 @@ export class ServerLlmExecutor {
       sequence: await this.nextSequence(params.runId, params.actor.tenantId),
       data: {
         role: "assistant",
+        content,
+        ...(messageId ? { message_id: messageId } : {}),
+      },
+    });
+  }
+
+  private async publishAssistantMessageStarted(
+    params: ExecuteServerLlmRunParams,
+    messageId: string
+  ): Promise<void> {
+    await this.deps.eventPublisher.publish({
+      type: "chat.message.started",
+      tenantId: params.actor.tenantId,
+      sessionId: params.sessionId,
+      runId: params.runId,
+      sequence: await this.nextSequence(params.runId, params.actor.tenantId),
+      data: {
+        message_id: messageId,
+        role: "assistant",
+      },
+    });
+  }
+
+  private async publishAssistantMessageDelta(
+    params: ExecuteServerLlmRunParams,
+    messageId: string,
+    delta: string
+  ): Promise<void> {
+    await this.deps.eventPublisher.publish({
+      type: "chat.message.delta",
+      tenantId: params.actor.tenantId,
+      sessionId: params.sessionId,
+      runId: params.runId,
+      sequence: await this.nextSequence(params.runId, params.actor.tenantId),
+      data: {
+        message_id: messageId,
+        delta,
+      },
+    });
+  }
+
+  private async publishAssistantMessageCompleted(
+    params: ExecuteServerLlmRunParams,
+    messageId: string,
+    content: string
+  ): Promise<void> {
+    await this.deps.eventPublisher.publish({
+      type: "chat.message.completed",
+      tenantId: params.actor.tenantId,
+      sessionId: params.sessionId,
+      runId: params.runId,
+      sequence: await this.nextSequence(params.runId, params.actor.tenantId),
+      data: {
+        message_id: messageId,
         content,
       },
     });

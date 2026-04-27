@@ -3,6 +3,9 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    modulePreload: false,
+  },
   server: {
     proxy: {
       "/api/v1/copilot": {

@@ -6,6 +6,71 @@ import type {
   ChatCompletionResponse,
 } from "./types.js";
 
+type StreamedToolCallAccumulator = {
+  id?: string;
+  type?: "function";
+  function: {
+    name: string;
+    arguments: string;
+  };
+};
+
+function mergeToolCallDelta(
+  acc: StreamedToolCallAccumulator[],
+  partialToolCalls: any[]
+) {
+  partialToolCalls.forEach((partialToolCall) => {
+    const index =
+      typeof partialToolCall?.index === "number"
+        ? partialToolCall.index
+        : acc.length;
+
+    const current =
+      acc[index] ||
+      {
+        function: {
+          name: "",
+          arguments: "",
+        },
+      };
+
+    if (typeof partialToolCall?.id === "string" && partialToolCall.id) {
+      current.id = partialToolCall.id;
+    }
+
+    if (partialToolCall?.type === "function") {
+      current.type = "function";
+    }
+
+    if (typeof partialToolCall?.function?.name === "string") {
+      current.function.name += partialToolCall.function.name;
+    }
+
+    if (typeof partialToolCall?.function?.arguments === "string") {
+      current.function.arguments += partialToolCall.function.arguments;
+    }
+
+    acc[index] = current;
+  });
+}
+
+function finalizeToolCalls(
+  acc: StreamedToolCallAccumulator[]
+): ChatCompletionResponse["tool_calls"] {
+  const toolCalls = acc
+    .filter((item) => item && item.id && item.function && item.function.name)
+    .map((item) => ({
+      id: item.id as string,
+      type: "function" as const,
+      function: {
+        name: item.function.name,
+        arguments: item.function.arguments,
+      },
+    }));
+
+  return toolCalls.length > 0 ? toolCalls : undefined;
+}
+
 export class OpenAIClient {
   private client: OpenAI;
   private config: LLMConfig;
@@ -76,7 +141,7 @@ export class OpenAIClient {
   async streamChat(
     messages: ChatMessage[],
     tools?: ToolDefinition[],
-    onChunk?: (chunk: string) => void
+    onChunk?: (chunk: string) => void | Promise<void>
   ): Promise<ChatCompletionResponse> {
     const stream = await this.client.chat.completions.create({
       model: this.config.model,
@@ -89,7 +154,7 @@ export class OpenAIClient {
 
     let content = "";
     let reasoning_content = "";
-    let tool_calls: any[] = [];
+    const toolCallAccumulators: StreamedToolCallAccumulator[] = [];
     let finish_reason: any = "stop";
 
     for await (const chunk of stream) {
@@ -97,7 +162,9 @@ export class OpenAIClient {
 
       if (delta?.content) {
         content += delta.content;
-        onChunk?.(delta.content);
+        if (onChunk) {
+          await onChunk(delta.content);
+        }
       }
 
       if (typeof (delta as any)?.reasoning_content === "string") {
@@ -105,7 +172,7 @@ export class OpenAIClient {
       }
 
       if (delta?.tool_calls) {
-        tool_calls.push(...delta.tool_calls);
+        mergeToolCallDelta(toolCallAccumulators, delta.tool_calls);
       }
 
       if (chunk.choices[0]?.finish_reason) {
@@ -116,7 +183,7 @@ export class OpenAIClient {
     return {
       content: content || null,
       reasoning_content: reasoning_content || null,
-      tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+      tool_calls: finalizeToolCalls(toolCallAccumulators),
       finish_reason,
     };
   }

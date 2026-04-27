@@ -1,4 +1,44 @@
 import OpenAI from "openai";
+function mergeToolCallDelta(acc, partialToolCalls) {
+    partialToolCalls.forEach((partialToolCall) => {
+        const index = typeof partialToolCall?.index === "number"
+            ? partialToolCall.index
+            : acc.length;
+        const current = acc[index] ||
+            {
+                function: {
+                    name: "",
+                    arguments: "",
+                },
+            };
+        if (typeof partialToolCall?.id === "string" && partialToolCall.id) {
+            current.id = partialToolCall.id;
+        }
+        if (partialToolCall?.type === "function") {
+            current.type = "function";
+        }
+        if (typeof partialToolCall?.function?.name === "string") {
+            current.function.name += partialToolCall.function.name;
+        }
+        if (typeof partialToolCall?.function?.arguments === "string") {
+            current.function.arguments += partialToolCall.function.arguments;
+        }
+        acc[index] = current;
+    });
+}
+function finalizeToolCalls(acc) {
+    const toolCalls = acc
+        .filter((item) => item && item.id && item.function && item.function.name)
+        .map((item) => ({
+        id: item.id,
+        type: "function",
+        function: {
+            name: item.function.name,
+            arguments: item.function.arguments,
+        },
+    }));
+    return toolCalls.length > 0 ? toolCalls : undefined;
+}
 export class OpenAIClient {
     constructor(config) {
         this.config = config;
@@ -64,19 +104,21 @@ export class OpenAIClient {
         });
         let content = "";
         let reasoning_content = "";
-        let tool_calls = [];
+        const toolCallAccumulators = [];
         let finish_reason = "stop";
         for await (const chunk of stream) {
             const delta = chunk.choices[0]?.delta;
             if (delta?.content) {
                 content += delta.content;
-                onChunk?.(delta.content);
+                if (onChunk) {
+                    await onChunk(delta.content);
+                }
             }
             if (typeof delta?.reasoning_content === "string") {
                 reasoning_content += delta.reasoning_content;
             }
             if (delta?.tool_calls) {
-                tool_calls.push(...delta.tool_calls);
+                mergeToolCallDelta(toolCallAccumulators, delta.tool_calls);
             }
             if (chunk.choices[0]?.finish_reason) {
                 finish_reason = chunk.choices[0].finish_reason;
@@ -85,7 +127,7 @@ export class OpenAIClient {
         return {
             content: content || null,
             reasoning_content: reasoning_content || null,
-            tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+            tool_calls: finalizeToolCalls(toolCallAccumulators),
             finish_reason,
         };
     }

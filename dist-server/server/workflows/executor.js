@@ -14,13 +14,6 @@ function shouldAutoCreateSnapshot(message) {
     return (isSnapshotCreationRequested(message) &&
         !/(发布|publish|回滚|rollback)/i.test((message || "").trim()));
 }
-function shouldAutoPublishSnapshot(message) {
-    const normalized = (message || "").trim();
-    if (!normalized) {
-        return false;
-    }
-    return /(发布到版本中心|发布当前快照|创建快照并发布|publish)/i.test(normalized);
-}
 function shouldAutoRollbackSnapshot(message) {
     const normalized = (message || "").trim();
     if (!normalized) {
@@ -189,14 +182,6 @@ function readStructuredString(payload, ...keys) {
         }
     }
     return "";
-}
-function readStructuredInt(payload, ...keys) {
-    const raw = readStructuredString(payload, ...keys);
-    if (!raw) {
-        return 0;
-    }
-    const parsed = Number(raw);
-    return Number.isFinite(parsed) ? parsed : 0;
 }
 function parseAppId(value) {
     if (!value) {
@@ -757,7 +742,6 @@ export class WorkflowExecutor {
                 ? overviewPayload.overview
                 : overviewPayload;
             const latestSnapshotVersion = readStructuredString(latestSnapshot, "version");
-            const latestSnapshotVersionId = readStructuredInt(latestSnapshot, "version_id");
             const latestSnapshotServiceCount = latestSnapshotDetail &&
                 latestSnapshotDetail.structuredContent &&
                 latestSnapshotDetail.structuredContent.detail &&
@@ -765,7 +749,6 @@ export class WorkflowExecutor {
                 ? latestSnapshotDetail.structuredContent.detail.services.length
                 : 0;
             const currentVersion = readStructuredString(overviewData, "current_version");
-            const templateId = readStructuredString(overviewData, "template_id");
             const createSnapshotInput = {
                 team_name: result.candidateScope.teamName || actor.tenantId,
                 region_name: result.candidateScope.regionName || actor.regionName || "",
@@ -1275,13 +1258,20 @@ export class WorkflowExecutor {
         return true;
     }
     async publishToolTrace(tenantId, sessionId, runId, sequence, data) {
+        const traceSequenceBase = data && typeof data.output !== "undefined" ? sequence - 1 : sequence;
+        const tracePayload = {
+            ...data,
+            trace_id: typeof data.trace_id === "string" && data.trace_id
+                ? data.trace_id
+                : `trace_${runId}_${traceSequenceBase}`,
+        };
         await this.deps.eventPublisher.publish({
             type: "chat.trace",
             tenantId,
             sessionId,
             runId,
             sequence,
-            data,
+            data: tracePayload,
         });
     }
 }

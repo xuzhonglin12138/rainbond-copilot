@@ -57,14 +57,6 @@ function shouldAutoCreateSnapshot(message: string): boolean {
   );
 }
 
-function shouldAutoPublishSnapshot(message: string): boolean {
-  const normalized = (message || "").trim();
-  if (!normalized) {
-    return false;
-  }
-  return /(发布到版本中心|发布当前快照|创建快照并发布|publish)/i.test(normalized);
-}
-
 function shouldAutoRollbackSnapshot(message: string): boolean {
   const normalized = (message || "").trim();
   if (!normalized) {
@@ -283,18 +275,6 @@ function readStructuredString(
     }
   }
   return "";
-}
-
-function readStructuredInt(
-  payload: Record<string, unknown> | undefined,
-  ...keys: string[]
-): number {
-  const raw = readStructuredString(payload, ...keys);
-  if (!raw) {
-    return 0;
-  }
-  const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function parseAppId(value: string | undefined): number {
@@ -982,10 +962,6 @@ export class WorkflowExecutor {
         latestSnapshot as Record<string, unknown> | undefined,
         "version"
       );
-      const latestSnapshotVersionId = readStructuredInt(
-        latestSnapshot as Record<string, unknown> | undefined,
-        "version_id"
-      );
       const latestSnapshotServiceCount =
         latestSnapshotDetail &&
         latestSnapshotDetail.structuredContent &&
@@ -994,7 +970,6 @@ export class WorkflowExecutor {
           ? (latestSnapshotDetail.structuredContent as any).detail.services.length
           : 0;
       const currentVersion = readStructuredString(overviewData, "current_version");
-      const templateId = readStructuredString(overviewData, "template_id");
       const createSnapshotInput = {
         team_name: result.candidateScope.teamName || actor.tenantId,
         region_name: result.candidateScope.regionName || actor.regionName || "",
@@ -1598,13 +1573,22 @@ export class WorkflowExecutor {
     sequence: number,
     data: Record<string, unknown>
   ) {
+    const traceSequenceBase =
+      data && typeof data.output !== "undefined" ? sequence - 1 : sequence;
+    const tracePayload = {
+      ...data,
+      trace_id:
+        typeof data.trace_id === "string" && data.trace_id
+          ? data.trace_id
+          : `trace_${runId}_${traceSequenceBase}`,
+    };
     await this.deps.eventPublisher.publish({
       type: "chat.trace",
       tenantId,
       sessionId,
       runId,
       sequence,
-      data,
+      data: tracePayload,
     });
   }
 }

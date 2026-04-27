@@ -82,7 +82,11 @@ export function createCopilotApiClient(options) {
         },
     };
 }
-export async function readCopilotSseStream(response) {
+export async function readCopilotSseStream(response, options = {}) {
+    return consumeCopilotSseStream(response, options);
+}
+export async function consumeCopilotSseStream(response, options = {}) {
+    const { onEvent } = options;
     if (!response.ok) {
         throw new Error(`Copilot SSE request failed with ${response.status} ${response.statusText}`);
     }
@@ -109,6 +113,7 @@ export async function readCopilotSseStream(response) {
             if (dataLine) {
                 const parsed = publicCopilotEventSchema.parse(JSON.parse(dataLine.slice(6)));
                 events.push(parsed);
+                onEvent?.(parsed);
             }
             boundaryIndex = buffer.indexOf("\n\n");
         }
