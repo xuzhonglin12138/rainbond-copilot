@@ -23,7 +23,6 @@ import {
 import type { RunStore } from "../stores/run-store.js";
 import type { SessionStore } from "../stores/session-store.js";
 import type { RunResumer } from "../runtime/run-resumer.js";
-import { logCopilotDebug } from "../utils/copilot-debug.js";
 
 export interface CopilotApprovalServiceDeps {
   approvalStore: ApprovalStore;
@@ -71,13 +70,6 @@ export class CopilotApprovalService {
   async createPendingApproval(
     input: CreatePendingApprovalInput
   ): Promise<ApprovalRecord> {
-    logCopilotDebug("approval:create:start", {
-      runId: input.runId,
-      sessionId: input.sessionId,
-      skillId: input.skillId,
-      risk: input.risk,
-      scope: input.scope || "",
-    });
     const run = await this.deps.runStore.getById(input.runId, input.actor.tenantId);
 
     if (!run) {
@@ -161,11 +153,6 @@ export class CopilotApprovalService {
       },
     });
 
-    logCopilotDebug("approval:create:done", {
-      approvalId: approval.approvalId,
-      runId: approval.runId,
-      sessionId: approval.sessionId,
-    });
     return approval;
   }
 
@@ -173,11 +160,6 @@ export class CopilotApprovalService {
     approvalId: string,
     input: ApprovalDecisionInput
   ): Promise<ApprovalRecord> {
-    logCopilotDebug("approval:decide:start", {
-      approvalId,
-      decision: input.decision,
-      actorUserId: input.actor.userId,
-    });
     const approval = await this.deps.approvalStore.getById(
       approvalId,
       input.actor.tenantId
@@ -259,10 +241,6 @@ export class CopilotApprovalService {
         ...run,
         status: "running",
       });
-      logCopilotDebug("approval:decide:resume-scheduled", {
-        approvalId,
-        runId: approval.runId,
-      });
       void this.deps.runResumer
         .resume({
           tenantId: input.actor.tenantId,
@@ -270,12 +248,6 @@ export class CopilotApprovalService {
           approval: updatedApproval,
         })
         .catch(async (error) => {
-          logCopilotDebug("approval:decide:resume-error", {
-            approvalId,
-            runId: approval.runId,
-            message:
-              error instanceof Error ? error.message : "Copilot run failed",
-          });
           const currentRun = await this.deps.runStore.getById(
             approval.runId,
             input.actor.tenantId
@@ -327,10 +299,6 @@ export class CopilotApprovalService {
         setTimeout(resolve, 0);
       });
     } else {
-      logCopilotDebug("approval:decide:rejected", {
-        approvalId,
-        runId: approval.runId,
-      });
       await this.deps.runStore.update({
         ...run,
         status: "cancelled",
@@ -352,12 +320,6 @@ export class CopilotApprovalService {
         },
       });
     }
-
-    logCopilotDebug("approval:decide:done", {
-      approvalId,
-      runId: approval.runId,
-      status: updatedApproval.status,
-    });
 
     return updatedApproval;
   }

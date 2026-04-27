@@ -18,7 +18,6 @@ import { WorkflowExecutor } from "../workflows/executor.js";
 import { isContinueWorkflowActionPrompt } from "../workflows/executor.js";
 import { buildPendingWorkflowActionCompletion } from "../workflows/pending-action-result.js";
 import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
-import { logCopilotDebug } from "../utils/copilot-debug.js";
 function readContextString(context, ...keys) {
     if (!context) {
         return "";
@@ -732,13 +731,6 @@ export function createCopilotController(deps = {}) {
             };
         },
         async createMessageRun(request) {
-            logCopilotDebug("controller:createMessageRun:start", {
-                sessionId: request.params.sessionId,
-                tenantId: request.actor.tenantId,
-                userId: request.actor.userId,
-                messageLength: request.body.message ? request.body.message.length : 0,
-                hasContext: !!(request.body.context && Object.keys(request.body.context).length),
-            });
             if (request.body.context && Object.keys(request.body.context).length > 0) {
                 await sessionService.updateSessionContext(request.params.sessionId, {
                     tenantId: request.actor.tenantId,
@@ -773,11 +765,6 @@ export function createCopilotController(deps = {}) {
                 },
             };
             const failRunInBackground = async (error) => {
-                logCopilotDebug("controller:createMessageRun:background-error", {
-                    runId: run.runId,
-                    sessionId: request.params.sessionId,
-                    message: error instanceof Error ? error.message : "Copilot run failed",
-                });
                 const currentRun = await runStore.getById(run.runId, request.actor.tenantId);
                 if (!currentRun ||
                     currentRun.status === "completed" ||
@@ -814,10 +801,6 @@ export function createCopilotController(deps = {}) {
                 });
             };
             const executeRunInBackground = async () => {
-                logCopilotDebug("controller:createMessageRun:background-start", {
-                    runId: run.runId,
-                    sessionId: request.params.sessionId,
-                });
                 const session = await sessionService.getSession(request.params.sessionId, {
                     tenantId: request.actor.tenantId,
                     userId: request.actor.userId,
@@ -841,10 +824,6 @@ export function createCopilotController(deps = {}) {
                 if (session.pendingWorkflowAction &&
                     session.pendingWorkflowAction.requiresApproval &&
                     isContinueWorkflowActionPrompt(request.body.message)) {
-                    logCopilotDebug("controller:createMessageRun:queue-pending-approval", {
-                        runId: run.runId,
-                        toolName: session.pendingWorkflowAction.toolName,
-                    });
                     await queuePendingActionApproval({
                         actor: request.actor,
                         sessionId: request.params.sessionId,
@@ -1150,9 +1129,6 @@ export function createCopilotController(deps = {}) {
                     message: request.body.message,
                 });
                 if (handledByWorkflow) {
-                    logCopilotDebug("controller:createMessageRun:handled-by-workflow", {
-                        runId: run.runId,
-                    });
                     return;
                 }
                 const actionAdapter = deps.actionAdapterFactory
@@ -1167,9 +1143,6 @@ export function createCopilotController(deps = {}) {
                 });
                 const preferLegacyPlanner = enableLegacyActionSkills && deps.llmClient === null;
                 if (preferLegacyPlanner) {
-                    logCopilotDebug("controller:createMessageRun:use-legacy-planner", {
-                        runId: run.runId,
-                    });
                     await executeLegacyPlannedRun({
                         actor: request.actor,
                         sessionId: request.params.sessionId,
@@ -1186,14 +1159,7 @@ export function createCopilotController(deps = {}) {
                     message: request.body.message,
                     sessionContext: session.context,
                 });
-                logCopilotDebug("controller:createMessageRun:llm-finished", {
-                    runId: run.runId,
-                    handledByLlm,
-                });
                 if (!handledByLlm && enableLegacyActionSkills) {
-                    logCopilotDebug("controller:createMessageRun:llm-fallback-to-legacy", {
-                        runId: run.runId,
-                    });
                     await executeLegacyPlannedRun({
                         actor: request.actor,
                         sessionId: request.params.sessionId,
@@ -1204,9 +1170,6 @@ export function createCopilotController(deps = {}) {
                     return;
                 }
                 if (!handledByLlm) {
-                    logCopilotDebug("controller:createMessageRun:no-handler-fallback", {
-                        runId: run.runId,
-                    });
                     const fallbackEvents = await broker.replay(run.runId, request.actor.tenantId, { afterSequence: 0 });
                     let nextSequence = fallbackEvents.length + 1;
                     await eventPublisher.publish({
@@ -1239,21 +1202,11 @@ export function createCopilotController(deps = {}) {
             await new Promise((resolve) => {
                 setTimeout(resolve, 0);
             });
-            logCopilotDebug("controller:createMessageRun:return", {
-                runId: run.runId,
-                sessionId: run.sessionId,
-            });
             return response;
         },
         async streamRunEvents(request) {
             const events = await broker.replay(request.params.runId, request.actor.tenantId, {
                 afterSequence: Number(request.query?.after_sequence ?? 0),
-            });
-            logCopilotDebug("controller:streamRunEvents:replay", {
-                runId: request.params.runId,
-                sessionId: request.params.sessionId,
-                afterSequence: Number(request.query?.after_sequence ?? 0),
-                replayCount: events.length,
             });
             return {
                 contentType: "text/event-stream",
@@ -1261,11 +1214,6 @@ export function createCopilotController(deps = {}) {
             };
         },
         async decideApproval(request) {
-            logCopilotDebug("controller:decideApproval:start", {
-                approvalId: request.params.approvalId,
-                decision: request.body.decision,
-                actorUserId: request.actor.userId,
-            });
             const approval = await approvalService.decide(request.params.approvalId, {
                 actor: request.actor,
                 decision: request.body.decision,
@@ -1297,11 +1245,6 @@ export function createCopilotController(deps = {}) {
                 }
                 runResumer.unregister(request.actor.tenantId, approval.runId);
             }
-            logCopilotDebug("controller:decideApproval:return", {
-                approvalId: approval.approvalId,
-                status: approval.status,
-                runId: approval.runId,
-            });
             return {
                 data: {
                     approval_id: approval.approvalId,

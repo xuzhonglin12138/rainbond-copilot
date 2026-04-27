@@ -2,7 +2,6 @@ import { getApprovalRiskLabel, getApprovalScopeLabel, } from "../integrations/ra
 import { createServerId } from "../utils/id.js";
 import { createApprovalLedger, } from "../runtime/approval-ledger.js";
 import { createApprovalRecord, } from "../stores/approval-store.js";
-import { logCopilotDebug } from "../utils/copilot-debug.js";
 export class CopilotApprovalService {
     constructor(deps) {
         this.deps = deps;
@@ -20,13 +19,6 @@ export class CopilotApprovalService {
         }));
     }
     async createPendingApproval(input) {
-        logCopilotDebug("approval:create:start", {
-            runId: input.runId,
-            sessionId: input.sessionId,
-            skillId: input.skillId,
-            risk: input.risk,
-            scope: input.scope || "",
-        });
         const run = await this.deps.runStore.getById(input.runId, input.actor.tenantId);
         if (!run) {
             throw new Error("Run not found");
@@ -96,19 +88,9 @@ export class CopilotApprovalService {
                 status: "waiting_approval",
             },
         });
-        logCopilotDebug("approval:create:done", {
-            approvalId: approval.approvalId,
-            runId: approval.runId,
-            sessionId: approval.sessionId,
-        });
         return approval;
     }
     async decide(approvalId, input) {
-        logCopilotDebug("approval:decide:start", {
-            approvalId,
-            decision: input.decision,
-            actorUserId: input.actor.userId,
-        });
         const approval = await this.deps.approvalStore.getById(approvalId, input.actor.tenantId);
         if (!approval) {
             throw new Error("Approval not found");
@@ -164,10 +146,6 @@ export class CopilotApprovalService {
                 ...run,
                 status: "running",
             });
-            logCopilotDebug("approval:decide:resume-scheduled", {
-                approvalId,
-                runId: approval.runId,
-            });
             void this.deps.runResumer
                 .resume({
                 tenantId: input.actor.tenantId,
@@ -175,11 +153,6 @@ export class CopilotApprovalService {
                 approval: updatedApproval,
             })
                 .catch(async (error) => {
-                logCopilotDebug("approval:decide:resume-error", {
-                    approvalId,
-                    runId: approval.runId,
-                    message: error instanceof Error ? error.message : "Copilot run failed",
-                });
                 const currentRun = await this.deps.runStore.getById(approval.runId, input.actor.tenantId);
                 if (!currentRun ||
                     currentRun.status === "completed" ||
@@ -220,10 +193,6 @@ export class CopilotApprovalService {
             });
         }
         else {
-            logCopilotDebug("approval:decide:rejected", {
-                approvalId,
-                runId: approval.runId,
-            });
             await this.deps.runStore.update({
                 ...run,
                 status: "cancelled",
@@ -241,11 +210,6 @@ export class CopilotApprovalService {
                 },
             });
         }
-        logCopilotDebug("approval:decide:done", {
-            approvalId,
-            runId: approval.runId,
-            status: updatedApproval.status,
-        });
         return updatedApproval;
     }
     async nextSequence(runId, tenantId) {

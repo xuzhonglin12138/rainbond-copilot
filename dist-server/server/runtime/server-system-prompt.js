@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { buildEmbeddedWorkflowKnowledgeSection, buildMcpToolUsageKnowledgeSection, } from "./rainbond-capability-knowledge.js";
 const KNOWLEDGE_FILES = [
     join(process.cwd(), "src/knowledge/core-concepts.md"),
     join(process.cwd(), "src/knowledge/troubleshooting.md"),
@@ -18,6 +19,8 @@ export async function buildServerSystemPrompt() {
         cachedPromptPromise = (async () => {
             const knowledgeParts = await Promise.all(KNOWLEDGE_FILES.map(readTextOrEmpty));
             const knowledge = knowledgeParts.filter(Boolean).join("\n\n---\n\n");
+            const embeddedWorkflowKnowledge = buildEmbeddedWorkflowKnowledgeSection();
+            const mcpToolUsageKnowledge = buildMcpToolUsageKnowledgeSection();
             return `你是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。
 
 ## 你的角色和能力
@@ -46,6 +49,10 @@ export async function buildServerSystemPrompt() {
 - 一旦调用了工具，你的最终回复必须基于工具返回结果明确回答用户问题
 - 禁止在已有工具结果时输出空泛占位语句，例如“我已经完成当前分析，但没有生成额外回复”
 - 如果工具结果不足以完整回答，就明确说明目前已知信息、未知信息以及建议的下一步
+
+${embeddedWorkflowKnowledge}
+
+${mcpToolUsageKnowledge}
 
 ## Rainbond 知识
 

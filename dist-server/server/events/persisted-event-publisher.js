@@ -1,6 +1,5 @@
 import { publicCopilotEventSchema, } from "../../shared/contracts.js";
 import { createEventRecord } from "../stores/event-store.js";
-import { logCopilotDebug, summarizeCopilotEvent } from "../utils/copilot-debug.js";
 export class PersistedEventPublisher {
     constructor(broker) {
         this.broker = broker;
@@ -24,7 +23,6 @@ export class PersistedEventPublisher {
             payload: event,
             createdAt: event.timestamp,
         }));
-        logCopilotDebug("event:publish", summarizeCopilotEvent(event));
         return event;
     }
 }

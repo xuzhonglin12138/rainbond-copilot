@@ -40,9 +40,9 @@ import {
   type RunExecutionState,
 } from "./run-execution-state.js";
 import { createServerActionSkills } from "./server-action-skills.js";
+import { buildSessionContextPromptMessages } from "./session-context-prompt.js";
 import { buildServerSystemPrompt } from "./server-system-prompt.js";
 import { createServerId } from "../utils/id.js";
-import { logCopilotDebug } from "../utils/copilot-debug.js";
 
 export interface ServerChatClient {
   chat: (
@@ -144,18 +144,8 @@ export class ServerLlmExecutor {
   async execute(params: ExecuteServerLlmRunParams): Promise<boolean> {
     const llmClient = this.getClient();
     if (!llmClient) {
-      logCopilotDebug("llm:execute:no-client", {
-        runId: params.runId,
-        sessionId: params.sessionId,
-      });
       return false;
     }
-    logCopilotDebug("llm:execute:start", {
-      runId: params.runId,
-      sessionId: params.sessionId,
-      hasStreamChat: typeof llmClient.streamChat === "function",
-      messageLength: params.message.length,
-    });
 
     const mcpToolContext = await this.resolveMcpToolContext(params);
     const tools = this.buildTools(
@@ -176,21 +166,11 @@ export class ServerLlmExecutor {
       tools,
       chat: async (messages, toolDefinitions) => {
         if (typeof llmClient.streamChat !== "function") {
-          logCopilotDebug("llm:execute:chat-nonstream", {
-            runId: params.runId,
-            messageCount: messages.length,
-            toolCount: toolDefinitions ? toolDefinitions.length : 0,
-          });
           return llmClient.chat(messages, toolDefinitions);
         }
 
         let streamedMessageId = "";
         let streamedContent = "";
-        logCopilotDebug("llm:execute:chat-stream", {
-          runId: params.runId,
-          messageCount: messages.length,
-          toolCount: toolDefinitions ? toolDefinitions.length : 0,
-        });
         const response = await llmClient.streamChat(
           messages,
           toolDefinitions,
@@ -198,10 +178,6 @@ export class ServerLlmExecutor {
             if (!chunk) {
               return;
             }
-            logCopilotDebug("llm:execute:chunk", {
-              runId: params.runId,
-              chunkLength: chunk.length,
-            });
             streamedContent += chunk;
             if (!streamedMessageId) {
               streamedMessageId = createServerId("msg");
@@ -234,15 +210,6 @@ export class ServerLlmExecutor {
           }
         }
 
-        logCopilotDebug("llm:execute:chat-stream:done", {
-          runId: params.runId,
-          streamedMessageId,
-          contentLength:
-            typeof response.content === "string" ? response.content.length : 0,
-          toolCallCount: response.tool_calls ? response.tool_calls.length : 0,
-          finishReason: response.finish_reason || "",
-        });
-
         return response;
       },
       maxIterations: 8,
@@ -258,10 +225,6 @@ export class ServerLlmExecutor {
     });
 
     if (result.nextStep.type === "interruption") {
-      logCopilotDebug("llm:execute:interruption", {
-        runId: params.runId,
-        pendingApprovals: result.pendingApprovals.length,
-      });
       if (!this.deps.requestApproval) {
         throw new Error("requestApproval callback is required for protected tools");
       }
@@ -289,10 +252,6 @@ export class ServerLlmExecutor {
     }
 
     if (result.nextStep.type === "failed") {
-      logCopilotDebug("llm:execute:failed", {
-        runId: params.runId,
-        finalOutput: result.finalOutput || "",
-      });
       throw new Error(result.finalOutput || "Run loop failed");
     }
 
@@ -318,11 +277,6 @@ export class ServerLlmExecutor {
       lastStreamedAssistantMessageId || undefined
     );
     await this.publishRunStatus(params, "done");
-    logCopilotDebug("llm:execute:done", {
-      runId: params.runId,
-      lastStreamedAssistantMessageId: lastStreamedAssistantMessageId || "",
-      finalContentLength: content.length,
-    });
     return true;
   }
 
@@ -343,7 +297,7 @@ export class ServerLlmExecutor {
             role: "system",
             content: await buildServerSystemPrompt(),
           },
-          ...(this.buildSessionContextMessages(params.sessionContext) as ChatMessage[]),
+          ...(buildSessionContextPromptMessages(params.sessionContext) as ChatMessage[]),
           {
             role: "user",
             content: params.message,
@@ -700,54 +654,6 @@ export class ServerLlmExecutor {
     } catch {
       return null;
     }
-  }
-
-  private buildSessionContextMessages(
-    sessionContext?: Record<string, unknown>
-  ): ChatMessage[] {
-    if (!sessionContext || Object.keys(sessionContext).length === 0) {
-      return [];
-    }
-
-    const enterpriseId = this.readContextString(
-      sessionContext.enterpriseId,
-      sessionContext.enterprise_id
-    );
-    const teamName = this.readContextString(
-      sessionContext.teamName,
-      sessionContext.team_name
-    );
-    const regionName = this.readContextString(
-      sessionContext.regionName,
-      sessionContext.region_name
-    );
-    const appId = this.readContextString(sessionContext.appId, sessionContext.app_id);
-    const componentId = this.readContextString(
-      sessionContext.componentId,
-      sessionContext.component_id
-    );
-    const page = this.readContextString(sessionContext.pathname, sessionContext.page);
-
-    const lines = [
-      "## Current Session Context",
-      enterpriseId ? `- enterprise_id: ${enterpriseId}` : "",
-      teamName ? `- team_name: ${teamName}` : "",
-      regionName ? `- region_name: ${regionName}` : "",
-      appId ? `- app_id: ${appId}` : "",
-      componentId ? `- component_id: ${componentId}` : "",
-      page ? `- page: ${page}` : "",
-      "当 team_name、region_name、app_id、component_id 已经在当前上下文中存在时，优先直接使用这些上下文值。",
-      "除非用户明确要求查看团队列表、切换团队或跨团队比较，否则不要为了确认当前团队再次调用 rainbond_query_teams。",
-      "除非用户明确要求查看集群列表、切换集群或跨集群比较，否则不要为了确认当前集群再次调用 rainbond_query_regions。",
-      "如果上下文已经能唯一定位当前团队、集群、应用或组件，就直接进入对应查询，不要重复向用户索要这些参数。",
-    ].filter(Boolean);
-
-    return [
-      {
-        role: "system",
-        content: lines.join("\n"),
-      },
-    ];
   }
 
   private enrichQueryToolInput(

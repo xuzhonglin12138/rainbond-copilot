@@ -13,7 +13,6 @@ import { createInMemoryEventStore, } from "./stores/event-store.js";
 import { FileApprovalStore, FileEventStore, FileRunStore, FileSessionStore, } from "./stores/file-stores.js";
 import { createInMemoryRunStore, } from "./stores/run-store.js";
 import { createInMemorySessionStore, } from "./stores/session-store.js";
-import { logCopilotDebug, summarizeCopilotEvent } from "./utils/copilot-debug.js";
 function json(response, statusCode, payload) {
     response.writeHead(statusCode, {
         "Content-Type": "application/json; charset=utf-8",
@@ -190,12 +189,6 @@ export function createCopilotApiServer(options = {}) {
             }
             const eventsMatch = url.pathname.match(/^\/api\/v1\/copilot\/sessions\/([^/]+)\/runs\/([^/]+)\/events$/);
             if (request.method === "GET" && eventsMatch) {
-                logCopilotDebug("http:sse:open", {
-                    sessionId: eventsMatch[1],
-                    runId: eventsMatch[2],
-                    afterSequence: url.searchParams.get("after_sequence") || "0",
-                    tenantId: actor.tenantId,
-                });
                 response.writeHead(200, {
                     "Content-Type": "text/event-stream",
                     "Cache-Control": "no-cache, no-transform",
@@ -204,10 +197,6 @@ export function createCopilotApiServer(options = {}) {
                 });
                 response.flushHeaders?.();
                 response.write(": connected\n\n");
-                logCopilotDebug("http:sse:headers-flushed", {
-                    sessionId: eventsMatch[1],
-                    runId: eventsMatch[2],
-                });
                 const replay = await controller.streamRunEvents({
                     actor,
                     params: {
@@ -221,32 +210,17 @@ export function createCopilotApiServer(options = {}) {
                 for (const event of replay.events) {
                     response.write(formatSseEvent(event));
                 }
-                logCopilotDebug("http:sse:replay", {
-                    sessionId: eventsMatch[1],
-                    runId: eventsMatch[2],
-                    replayCount: replay.events.length,
-                    afterSequence: url.searchParams.get("after_sequence") || "0",
-                });
                 if (replay.events.some(isTerminalCopilotEvent)) {
-                    logCopilotDebug("http:sse:terminal-replay", {
-                        sessionId: eventsMatch[1],
-                        runId: eventsMatch[2],
-                    });
                     response.end();
                     return;
                 }
                 const unsubscribe = broker.subscribe(eventsMatch[2], actor.tenantId, (event) => {
-                    logCopilotDebug("http:sse:live-event", summarizeCopilotEvent(event.payload));
                     response.write(formatSseEvent(event.payload));
                 });
                 const heartbeat = setInterval(() => {
                     response.write(": heartbeat\n\n");
                 }, 15000);
                 request.on("close", () => {
-                    logCopilotDebug("http:sse:close", {
-                        sessionId: eventsMatch[1],
-                        runId: eventsMatch[2],
-                    });
                     clearInterval(heartbeat);
                     unsubscribe();
                     response.end();
