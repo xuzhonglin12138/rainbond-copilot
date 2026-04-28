@@ -1,11 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { buildEmbeddedWorkflowKnowledgeSection, buildMcpToolUsageKnowledgeSection, } from "./rainbond-capability-knowledge.js";
+import { getRegisteredSkill, getSkillNarrativeBody, isSkillRegistryInitialized, } from "../skills/skill-registry.js";
 const KNOWLEDGE_FILES = [
     join(process.cwd(), "src/knowledge/core-concepts.md"),
     join(process.cwd(), "src/knowledge/troubleshooting.md"),
 ];
-let cachedPromptPromise = null;
+let cachedBasePromptPromise = null;
 async function readTextOrEmpty(filePath) {
     try {
         return await readFile(filePath, "utf-8");
@@ -14,9 +15,41 @@ async function readTextOrEmpty(filePath) {
         return "";
     }
 }
-export async function buildServerSystemPrompt() {
-    if (!cachedPromptPromise) {
-        cachedPromptPromise = (async () => {
+function buildSkillNarrativeSection(skillId) {
+    if (!skillId) {
+        return "";
+    }
+    if (!isSkillRegistryInitialized()) {
+        return "";
+    }
+    const skill = getRegisteredSkill(skillId);
+    if (!skill) {
+        return "";
+    }
+    const narrative = getSkillNarrativeBody(skillId);
+    if (!narrative.trim()) {
+        return "";
+    }
+    return [
+        "",
+        "## 当前激活 Skill 指令",
+        "",
+        `下面是 \`${skill.id}\` 的官方说明，是当前会话的核心行为依据。所有回应都应当遵循这里描述的判断顺序、术语和输出契约。如果工具结果与下面的指令冲突，请按指令的判断逻辑解释或纠正。`,
+        "",
+        narrative,
+    ].join("\n");
+}
+export async function buildServerSystemPrompt(opts) {
+    const base = await buildBaseSystemPrompt();
+    const narrativeSection = buildSkillNarrativeSection(opts?.currentSkillId);
+    if (!narrativeSection) {
+        return base;
+    }
+    return `${base}\n${narrativeSection}`;
+}
+async function buildBaseSystemPrompt() {
+    if (!cachedBasePromptPromise) {
+        cachedBasePromptPromise = (async () => {
             const knowledgeParts = await Promise.all(KNOWLEDGE_FILES.map(readTextOrEmpty));
             const knowledge = knowledgeParts.filter(Boolean).join("\n\n---\n\n");
             const embeddedWorkflowKnowledge = buildEmbeddedWorkflowKnowledgeSection();
@@ -59,5 +92,5 @@ ${mcpToolUsageKnowledge}
 ${knowledge}`;
         })();
     }
-    return cachedPromptPromise;
+    return cachedBasePromptPromise;
 }

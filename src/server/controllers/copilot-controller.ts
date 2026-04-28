@@ -832,6 +832,8 @@ export function createCopilotController(deps: ControllerDeps = {}) {
             runId: params.runId,
             message: currentRun.messageText,
             sessionContext: currentSession.context,
+            currentSkillId:
+              currentSession.pendingWorkflowContinuation?.selectedWorkflow,
             continuation: {
               iteration: currentExecutionState.iteration,
               messages: currentExecutionState.messages,
@@ -1715,6 +1717,7 @@ export function createCopilotController(deps: ControllerDeps = {}) {
           runId: run.runId,
           message: llmMessage,
           sessionContext: session.context,
+          currentSkillId: session.pendingWorkflowContinuation?.selectedWorkflow,
         });
 
         if (!handledByLlm && enableLegacyActionSkills) {

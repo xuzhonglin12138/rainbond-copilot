@@ -82,6 +82,7 @@ export interface ExecuteServerLlmRunParams {
   message: string;
   sessionContext?: Record<string, unknown>;
   continuation?: PendingLlmContinuation;
+  currentSkillId?: string;
 }
 
 export type QueryToolClientFactory = (params: {
@@ -295,7 +296,9 @@ export class ServerLlmExecutor {
       : [
           {
             role: "system",
-            content: await buildServerSystemPrompt(),
+            content: await buildServerSystemPrompt({
+              currentSkillId: params.currentSkillId,
+            }),
           },
           ...(buildSessionContextPromptMessages(params.sessionContext) as ChatMessage[]),
           {

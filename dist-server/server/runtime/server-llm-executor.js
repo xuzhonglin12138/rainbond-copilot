@@ -140,7 +140,9 @@ export class ServerLlmExecutor {
             : [
                 {
                     role: "system",
-                    content: await buildServerSystemPrompt(),
+                    content: await buildServerSystemPrompt({
+                        currentSkillId: params.currentSkillId,
+                    }),
                 },
                 ...buildSessionContextPromptMessages(params.sessionContext),
                 {

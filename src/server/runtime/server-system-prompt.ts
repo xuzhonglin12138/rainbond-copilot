@@ -4,13 +4,18 @@ import {
   buildEmbeddedWorkflowKnowledgeSection,
   buildMcpToolUsageKnowledgeSection,
 } from "./rainbond-capability-knowledge.js";
+import {
+  getRegisteredSkill,
+  getSkillNarrativeBody,
+  isSkillRegistryInitialized,
+} from "../skills/skill-registry.js";
 
 const KNOWLEDGE_FILES = [
   join(process.cwd(), "src/knowledge/core-concepts.md"),
   join(process.cwd(), "src/knowledge/troubleshooting.md"),
 ];
 
-let cachedPromptPromise: Promise<string> | null = null;
+let cachedBasePromptPromise: Promise<string> | null = null;
 
 async function readTextOrEmpty(filePath: string): Promise<string> {
   try {
@@ -20,9 +25,46 @@ async function readTextOrEmpty(filePath: string): Promise<string> {
   }
 }
 
-export async function buildServerSystemPrompt(): Promise<string> {
-  if (!cachedPromptPromise) {
-    cachedPromptPromise = (async () => {
+function buildSkillNarrativeSection(skillId: string | undefined): string {
+  if (!skillId) {
+    return "";
+  }
+  if (!isSkillRegistryInitialized()) {
+    return "";
+  }
+  const skill = getRegisteredSkill(skillId);
+  if (!skill) {
+    return "";
+  }
+  const narrative = getSkillNarrativeBody(skillId);
+  if (!narrative.trim()) {
+    return "";
+  }
+
+  return [
+    "",
+    "## 当前激活 Skill 指令",
+    "",
+    `下面是 \`${skill.id}\` 的官方说明，是当前会话的核心行为依据。所有回应都应当遵循这里描述的判断顺序、术语和输出契约。如果工具结果与下面的指令冲突，请按指令的判断逻辑解释或纠正。`,
+    "",
+    narrative,
+  ].join("\n");
+}
+
+export async function buildServerSystemPrompt(opts?: {
+  currentSkillId?: string;
+}): Promise<string> {
+  const base = await buildBaseSystemPrompt();
+  const narrativeSection = buildSkillNarrativeSection(opts?.currentSkillId);
+  if (!narrativeSection) {
+    return base;
+  }
+  return `${base}\n${narrativeSection}`;
+}
+
+async function buildBaseSystemPrompt(): Promise<string> {
+  if (!cachedBasePromptPromise) {
+    cachedBasePromptPromise = (async () => {
       const knowledgeParts = await Promise.all(
         KNOWLEDGE_FILES.map(readTextOrEmpty)
       );
@@ -69,5 +111,5 @@ ${knowledge}`;
     })();
   }
 
-  return cachedPromptPromise;
+  return cachedBasePromptPromise;
 }
