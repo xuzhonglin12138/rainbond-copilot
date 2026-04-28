@@ -709,6 +709,8 @@ export class WorkflowExecutor {
                 client,
                 sequenceStart: 4,
                 input: result.skillInput,
+                userMessage: message,
+                summarizer: this.deps.workflowSummarizer,
                 publishToolTrace: async (trace) => {
                     await this.publishToolTrace(actor.tenantId, sessionId, runId, trace.sequence, {
                         tool_name: trace.tool_name,

@@ -14,7 +14,12 @@ import { SessionScopedRainbondActionAdapter } from "./runtime/session-scoped-act
 import {
   createSkillRouter,
   type SkillRouter,
+  type SkillRouterClient,
 } from "./skills/skill-router.js";
+import {
+  createSkillSummarizer,
+  type WorkflowSummarizer,
+} from "./skills/skill-summarizer.js";
 import { OpenAIClient } from "../llm/openai-client.js";
 import { CustomAnthropicClient } from "../llm/custom-anthropic-client.js";
 import { getLLMConfig } from "../llm/config.js";
@@ -54,14 +59,20 @@ export interface CreateCopilotApiServerOptions {
   config?: Partial<ServerConfig>;
   authSubjectResolver?: AuthSubjectResolverLike;
   skillRouter?: SkillRouter;
+  workflowSummarizer?: WorkflowSummarizer;
 }
 
-function buildOptionalSkillRouter(
+interface OptionalLlmIntegration {
+  router?: SkillRouter;
+  summarizer?: WorkflowSummarizer;
+}
+
+function buildOptionalLlmIntegration(
   env: Record<string, string | undefined>
-): SkillRouter | undefined {
+): OptionalLlmIntegration {
   const flag = (env.RAINBOND_SKILL_ROUTER || "").trim().toLowerCase();
   if (flag !== "llm") {
-    return undefined;
+    return {};
   }
 
   let llmConfig;
@@ -70,10 +81,10 @@ function buildOptionalSkillRouter(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.warn(`[skill-router] disabled: cannot load LLM config (${message})`);
-    return undefined;
+    return {};
   }
 
-  const llmClient =
+  const llmClient: SkillRouterClient =
     llmConfig.provider === "anthropic"
       ? new CustomAnthropicClient(llmConfig)
       : new OpenAIClient(llmConfig);
@@ -81,8 +92,14 @@ function buildOptionalSkillRouter(
   console.log(
     `[skill-router] enabled with provider=${llmConfig.provider} model=${llmConfig.model}`
   );
+  console.log(
+    `[skill-summarizer] enabled (shares LLM client with skill-router)`
+  );
 
-  return createSkillRouter({ llmClient });
+  return {
+    router: createSkillRouter({ llmClient }),
+    summarizer: createSkillSummarizer({ llmClient }),
+  };
 }
 
 function json(
@@ -168,8 +185,12 @@ export function createCopilotApiServer(
   };
   const stores = createStores(config);
   const broker = createSseBroker(stores.eventStore);
-  const skillRouter =
-    options.skillRouter || buildOptionalSkillRouter(options.env || process.env);
+  const llmIntegration = buildOptionalLlmIntegration(
+    options.env || process.env
+  );
+  const skillRouter = options.skillRouter || llmIntegration.router;
+  const workflowSummarizer =
+    options.workflowSummarizer || llmIntegration.summarizer;
   const authSubjectResolver =
     options.authSubjectResolver ||
     new AuthSubjectResolver(
@@ -220,6 +241,7 @@ export function createCopilotApiServer(
     runResumer: createInMemoryRunResumer(),
     enableRainbondAppAssistantWorkflow: true,
     skillRouter,
+    workflowSummarizer,
     actionAdapterFactory: async ({ actor, sessionId }) => {
       const { client, session } = await createInitializedMcpClient({
         actor,

@@ -139,8 +139,37 @@ export async function executeCompiledWorkflow(params) {
             sequence += 2;
         }
     }
-    const summary = buildCompiledSummary(skill.id, toolOutputs, params.candidateScope);
+    let summary = buildCompiledSummary(skill.id, toolOutputs, params.candidateScope);
     const subflowData = buildCompiledSubflowData(skill.id, toolOutputs, params.candidateScope);
+    const hasSummarizeStage = skill.workflow.stages.some((stage) => stage.kind === "summarize");
+    if (params.summarizer && hasSummarizeStage) {
+        try {
+            const llmSummary = await params.summarizer.summarize({
+                skillId: skill.id,
+                skillName: skill.name,
+                skillNarrative: skill.narrativeBody,
+                userMessage: params.userMessage,
+                skillInput: input,
+                toolOutputs: Array.from(toolOutputs.entries()).map(([name, output]) => ({
+                    name,
+                    output,
+                })),
+            });
+            if (llmSummary) {
+                logWorkflowDebug("compiled.execute.summarize.llm", {
+                    skillId: params.skillId,
+                    chars: llmSummary.length,
+                });
+                summary = llmSummary;
+            }
+        }
+        catch (error) {
+            logWorkflowDebug("compiled.execute.summarize.error", {
+                skillId: params.skillId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+        }
+    }
     logWorkflowDebug("compiled.execute.complete", {
         skillId: params.skillId,
         summary,

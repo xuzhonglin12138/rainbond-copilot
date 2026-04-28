@@ -9,6 +9,7 @@ import { RainbondMcpClient } from "./integrations/rainbond-mcp/client.js";
 import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
 import { SessionScopedRainbondActionAdapter } from "./runtime/session-scoped-action-adapter.js";
 import { createSkillRouter, } from "./skills/skill-router.js";
+import { createSkillSummarizer, } from "./skills/skill-summarizer.js";
 import { OpenAIClient } from "../llm/openai-client.js";
 import { CustomAnthropicClient } from "../llm/custom-anthropic-client.js";
 import { getLLMConfig } from "../llm/config.js";
@@ -17,10 +18,10 @@ import { createInMemoryEventStore, } from "./stores/event-store.js";
 import { FileApprovalStore, FileEventStore, FileRunStore, FileSessionStore, } from "./stores/file-stores.js";
 import { createInMemoryRunStore, } from "./stores/run-store.js";
 import { createInMemorySessionStore, } from "./stores/session-store.js";
-function buildOptionalSkillRouter(env) {
+function buildOptionalLlmIntegration(env) {
     const flag = (env.RAINBOND_SKILL_ROUTER || "").trim().toLowerCase();
     if (flag !== "llm") {
-        return undefined;
+        return {};
     }
     let llmConfig;
     try {
@@ -29,13 +30,17 @@ function buildOptionalSkillRouter(env) {
     catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         console.warn(`[skill-router] disabled: cannot load LLM config (${message})`);
-        return undefined;
+        return {};
     }
     const llmClient = llmConfig.provider === "anthropic"
         ? new CustomAnthropicClient(llmConfig)
         : new OpenAIClient(llmConfig);
     console.log(`[skill-router] enabled with provider=${llmConfig.provider} model=${llmConfig.model}`);
-    return createSkillRouter({ llmClient });
+    console.log(`[skill-summarizer] enabled (shares LLM client with skill-router)`);
+    return {
+        router: createSkillRouter({ llmClient }),
+        summarizer: createSkillSummarizer({ llmClient }),
+    };
 }
 function json(response, statusCode, payload) {
     response.writeHead(statusCode, {
@@ -100,7 +105,9 @@ export function createCopilotApiServer(options = {}) {
     };
     const stores = createStores(config);
     const broker = createSseBroker(stores.eventStore);
-    const skillRouter = options.skillRouter || buildOptionalSkillRouter(options.env || process.env);
+    const llmIntegration = buildOptionalLlmIntegration(options.env || process.env);
+    const skillRouter = options.skillRouter || llmIntegration.router;
+    const workflowSummarizer = options.workflowSummarizer || llmIntegration.summarizer;
     const authSubjectResolver = options.authSubjectResolver ||
         new AuthSubjectResolver(new RainbondMcpClient({
             baseUrl: config.consoleBaseUrl,
@@ -135,6 +142,7 @@ export function createCopilotApiServer(options = {}) {
         runResumer: createInMemoryRunResumer(),
         enableRainbondAppAssistantWorkflow: true,
         skillRouter,
+        workflowSummarizer,
         actionAdapterFactory: async ({ actor, sessionId }) => {
             const { client, session } = await createInitializedMcpClient({
                 actor,

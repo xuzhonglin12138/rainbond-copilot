@@ -220,6 +220,7 @@ export function createCopilotController(deps = {}) {
         workflowToolClientFactory: deps.workflowToolClientFactory,
         enableRainbondAppAssistantWorkflow: deps.enableRainbondAppAssistantWorkflow,
         skillRouter: deps.skillRouter,
+        workflowSummarizer: deps.workflowSummarizer,
     });
     const approvalService = new CopilotApprovalService({
         approvalStore,

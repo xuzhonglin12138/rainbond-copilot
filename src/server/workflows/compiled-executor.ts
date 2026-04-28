@@ -4,6 +4,7 @@ import type { McpToolResult } from "../integrations/rainbond-mcp/types.js";
 import type { ExecutionScopeCandidate } from "./types.js";
 import { logWorkflowDebug } from "./workflow-debug.js";
 import { selectBranch, type BranchEvalContext } from "./branch-selector.js";
+import type { WorkflowSummarizer } from "../skills/skill-summarizer.js";
 
 type SupportedStageKind =
   | "resolve_context"
@@ -32,6 +33,8 @@ export interface ExecuteCompiledWorkflowParams {
   client: WorkflowToolClient;
   sequenceStart?: number;
   input?: Record<string, unknown>;
+  userMessage?: string;
+  summarizer?: WorkflowSummarizer;
   publishToolTrace: (params: {
     sequence: number;
     tool_name: string;
@@ -217,12 +220,43 @@ export async function executeCompiledWorkflow(
     }
   }
 
-  const summary = buildCompiledSummary(skill.id, toolOutputs, params.candidateScope);
+  let summary = buildCompiledSummary(skill.id, toolOutputs, params.candidateScope);
   const subflowData = buildCompiledSubflowData(
     skill.id,
     toolOutputs,
     params.candidateScope
   );
+
+  const hasSummarizeStage = skill.workflow.stages.some(
+    (stage) => stage.kind === "summarize"
+  );
+  if (params.summarizer && hasSummarizeStage) {
+    try {
+      const llmSummary = await params.summarizer.summarize({
+        skillId: skill.id,
+        skillName: skill.name,
+        skillNarrative: skill.narrativeBody,
+        userMessage: params.userMessage,
+        skillInput: input,
+        toolOutputs: Array.from(toolOutputs.entries()).map(([name, output]) => ({
+          name,
+          output,
+        })),
+      });
+      if (llmSummary) {
+        logWorkflowDebug("compiled.execute.summarize.llm", {
+          skillId: params.skillId,
+          chars: llmSummary.length,
+        });
+        summary = llmSummary;
+      }
+    } catch (error) {
+      logWorkflowDebug("compiled.execute.summarize.error", {
+        skillId: params.skillId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
 
   logWorkflowDebug("compiled.execute.complete", {
     skillId: params.skillId,
