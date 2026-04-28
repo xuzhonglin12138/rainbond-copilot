@@ -416,6 +416,19 @@ export default function App() {
       return sessionId;
     }
 
+    // Diagnostic so it is obvious from the browser console whether vite picked
+    // up VITE_COPILOT_* env vars and whether the backend got a populated
+    // context. If sessionContext logs as {}, vite did not inject the .env
+    // values — most often because the dev server was not restarted after
+    // editing .env.
+    const sessionDiag = {
+      sessionContext,
+      visibleViteCopilotEnv: Object.fromEntries(
+        Object.entries(env).filter(([key]) => key.startsWith("VITE_COPILOT_"))
+      ),
+    };
+    console.log("[copilot-bootstrap] creating session with", sessionDiag);
+
     const session = await client.createSession({
       context: sessionContext,
     });

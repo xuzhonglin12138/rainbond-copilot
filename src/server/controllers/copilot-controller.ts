@@ -1070,6 +1070,16 @@ export function createCopilotController(deps: ControllerDeps = {}) {
 
   return {
     async createSession(request: CreateSessionRequest) {
+      logWorkflowDebug("session.create.received", {
+        actorTenantId: request.actor.tenantId,
+        actorTenantName: request.actor.tenantName,
+        actorEnterpriseId: request.actor.enterpriseId,
+        bodyContextKeys: request.body?.context
+          ? Object.keys(request.body.context)
+          : [],
+        bodyContext: request.body?.context || {},
+      });
+
       const session = await sessionService.createSession({
         actor: request.actor,
         context: request.body?.context,
