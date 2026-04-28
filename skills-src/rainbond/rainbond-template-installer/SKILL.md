@@ -32,106 +32,6 @@ Use `docs/product-object-model.md` as the repository-level source of truth for:
 
 This skill should describe how template-install intent is executed through MCP. It should not redefine the canonical object boundaries independently.
 
-```yaml workflow
-id: rainbond-template-installer
-entry:
-  intents:
-    - 模板安装
-    - 云市场安装
-    - 本地模板安装
-    - install template
-input_schema:
-  required:
-    - source
-    - app_model_id
-    - app_model_version
-  properties:
-    source:
-      type: string
-      enum:
-        - local
-        - cloud
-    market_name:
-      type: string
-    app_model_id:
-      type: string
-    app_model_version:
-      type: string
-    template_query:
-      type: string
-    is_deploy:
-      type: boolean
-required_context:
-  - team_name
-  - region_name
-  - app_id
-stages:
-  - id: resolve-scope
-    kind: resolve_context
-  - id: discover-template
-    kind: branch
-    branches:
-      - id: discover-local-templates
-        tool: rainbond_query_local_app_models
-        args:
-          enterprise_id: $actor.enterprise_id
-          page: 1
-          page_size: 20
-          query: $input.template_query
-      - id: discover-cloud-markets
-        tool: rainbond_query_cloud_markets
-        args:
-          enterprise_id: $actor.enterprise_id
-          extend: true
-      - id: discover-cloud-templates
-        tool: rainbond_query_cloud_app_models
-        args:
-          enterprise_id: $actor.enterprise_id
-          market_name: $input.market_name
-          page: 1
-          page_size: 20
-          query: $input.template_query
-  - id: resolve-version
-    kind: tool_call
-    tool: rainbond_query_app_model_versions
-    args:
-      enterprise_id: $actor.enterprise_id
-      app_model_id: $input.app_model_id
-      source: $input.source
-      market_name: $input.market_name
-      page: 1
-      page_size: 20
-  - id: install
-    kind: tool_call
-    tool: rainbond_install_app_model
-    args:
-      team_name: $context.team_name
-      region_name: $context.region_name
-      app_id: $context.app_id
-      source: $input.source
-      market_name: $input.market_name
-      app_model_id: $input.app_model_id
-      app_model_version: $input.app_model_version
-      is_deploy: $input.is_deploy
-  - id: report
-    kind: summarize
-```
-
-```yaml tool_policy
-preferred_tools:
-  - rainbond_query_cloud_markets
-  - rainbond_query_local_app_models
-  - rainbond_query_cloud_app_models
-  - rainbond_query_app_model_versions
-  - rainbond_install_app_model
-approval:
-  mutable_tools_require_scope_verification: true
-```
-
-```yaml output_contract
-top_level_object: TemplateInstallResult
-```
-
 ## When to Use
 
 Use when:
@@ -448,3 +348,103 @@ Local flow:
 
 Current install MCP:
 - `rainbond_install_app_model`
+
+```yaml workflow
+id: rainbond-template-installer
+entry:
+  intents:
+    - 模板安装
+    - 云市场安装
+    - 本地模板安装
+    - install template
+input_schema:
+  required:
+    - source
+    - app_model_id
+    - app_model_version
+  properties:
+    source:
+      type: string
+      enum:
+        - local
+        - cloud
+    market_name:
+      type: string
+    app_model_id:
+      type: string
+    app_model_version:
+      type: string
+    template_query:
+      type: string
+    is_deploy:
+      type: boolean
+required_context:
+  - team_name
+  - region_name
+  - app_id
+stages:
+  - id: resolve-scope
+    kind: resolve_context
+  - id: discover-template
+    kind: branch
+    branches:
+      - id: discover-local-templates
+        tool: rainbond_query_local_app_models
+        args:
+          enterprise_id: $actor.enterprise_id
+          page: 1
+          page_size: 20
+          query: $input.template_query
+      - id: discover-cloud-markets
+        tool: rainbond_query_cloud_markets
+        args:
+          enterprise_id: $actor.enterprise_id
+          extend: true
+      - id: discover-cloud-templates
+        tool: rainbond_query_cloud_app_models
+        args:
+          enterprise_id: $actor.enterprise_id
+          market_name: $input.market_name
+          page: 1
+          page_size: 20
+          query: $input.template_query
+  - id: resolve-version
+    kind: tool_call
+    tool: rainbond_query_app_model_versions
+    args:
+      enterprise_id: $actor.enterprise_id
+      app_model_id: $input.app_model_id
+      source: $input.source
+      market_name: $input.market_name
+      page: 1
+      page_size: 20
+  - id: install
+    kind: tool_call
+    tool: rainbond_install_app_model
+    args:
+      team_name: $context.team_name
+      region_name: $context.region_name
+      app_id: $context.app_id
+      source: $input.source
+      market_name: $input.market_name
+      app_model_id: $input.app_model_id
+      app_model_version: $input.app_model_version
+      is_deploy: $input.is_deploy
+  - id: report
+    kind: summarize
+```
+
+```yaml tool_policy
+preferred_tools:
+  - rainbond_query_cloud_markets
+  - rainbond_query_local_app_models
+  - rainbond_query_cloud_app_models
+  - rainbond_query_app_model_versions
+  - rainbond_install_app_model
+approval:
+  mutable_tools_require_scope_verification: true
+```
+
+```yaml output_contract
+top_level_object: TemplateInstallResult
+```

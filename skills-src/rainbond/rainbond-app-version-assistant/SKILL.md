@@ -30,125 +30,6 @@ Use `docs/product-object-model.md` as the repository-level source of truth for:
 
 This skill should model version-center operations themselves. It should not redefine the broader product lifecycle independently.
 
-```yaml workflow
-id: rainbond-app-version-assistant
-entry:
-  intents:
-    - 快照
-    - 发布
-    - 回滚
-    - version center
-input_schema:
-  properties:
-    version:
-      type: string
-    version_alias:
-      type: string
-    app_version_info:
-      type: string
-    snapshot_mode:
-      type: boolean
-    snapshot_version:
-      type: string
-    version_id:
-      type: integer
-    scope:
-      type: string
-      enum:
-        - local
-        - goodrain
-    market_name:
-      type: string
-    preferred_app_id:
-      type: string
-    preferred_version:
-      type: string
-required_context:
-  - team_name
-  - region_name
-  - app_id
-stages:
-  - id: resolve-scope
-    kind: resolve_context
-  - id: inspect-version-center
-    kind: tool_call
-    tool: rainbond_get_app_version_overview
-    args:
-      team_name: $context.team_name
-      region_name: $context.region_name
-      app_id: $context.app_id
-  - id: list-snapshots
-    kind: tool_call
-    tool: rainbond_list_app_version_snapshots
-    args:
-      team_name: $context.team_name
-      region_name: $context.region_name
-      app_id: $context.app_id
-  - id: execute-version-action
-    kind: branch
-    branches:
-      - id: inspect-snapshot-detail
-        tool: rainbond_get_app_version_snapshot_detail
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          version_id: $input.version_id
-      - id: create-snapshot
-        tool: rainbond_create_app_version_snapshot
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          version: $input.version
-          version_alias: $input.version_alias
-          app_version_info: $input.app_version_info
-      - id: create-snapshot-draft
-        tool: rainbond_create_app_share_record
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          snapshot_mode: $input.snapshot_mode
-          snapshot_version: $input.snapshot_version
-      - id: inspect-publish-candidates
-        tool: rainbond_get_app_publish_candidates
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          scope: $input.scope
-          market_name: $input.market_name
-          preferred_app_id: $input.preferred_app_id
-          preferred_version: $input.preferred_version
-      - id: rollback-to-snapshot
-        tool: rainbond_rollback_app_version_snapshot
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          version_id: $input.version_id
-  - id: report
-    kind: summarize
-```
-
-```yaml tool_policy
-preferred_tools:
-  - rainbond_get_app_version_overview
-  - rainbond_list_app_version_snapshots
-  - rainbond_get_app_version_snapshot_detail
-  - rainbond_create_app_version_snapshot
-  - rainbond_create_app_share_record
-  - rainbond_get_app_publish_candidates
-  - rainbond_rollback_app_version_snapshot
-approval:
-  mutable_tools_require_scope_verification: true
-```
-
-```yaml output_contract
-top_level_object: AppVersionAssistantResult
-```
-
 ## When to Use
 
 Use when:
@@ -549,3 +430,122 @@ Always respond using exactly these sections:
 - routing snapshot reuse through publish when direct hidden-template install is enough
 - calling `complete publish` before events finish
 - mixing snapshot rollback with market-app upgrade rollback
+
+```yaml workflow
+id: rainbond-app-version-assistant
+entry:
+  intents:
+    - 快照
+    - 发布
+    - 回滚
+    - version center
+input_schema:
+  properties:
+    version:
+      type: string
+    version_alias:
+      type: string
+    app_version_info:
+      type: string
+    snapshot_mode:
+      type: boolean
+    snapshot_version:
+      type: string
+    version_id:
+      type: integer
+    scope:
+      type: string
+      enum:
+        - local
+        - goodrain
+    market_name:
+      type: string
+    preferred_app_id:
+      type: string
+    preferred_version:
+      type: string
+required_context:
+  - team_name
+  - region_name
+  - app_id
+stages:
+  - id: resolve-scope
+    kind: resolve_context
+  - id: inspect-version-center
+    kind: tool_call
+    tool: rainbond_get_app_version_overview
+    args:
+      team_name: $context.team_name
+      region_name: $context.region_name
+      app_id: $context.app_id
+  - id: list-snapshots
+    kind: tool_call
+    tool: rainbond_list_app_version_snapshots
+    args:
+      team_name: $context.team_name
+      region_name: $context.region_name
+      app_id: $context.app_id
+  - id: execute-version-action
+    kind: branch
+    branches:
+      - id: inspect-snapshot-detail
+        tool: rainbond_get_app_version_snapshot_detail
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          version_id: $input.version_id
+      - id: create-snapshot
+        tool: rainbond_create_app_version_snapshot
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          version: $input.version
+          version_alias: $input.version_alias
+          app_version_info: $input.app_version_info
+      - id: create-snapshot-draft
+        tool: rainbond_create_app_share_record
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          snapshot_mode: $input.snapshot_mode
+          snapshot_version: $input.snapshot_version
+      - id: inspect-publish-candidates
+        tool: rainbond_get_app_publish_candidates
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          scope: $input.scope
+          market_name: $input.market_name
+          preferred_app_id: $input.preferred_app_id
+          preferred_version: $input.preferred_version
+      - id: rollback-to-snapshot
+        tool: rainbond_rollback_app_version_snapshot
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          version_id: $input.version_id
+  - id: report
+    kind: summarize
+```
+
+```yaml tool_policy
+preferred_tools:
+  - rainbond_get_app_version_overview
+  - rainbond_list_app_version_snapshots
+  - rainbond_get_app_version_snapshot_detail
+  - rainbond_create_app_version_snapshot
+  - rainbond_create_app_share_record
+  - rainbond_get_app_publish_candidates
+  - rainbond_rollback_app_version_snapshot
+approval:
+  mutable_tools_require_scope_verification: true
+```
+
+```yaml output_contract
+top_level_object: AppVersionAssistantResult
+```

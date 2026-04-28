@@ -38,277 +38,6 @@ For this contract convergence pass, the live troubleshooter output contract is f
 
 The schema and validator keep the existing `TroubleshootResult` top-level fields, and place blocker evidence-chain and stop-boundary details inside `verification_summary`.
 
-```yaml workflow
-id: rainbond-fullstack-troubleshooter
-entry:
-  intents:
-    - 排障
-    - 排查
-    - 修复
-    - 恢复服务
-    - 构建失败
-    - 启动异常
-    - troubleshoot
-    - debug
-input_schema:
-  properties:
-    service_id:
-      type: string
-    inspection_mode:
-      type: string
-      enum:
-        - summary
-        - events
-        - pods
-        - pod_detail
-        - logs
-        - build_logs
-        - envs
-        - connection_envs
-        - dependency
-        - probe
-    pod_name:
-      type: string
-    event_id:
-      type: string
-    action:
-      type: string
-      enum:
-        - service
-        - container
-    lines:
-      type: integer
-    container_name:
-      type: string
-    follow:
-      type: boolean
-    envs:
-      type: array
-    build_env_dict:
-      type: object
-    dep_service_id:
-      type: string
-    open_inner:
-      type: boolean
-    container_port:
-      type: integer
-    attr_name:
-      type: string
-    attr_value:
-      type: string
-    probe_id:
-      type: string
-    mode:
-      type: string
-      enum:
-        - readiness
-        - liveness
-        - ignore
-    port:
-      type: integer
-    path:
-      type: string
-    cmd:
-      type: string
-required_context:
-  - team_name
-  - region_name
-  - app_id
-stages:
-  - id: resolve-scope
-    kind: resolve_context
-  - id: inspect-app
-    kind: tool_call
-    tool: rainbond_get_app_detail
-    args:
-      team_name: $context.team_name
-      region_name: $context.region_name
-      app_id: $context.app_id
-  - id: inspect-components
-    kind: tool_call
-    tool: rainbond_query_components
-    args:
-      enterprise_id: $actor.enterprise_id
-      app_id: $context.app_id
-      page: 1
-      page_size: 20
-  - id: inspect-runtime
-    kind: branch
-    branches:
-      - id: inspect-component-summary
-        tool: rainbond_get_component_summary
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-      - id: inspect-component-pods
-        when: $input.inspection_mode == "pods"
-        tool: rainbond_get_component_pods
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-      - id: inspect-pod-detail
-        when: $input.inspection_mode == "pod_detail"
-        tool: rainbond_get_pod_detail
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          pod_name: $input.pod_name
-      - id: inspect-component-events
-        when: $input.inspection_mode == "events"
-        tool: rainbond_get_component_events
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          page: 1
-          page_size: 20
-      - id: inspect-component-logs
-        when: $input.inspection_mode == "logs"
-        tool: rainbond_get_component_logs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          action: $input.action
-          lines: $input.lines
-          pod_name: $input.pod_name
-          container_name: $input.container_name
-          follow: $input.follow
-      - id: inspect-component-build-logs
-        when: $input.inspection_mode == "build_logs"
-        tool: rainbond_get_component_build_logs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          event_id: $input.event_id
-      - id: inspect-runtime-envs
-        when: $input.inspection_mode == "envs"
-        tool: rainbond_manage_component_envs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: summary
-      - id: inspect-connection-envs
-        when: $input.inspection_mode == "connection_envs"
-        tool: rainbond_manage_component_connection_envs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: summary
-      - id: inspect-dependencies
-        when: $input.inspection_mode == "dependency"
-        tool: rainbond_manage_component_dependency
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: summary
-      - id: inspect-probes
-        when: $input.inspection_mode == "probe"
-        tool: rainbond_manage_component_probe
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: summary
-  - id: classify-and-repair
-    kind: branch
-    branches:
-      - id: replace-build-envs
-        tool: rainbond_manage_component_envs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: replace_build_envs
-          build_env_dict: $input.build_env_dict
-      - id: upsert-runtime-envs
-        tool: rainbond_manage_component_envs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: upsert
-          envs: $input.envs
-      - id: create-connection-env
-        tool: rainbond_manage_component_connection_envs
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: create
-          attr_name: $input.attr_name
-          attr_value: $input.attr_value
-      - id: add-dependency
-        tool: rainbond_manage_component_dependency
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: add
-          dep_service_id: $input.dep_service_id
-          open_inner: $input.open_inner
-          container_port: $input.container_port
-      - id: update-probe
-        tool: rainbond_manage_component_probe
-        args:
-          team_name: $context.team_name
-          region_name: $context.region_name
-          app_id: $context.app_id
-          service_id: $input.service_id
-          operation: update
-          probe_id: $input.probe_id
-          mode: $input.mode
-          port: $input.port
-          path: $input.path
-          cmd: $input.cmd
-  - id: report
-    kind: summarize
-```
-
-```yaml tool_policy
-preferred_tools:
-  - rainbond_get_app_detail
-  - rainbond_query_components
-  - rainbond_get_component_summary
-  - rainbond_get_component_pods
-  - rainbond_get_pod_detail
-  - rainbond_get_component_events
-  - rainbond_get_component_logs
-  - rainbond_get_component_build_logs
-  - rainbond_manage_component_envs
-  - rainbond_manage_component_connection_envs
-  - rainbond_manage_component_dependency
-  - rainbond_manage_component_probe
-approval:
-  mutable_tools_require_scope_verification: true
-```
-
-```yaml output_contract
-schema_ref: ./schemas/troubleshoot-result.schema.yaml
-top_level_object: TroubleshootResult
-```
-
 ## Shared Runtime Vocabulary
 
 When describing observed runtime state, use the canonical terms from the product object model:
@@ -431,6 +160,45 @@ Tool semantics:
 - `rainbond_get_pod_detail` returns the Pod diagnostic object directly, not a `data.bean` wrapper
 - `rainbond_get_pod_detail` already handles `kubeblocks_component` internally; do not add a separate skill-side branch for that case
 - do not invent a separate Pod-log tool; container logs still come from `rainbond_get_component_logs(action=container, ...)`
+
+## Operation Anchoring (HARD RULE)
+
+When this skill triggers an action (build, deploy, upgrade, start, stop, check), the action returns an `event_id`. That `event_id` is the only safe anchor for "did **my** action finish, and how." Treat the `event_id` as required state for the rest of the run.
+
+Capture-on-trigger:
+- `rainbond_build_component` → store as `build_event_id`
+- `rainbond_operate_app` (deploy / upgrade / start / stop) → store as `operation_event_id`
+- `rainbond_check_component` → store as `check_event_id` and pair with the returned `check_uuid`
+- if a triggering call's response does not contain a recognizable event id field, record `trigger_at` (timestamp) instead and downgrade to the pod-based observation path below
+
+Polling signal priority (use in order, do not skip):
+- **P1 — anchored build log** (default for build / deploy / upgrade)
+  - call `rainbond_get_component_build_logs(event_id=<my_event_id>)` and look for terminal markers (`BUILD SUCCESS`, `BUILD FAILED`, exit-code lines, fatal error keywords)
+  - this stream is keyed by `event_id` at the platform level; concurrent operations on the same component cannot pollute it
+- **P2 — pod truth** (default for start / stop / runtime convergence, also fallback for P1)
+  - `rainbond_get_component_pods` then `rainbond_get_pod_detail`
+  - judge by `pod_status`, `containers[*].state`, `restart_count`, and pod-level events
+  - pods reflect Kubernetes reality and are not contaminated by user-level operation events
+- **P3 — filtered event stream** (only when P1/P2 are insufficient)
+  - `rainbond_get_component_events` and **client-side filter** by:
+    - event id ≥ `my_event_id`, AND
+    - event type matches the operation class (build / deploy / upgrade / start / stop)
+  - never use "the latest event in the page" as the signal; the page is shared across all operation types
+
+Forbidden polling patterns:
+- repeatedly calling `rainbond_get_component_summary` inside a polling loop to read `recent_events` or `status` as the primary signal
+- judging "my action finished" from `summary.status` string changes — `status` is an aggregate field that other concurrent operations also mutate
+- treating "the most recent event" or "the first event in the events page" as the signal for the action this run triggered, when no `event_id` was captured at trigger time
+- assuming an event without `event_id` correlation belongs to the action this run just triggered, just because it is recent
+
+Allowed `summary` usage:
+- one baseline snapshot when entering troubleshooting (topology, envs, ports, resources, autoscaler)
+- one confirmation read after a configuration mutation (envs, dependencies, ports) to verify the change applied
+- never as a polling-loop signal source
+
+Concurrency note:
+- if the user is interacting with the same component through the UI or another client during this run, P2 (pods) is the most robust signal — it reflects platform-side actuation, not the operation event mix
+- if `event_id` returned from a trigger is empty, do not silently proceed as if anchoring is in place; switch to P2 with the recorded `trigger_at` and report this gap in `actions_performed[].details`
 
 ## Workflow
 
@@ -1021,3 +789,274 @@ Primary stop conditions:
 - cluster capacity blocked
 - frontend access-path issue
 - topology unexpectedly missing
+
+```yaml workflow
+id: rainbond-fullstack-troubleshooter
+entry:
+  intents:
+    - 排障
+    - 排查
+    - 修复
+    - 恢复服务
+    - 构建失败
+    - 启动异常
+    - troubleshoot
+    - debug
+input_schema:
+  properties:
+    service_id:
+      type: string
+    inspection_mode:
+      type: string
+      enum:
+        - summary
+        - events
+        - pods
+        - pod_detail
+        - logs
+        - build_logs
+        - envs
+        - connection_envs
+        - dependency
+        - probe
+    pod_name:
+      type: string
+    event_id:
+      type: string
+    action:
+      type: string
+      enum:
+        - service
+        - container
+    lines:
+      type: integer
+    container_name:
+      type: string
+    follow:
+      type: boolean
+    envs:
+      type: array
+    build_env_dict:
+      type: object
+    dep_service_id:
+      type: string
+    open_inner:
+      type: boolean
+    container_port:
+      type: integer
+    attr_name:
+      type: string
+    attr_value:
+      type: string
+    probe_id:
+      type: string
+    mode:
+      type: string
+      enum:
+        - readiness
+        - liveness
+        - ignore
+    port:
+      type: integer
+    path:
+      type: string
+    cmd:
+      type: string
+required_context:
+  - team_name
+  - region_name
+  - app_id
+stages:
+  - id: resolve-scope
+    kind: resolve_context
+  - id: inspect-app
+    kind: tool_call
+    tool: rainbond_get_app_detail
+    args:
+      team_name: $context.team_name
+      region_name: $context.region_name
+      app_id: $context.app_id
+  - id: inspect-components
+    kind: tool_call
+    tool: rainbond_query_components
+    args:
+      enterprise_id: $actor.enterprise_id
+      app_id: $context.app_id
+      page: 1
+      page_size: 20
+  - id: inspect-runtime
+    kind: branch
+    branches:
+      - id: inspect-component-summary
+        tool: rainbond_get_component_summary
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+      - id: inspect-component-pods
+        when: $input.inspection_mode == "pods"
+        tool: rainbond_get_component_pods
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+      - id: inspect-pod-detail
+        when: $input.inspection_mode == "pod_detail"
+        tool: rainbond_get_pod_detail
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          pod_name: $input.pod_name
+      - id: inspect-component-events
+        when: $input.inspection_mode == "events"
+        tool: rainbond_get_component_events
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          page: 1
+          page_size: 20
+      - id: inspect-component-logs
+        when: $input.inspection_mode == "logs"
+        tool: rainbond_get_component_logs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          action: $input.action
+          lines: $input.lines
+          pod_name: $input.pod_name
+          container_name: $input.container_name
+          follow: $input.follow
+      - id: inspect-component-build-logs
+        when: $input.inspection_mode == "build_logs"
+        tool: rainbond_get_component_build_logs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          event_id: $input.event_id
+      - id: inspect-runtime-envs
+        when: $input.inspection_mode == "envs"
+        tool: rainbond_manage_component_envs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: summary
+      - id: inspect-connection-envs
+        when: $input.inspection_mode == "connection_envs"
+        tool: rainbond_manage_component_connection_envs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: summary
+      - id: inspect-dependencies
+        when: $input.inspection_mode == "dependency"
+        tool: rainbond_manage_component_dependency
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: summary
+      - id: inspect-probes
+        when: $input.inspection_mode == "probe"
+        tool: rainbond_manage_component_probe
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: summary
+  - id: classify-and-repair
+    kind: branch
+    branches:
+      - id: replace-build-envs
+        tool: rainbond_manage_component_envs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: replace_build_envs
+          build_env_dict: $input.build_env_dict
+      - id: upsert-runtime-envs
+        tool: rainbond_manage_component_envs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: upsert
+          envs: $input.envs
+      - id: create-connection-env
+        tool: rainbond_manage_component_connection_envs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: create
+          attr_name: $input.attr_name
+          attr_value: $input.attr_value
+      - id: add-dependency
+        tool: rainbond_manage_component_dependency
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: add
+          dep_service_id: $input.dep_service_id
+          open_inner: $input.open_inner
+          container_port: $input.container_port
+      - id: update-probe
+        tool: rainbond_manage_component_probe
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          operation: update
+          probe_id: $input.probe_id
+          mode: $input.mode
+          port: $input.port
+          path: $input.path
+          cmd: $input.cmd
+  - id: report
+    kind: summarize
+```
+
+```yaml tool_policy
+preferred_tools:
+  - rainbond_get_app_detail
+  - rainbond_query_components
+  - rainbond_get_component_summary
+  - rainbond_get_component_pods
+  - rainbond_get_pod_detail
+  - rainbond_get_component_events
+  - rainbond_get_component_logs
+  - rainbond_get_component_build_logs
+  - rainbond_manage_component_envs
+  - rainbond_manage_component_connection_envs
+  - rainbond_manage_component_dependency
+  - rainbond_manage_component_probe
+approval:
+  mutable_tools_require_scope_verification: true
+```
+
+```yaml output_contract
+schema_ref: ./schemas/troubleshoot-result.schema.yaml
+top_level_object: TroubleshootResult
+```

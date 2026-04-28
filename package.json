@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "skills:sync": "bash ./scripts/sync-rainbond-skills.sh",
+    "skills:sync": "node ./scripts/sync-rainbond-skills.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "build:server": "tsc -p tsconfig.server.json",

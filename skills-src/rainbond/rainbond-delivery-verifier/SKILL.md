@@ -34,52 +34,6 @@ For the current contract-convergence pass, the live delivery-verifier output con
 - [scripts/validate_delivery_verifier_output.py](scripts/validate_delivery_verifier_output.py)
 - [scripts/run_delivery_verifier_evals.py](scripts/run_delivery_verifier_evals.py)
 
-```yaml workflow
-id: rainbond-delivery-verifier
-entry:
-  intents:
-    - 交付
-    - 验收
-    - verify delivery
-    - 访问地址
-required_context:
-  - team_name
-  - region_name
-  - app_id
-stages:
-  - id: resolve-scope
-    kind: resolve_context
-  - id: inspect-app
-    kind: tool_call
-    tool: rainbond_get_app_detail
-    args:
-      team_name: $context.team_name
-      region_name: $context.region_name
-      app_id: $context.app_id
-  - id: inspect-components
-    kind: tool_call
-    tool: rainbond_query_components
-    args:
-      enterprise_id: $actor.enterprise_id
-      app_id: $context.app_id
-  - id: report
-    kind: summarize
-```
-
-```yaml tool_policy
-preferred_tools:
-  - rainbond_get_app_detail
-  - rainbond_query_components
-  - rainbond_get_component_summary
-approval:
-  mutable_tools_require_scope_verification: true
-```
-
-```yaml output_contract
-schema_ref: ./schemas/delivery-verification-result.schema.yaml
-top_level_object: DeliveryVerificationResult
-```
-
 ## When to Use
 
 Use when:
@@ -101,6 +55,7 @@ This skill may:
 - read app detail
 - read component list
 - read component summaries and details
+- read component storage summaries for database and other stateful middleware components
 - inspect recent logs and events if needed
 - inspect access information
 - report deployment convergence
@@ -147,6 +102,14 @@ In those cases:
 - if `/` works but `/api` returns 4xx/5xx, empty reply, placeholder page, or cloud-provider intercept page, do not classify the app as delivered
 - classify the result as `blocked` unless a narrower partial state is better supported by evidence
 
+### 5. Stateful delivery must not hide missing persistence
+If the app includes a database or stateful middleware component:
+- inspect its storage summary before final classification
+- for common middleware images, expect a durable mount at the standard data directory such as Postgres `/var/lib/postgresql/data`, MySQL `/var/lib/mysql`, MongoDB `/data/db`, Redis `/data`, RabbitMQ `/var/lib/rabbitmq`, Kafka `/var/lib/kafka/data`, Elasticsearch/OpenSearch `/usr/share/elasticsearch/data`, or MinIO `/data`
+- if no durable storage is mounted, do not silently report a clean `delivered` result
+- if the user explicitly required durable data, classify delivery as `blocked` with blocker `stateful middleware persistence not configured`
+- if the run is clearly only an ephemeral demo, report the missing persistence caveat in `Verification Result` and avoid wording that implies production-safe stateful middleware storage
+
 ## Workflow
 
 Follow this order.
@@ -174,7 +137,13 @@ If recent events show:
 
 then classify that component as `capacity-blocked`.
 
-4. Determine access target
+4. Inspect stateful storage
+- identify database and stateful middleware components from role, name, image, port, and dependency position
+- read storage summaries for those components
+- record whether durable storage is mounted at the component's data directory
+- carry any missing-persistence finding into the final delivery report
+
+5. Determine access target
 Access URL selection priority:
 1. frontend component access info
 2. explicitly exposed service access info
@@ -186,14 +155,14 @@ When reverse-proxy full-stack behavior is expected:
 - also derive an API verification path on the same host, usually `/api`
 - do not switch to the backend component's direct URL as the preferred user-facing URL unless the app is actually backend-only
 
-5. Verify user-facing path as far as safely possible
+6. Verify user-facing path as far as safely possible
 - if an access URL is available and safe to inspect, check whether the route appears reachable
 - if reverse-proxy full-stack behavior is expected, check both the root path and the API path on the same host
 - if the root path returns HTML but the API path fails, returns a provider intercept page, or routes to the wrong upstream, treat delivery as not complete
 - if current environment cannot directly verify the external URL, do not fake success
 - report the final delivery outcome as `delivered-but-needs-manual-validation`
 
-6. Produce final delivery report
+7. Produce final delivery report
 
 ## Final Status Model
 
@@ -317,6 +286,7 @@ Always respond using exactly these sections:
 ### Verification Result
 - state what was actually verified
 - state whether user-facing access was verified, inferred, or still needs manual validation
+- for apps with stateful middleware, state whether persistence was verified; if missing, report `stateful middleware persistence not configured`
 
 ### Next Step
 - one of:
@@ -342,6 +312,7 @@ Always respond using exactly these sections:
 - continuing repairs when the right next step is manual URL validation
 - treating a reverse-proxy frontend root URL as delivered when the same-host `/api` path is still broken
 - counting a cloud-provider intercept page or placeholder page as successful app delivery
+- reporting an app with stateful middleware as cleanly delivered without checking storage persistence
 
 ## Quick Reference
 
@@ -356,3 +327,49 @@ Final truth rules:
 - MCP gives runtime truth
 - access URL must be explicitly reported
 - if external validation is not possible, use the final outcome `delivered-but-needs-manual-validation`
+
+```yaml workflow
+id: rainbond-delivery-verifier
+entry:
+  intents:
+    - 交付
+    - 验收
+    - verify delivery
+    - 访问地址
+required_context:
+  - team_name
+  - region_name
+  - app_id
+stages:
+  - id: resolve-scope
+    kind: resolve_context
+  - id: inspect-app
+    kind: tool_call
+    tool: rainbond_get_app_detail
+    args:
+      team_name: $context.team_name
+      region_name: $context.region_name
+      app_id: $context.app_id
+  - id: inspect-components
+    kind: tool_call
+    tool: rainbond_query_components
+    args:
+      enterprise_id: $actor.enterprise_id
+      app_id: $context.app_id
+  - id: report
+    kind: summarize
+```
+
+```yaml tool_policy
+preferred_tools:
+  - rainbond_get_app_detail
+  - rainbond_query_components
+  - rainbond_get_component_summary
+approval:
+  mutable_tools_require_scope_verification: true
+```
+
+```yaml output_contract
+schema_ref: ./schemas/delivery-verification-result.schema.yaml
+top_level_object: DeliveryVerificationResult
+```
