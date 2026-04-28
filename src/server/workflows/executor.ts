@@ -1042,6 +1042,7 @@ export class WorkflowExecutor {
         candidateScope: result.candidateScope,
         client,
         sequenceStart: 4,
+        input: result.skillInput,
         publishToolTrace: async (trace) => {
           await this.publishToolTrace(
             actor.tenantId,

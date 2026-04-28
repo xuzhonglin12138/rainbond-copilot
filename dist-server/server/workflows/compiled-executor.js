@@ -1,9 +1,11 @@
 import { getRegisteredSkill } from "../skills/skill-registry.js";
 import { logWorkflowDebug } from "./workflow-debug.js";
+import { selectBranch } from "./branch-selector.js";
 const SUPPORTED_STAGE_KINDS = new Set([
     "resolve_context",
     "tool_call",
     "summarize",
+    "branch",
 ]);
 function getCompiledSkill(skillId) {
     return getRegisteredSkill(skillId);
@@ -32,39 +34,66 @@ export async function executeCompiledWorkflow(params) {
     const toolCalls = [];
     const toolOutputs = new Map();
     let sequence = params.sequenceStart || 4;
+    const input = params.input || {};
+    const branchContext = {
+        input,
+        context: {
+            team_name: params.candidateScope.teamName ||
+                params.actor.tenantName ||
+                params.actor.tenantId,
+            region_name: params.candidateScope.regionName || params.actor.regionName || "",
+            app_id: String(parseAppId(params.candidateScope.appId)),
+            component_id: params.candidateScope.componentId || "",
+            enterprise_id: params.actor.enterpriseId || "",
+        },
+    };
     for (const stage of skill.workflow.stages) {
         if (stage.kind === "resolve_context" || stage.kind === "summarize") {
             continue;
         }
         if (stage.kind === "tool_call" && stage.tool) {
-            const resolvedArgs = resolveTemplateArguments(stage.args || {}, params.actor, params.candidateScope);
-            logWorkflowDebug("compiled.execute.tool_call.start", {
-                skillId: params.skillId,
-                stageId: stage.id,
+            const resolvedArgs = resolveTemplateArguments(stage.args || {}, params.actor, params.candidateScope, input);
+            sequence = await invokeStageTool({
                 toolName: stage.tool,
                 args: resolvedArgs,
-            });
-            await params.publishToolTrace({
+                stageId: stage.id,
+                skillId: params.skillId,
+                client: params.client,
+                publishToolTrace: params.publishToolTrace,
                 sequence,
-                tool_name: stage.tool,
-                input: resolvedArgs,
+                toolCalls,
+                toolOutputs,
             });
-            const output = await params.client.callTool(stage.tool, resolvedArgs);
-            logWorkflowDebug("compiled.execute.tool_call.result", {
+        }
+        if (stage.kind === "branch" && stage.branches && stage.branches.length > 0) {
+            const selection = selectBranch(stage.branches, branchContext);
+            if (!selection) {
+                logWorkflowDebug("compiled.execute.branch.skip", {
+                    skillId: params.skillId,
+                    stageId: stage.id,
+                    reason: "no branch matched and no default available",
+                });
+                continue;
+            }
+            const resolvedArgs = resolveTemplateArguments(selection.branch.args || {}, params.actor, params.candidateScope, input);
+            logWorkflowDebug("compiled.execute.branch.selected", {
                 skillId: params.skillId,
                 stageId: stage.id,
-                toolName: stage.tool,
-                output: output.structuredContent,
+                branchId: selection.branch.id,
+                matched: selection.matched,
+                toolName: selection.branch.tool,
             });
-            await params.publishToolTrace({
-                sequence: sequence + 1,
-                tool_name: stage.tool,
-                input: resolvedArgs,
-                output,
+            sequence = await invokeStageTool({
+                toolName: selection.branch.tool,
+                args: resolvedArgs,
+                stageId: `${stage.id}/${selection.branch.id}`,
+                skillId: params.skillId,
+                client: params.client,
+                publishToolTrace: params.publishToolTrace,
+                sequence,
+                toolCalls,
+                toolOutputs,
             });
-            toolCalls.push({ name: stage.tool, status: "success" });
-            toolOutputs.set(stage.tool, output.structuredContent);
-            sequence += 2;
         }
     }
     if (skill.id === "rainbond-delivery-verifier") {
@@ -129,22 +158,22 @@ export async function executeCompiledWorkflow(params) {
         },
     };
 }
-function resolveTemplateArguments(value, actor, candidateScope) {
+function resolveTemplateArguments(value, actor, candidateScope, input) {
     if (typeof value === "string") {
-        return resolveTemplateString(value, actor, candidateScope);
+        return resolveTemplateString(value, actor, candidateScope, input);
     }
     if (Array.isArray(value)) {
-        return value.map((item) => resolveTemplateArguments(item, actor, candidateScope));
+        return value.map((item) => resolveTemplateArguments(item, actor, candidateScope, input));
     }
     if (value && typeof value === "object") {
         return Object.fromEntries(Object.entries(value).map(([key, entryValue]) => [
             key,
-            resolveTemplateArguments(entryValue, actor, candidateScope),
+            resolveTemplateArguments(entryValue, actor, candidateScope, input),
         ]));
     }
     return value;
 }
-function resolveTemplateString(value, actor, candidateScope) {
+function resolveTemplateString(value, actor, candidateScope, input) {
     if (!value.startsWith("$")) {
         return value;
     }
@@ -159,9 +188,42 @@ function resolveTemplateString(value, actor, candidateScope) {
             return candidateScope.componentId || "";
         case "$actor.enterprise_id":
             return actor.enterpriseId || "";
-        default:
-            return value;
     }
+    if (value.startsWith("$input.")) {
+        const inputKey = value.slice("$input.".length);
+        const supplied = input[inputKey];
+        return supplied === undefined ? value : supplied;
+    }
+    return value;
+}
+async function invokeStageTool(p) {
+    logWorkflowDebug("compiled.execute.tool_call.start", {
+        skillId: p.skillId,
+        stageId: p.stageId,
+        toolName: p.toolName,
+        args: p.args,
+    });
+    await p.publishToolTrace({
+        sequence: p.sequence,
+        tool_name: p.toolName,
+        input: p.args,
+    });
+    const output = await p.client.callTool(p.toolName, p.args);
+    logWorkflowDebug("compiled.execute.tool_call.result", {
+        skillId: p.skillId,
+        stageId: p.stageId,
+        toolName: p.toolName,
+        output: output.structuredContent,
+    });
+    await p.publishToolTrace({
+        sequence: p.sequence + 1,
+        tool_name: p.toolName,
+        input: p.args,
+        output,
+    });
+    p.toolCalls.push({ name: p.toolName, status: "success" });
+    p.toolOutputs.set(p.toolName, output.structuredContent);
+    return p.sequence + 2;
 }
 function parseAppId(value) {
     if (!value) {

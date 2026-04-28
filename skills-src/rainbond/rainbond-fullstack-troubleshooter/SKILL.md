@@ -143,6 +143,7 @@ stages:
           app_id: $context.app_id
           service_id: $input.service_id
       - id: inspect-component-pods
+        when: $input.inspection_mode == "pods"
         tool: rainbond_get_component_pods
         args:
           team_name: $context.team_name
@@ -150,6 +151,7 @@ stages:
           app_id: $context.app_id
           service_id: $input.service_id
       - id: inspect-pod-detail
+        when: $input.inspection_mode == "pod_detail"
         tool: rainbond_get_pod_detail
         args:
           team_name: $context.team_name
@@ -158,6 +160,7 @@ stages:
           service_id: $input.service_id
           pod_name: $input.pod_name
       - id: inspect-component-events
+        when: $input.inspection_mode == "events"
         tool: rainbond_get_component_events
         args:
           team_name: $context.team_name
@@ -167,6 +170,7 @@ stages:
           page: 1
           page_size: 20
       - id: inspect-component-logs
+        when: $input.inspection_mode == "logs"
         tool: rainbond_get_component_logs
         args:
           team_name: $context.team_name
@@ -179,6 +183,7 @@ stages:
           container_name: $input.container_name
           follow: $input.follow
       - id: inspect-component-build-logs
+        when: $input.inspection_mode == "build_logs"
         tool: rainbond_get_component_build_logs
         args:
           team_name: $context.team_name
@@ -187,6 +192,7 @@ stages:
           service_id: $input.service_id
           event_id: $input.event_id
       - id: inspect-runtime-envs
+        when: $input.inspection_mode == "envs"
         tool: rainbond_manage_component_envs
         args:
           team_name: $context.team_name
@@ -195,6 +201,7 @@ stages:
           service_id: $input.service_id
           operation: summary
       - id: inspect-connection-envs
+        when: $input.inspection_mode == "connection_envs"
         tool: rainbond_manage_component_connection_envs
         args:
           team_name: $context.team_name
@@ -203,6 +210,7 @@ stages:
           service_id: $input.service_id
           operation: summary
       - id: inspect-dependencies
+        when: $input.inspection_mode == "dependency"
         tool: rainbond_manage_component_dependency
         args:
           team_name: $context.team_name
@@ -211,6 +219,7 @@ stages:
           service_id: $input.service_id
           operation: summary
       - id: inspect-probes
+        when: $input.inspection_mode == "probe"
         tool: rainbond_manage_component_probe
         args:
           team_name: $context.team_name
