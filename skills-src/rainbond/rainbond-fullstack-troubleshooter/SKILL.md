@@ -819,6 +819,18 @@ input_schema:
         - connection_envs
         - dependency
         - probe
+    repair_action:
+      type: string
+      description: |
+        Optional. When set, the classify-and-repair stage will execute the
+        matching repair branch. Leave unset to skip all writes; the stage
+        will then no-op so troubleshooting stays read-only by default.
+      enum:
+        - replace_build_envs
+        - upsert_runtime_envs
+        - create_connection_env
+        - add_dependency
+        - update_probe
     pod_name:
       type: string
     event_id:
@@ -983,6 +995,7 @@ stages:
     kind: branch
     branches:
       - id: replace-build-envs
+        when: $input.repair_action == "replace_build_envs"
         tool: rainbond_manage_component_envs
         args:
           team_name: $context.team_name
@@ -992,6 +1005,7 @@ stages:
           operation: replace_build_envs
           build_env_dict: $input.build_env_dict
       - id: upsert-runtime-envs
+        when: $input.repair_action == "upsert_runtime_envs"
         tool: rainbond_manage_component_envs
         args:
           team_name: $context.team_name
@@ -1001,6 +1015,7 @@ stages:
           operation: upsert
           envs: $input.envs
       - id: create-connection-env
+        when: $input.repair_action == "create_connection_env"
         tool: rainbond_manage_component_connection_envs
         args:
           team_name: $context.team_name
@@ -1011,6 +1026,7 @@ stages:
           attr_name: $input.attr_name
           attr_value: $input.attr_value
       - id: add-dependency
+        when: $input.repair_action == "add_dependency"
         tool: rainbond_manage_component_dependency
         args:
           team_name: $context.team_name
@@ -1022,6 +1038,7 @@ stages:
           open_inner: $input.open_inner
           container_port: $input.container_port
       - id: update-probe
+        when: $input.repair_action == "update_probe"
         tool: rainbond_manage_component_probe
         args:
           team_name: $context.team_name

@@ -176,6 +176,42 @@ describe("compiled executor", () => {
     expect(calledTools).not.toContain("rainbond_get_component_logs");
   });
 
+  it("omits $input.<key> args entirely when the placeholder has no supplied value", async () => {
+    // Regression: previously we sent literal "$input.service_id" / "$input.event_id"
+    // strings to MCP when the LLM router could not extract those parameters from the
+    // user's natural-language message. MCP would either reject the call or, worse,
+    // accept the bogus literal as a valid identifier.
+    const callTool = vi.fn(async (name: string) => ({
+      isError: false,
+      structuredContent: { ok: true, _tool: name },
+      content: [],
+    }));
+
+    await executeCompiledWorkflow({
+      skillId: "rainbond-fullstack-troubleshooter",
+      actor: baseActor,
+      candidateScope: baseScope,
+      input: {
+        // intentionally omit service_id and event_id
+        inspection_mode: "build_logs",
+      },
+      client: { callTool },
+      publishToolTrace: vi.fn(async () => {}),
+    });
+
+    const buildLogsCall = callTool.mock.calls.find(
+      ([name]) => name === "rainbond_get_component_build_logs"
+    );
+    expect(buildLogsCall).toBeDefined();
+
+    const args = buildLogsCall?.[1] as Record<string, unknown>;
+    expect(args).not.toHaveProperty("service_id");
+    expect(args).not.toHaveProperty("event_id");
+    for (const value of Object.values(args)) {
+      expect(typeof value === "string" && value.startsWith("$input."), `leaked literal: ${String(value)}`).toBe(false);
+    }
+  });
+
   it("dispatches inspection_mode=logs to component logs", async () => {
     const callTool = vi.fn(async (name: string) => ({
       isError: false,

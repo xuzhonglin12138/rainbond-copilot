@@ -158,18 +158,35 @@ export async function executeCompiledWorkflow(params) {
         },
     };
 }
+// Sentinel returned by resolveTemplateString for placeholders that have no
+// supplied value. resolveTemplateArguments uses it to omit the corresponding
+// object key entirely so we never send literals like "$input.service_id" to
+// MCP tools.
+const UNRESOLVED_PLACEHOLDER = Symbol("unresolved-placeholder");
 function resolveTemplateArguments(value, actor, candidateScope, input) {
     if (typeof value === "string") {
-        return resolveTemplateString(value, actor, candidateScope, input);
+        const resolved = resolveTemplateString(value, actor, candidateScope, input);
+        return resolved === UNRESOLVED_PLACEHOLDER ? undefined : resolved;
     }
     if (Array.isArray(value)) {
-        return value.map((item) => resolveTemplateArguments(item, actor, candidateScope, input));
+        const out = [];
+        for (const item of value) {
+            const resolved = resolveTemplateArguments(item, actor, candidateScope, input);
+            if (resolved !== undefined) {
+                out.push(resolved);
+            }
+        }
+        return out;
     }
     if (value && typeof value === "object") {
-        return Object.fromEntries(Object.entries(value).map(([key, entryValue]) => [
-            key,
-            resolveTemplateArguments(entryValue, actor, candidateScope, input),
-        ]));
+        const out = {};
+        for (const [key, entryValue] of Object.entries(value)) {
+            const resolved = resolveTemplateArguments(entryValue, actor, candidateScope, input);
+            if (resolved !== undefined) {
+                out[key] = resolved;
+            }
+        }
+        return out;
     }
     return value;
 }
@@ -192,7 +209,10 @@ function resolveTemplateString(value, actor, candidateScope, input) {
     if (value.startsWith("$input.")) {
         const inputKey = value.slice("$input.".length);
         const supplied = input[inputKey];
-        return supplied === undefined ? value : supplied;
+        if (supplied === undefined || supplied === null || supplied === "") {
+            return UNRESOLVED_PLACEHOLDER;
+        }
+        return supplied;
     }
     return value;
 }
