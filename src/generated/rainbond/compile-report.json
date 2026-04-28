@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-04-28T03:21:23.907Z",
+  "compiled": [
+    {
+      "id": "rainbond-app-version-assistant",
+      "sourcePath": "/Users/guox/Desktop/agent/agent/skills-src/rainbond/rainbond-app-version-assistant/SKILL.md",
+      "stageCount": 5
+    },
+    {
+      "id": "rainbond-delivery-verifier",
+      "sourcePath": "/Users/guox/Desktop/agent/agent/skills-src/rainbond/rainbond-delivery-verifier/SKILL.md",
+      "stageCount": 4
+    },
+    {
+      "id": "rainbond-fullstack-troubleshooter",
+      "sourcePath": "/Users/guox/Desktop/agent/agent/skills-src/rainbond/rainbond-fullstack-troubleshooter/SKILL.md",
+      "stageCount": 6
+    },
+    {
+      "id": "rainbond-template-installer",
+      "sourcePath": "/Users/guox/Desktop/agent/agent/skills-src/rainbond/rainbond-template-installer/SKILL.md",
+      "stageCount": 5
+    }
+  ],
+  "skipped": [],
+  "errors": []
+}

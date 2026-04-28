@@ -108,6 +108,7 @@ export function createCopilotApiServer(options = {}) {
         approvalStore: stores.approvalStore,
         broker,
         runResumer: createInMemoryRunResumer(),
+        enableRainbondAppAssistantWorkflow: true,
         actionAdapterFactory: async ({ actor, sessionId }) => {
             const { client, session } = await createInitializedMcpClient({
                 actor,

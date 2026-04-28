@@ -88,6 +88,7 @@ export function createSessionRecord(input) {
         approvalLedger: input.approvalLedger,
         pendingWorkflowAction: input.pendingWorkflowAction,
         pendingLlmContinuation: input.pendingLlmContinuation,
+        pendingWorkflowContinuation: input.pendingWorkflowContinuation,
         status: input.status ?? "active",
         latestRunId: input.latestRunId,
         createdAt: now,

@@ -19,11 +19,17 @@ describe("workflow registry", () => {
 
   it("returns workflow metadata by id", () => {
     const registry = createWorkflowRegistry();
-    const workflow = registry.get("rainbond-app-assistant");
+    const workflow = registry.get("rainbond-delivery-verifier");
 
     expect(workflow).toMatchObject({
-      id: "rainbond-app-assistant",
+      id: "rainbond-delivery-verifier",
       mode: "embedded",
     });
+    expect(workflow?.stages).toEqual([
+      "resolve-scope",
+      "inspect-app",
+      "inspect-components",
+      "report",
+    ]);
   });
 });

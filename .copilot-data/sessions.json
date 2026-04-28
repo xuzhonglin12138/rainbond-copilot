@@ -1698,5 +1698,1089 @@
         "decision": "approved"
       }
     ]
+  },
+  {
+    "sessionId": "cs_1777279231659_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "173",
+      "app_name": "173",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/jabrm8l6/region/rainbond/apps/173/overview",
+      "resource": {
+        "type": "app",
+        "id": "173",
+        "name": "173"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|173||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T08:40:31.659Z",
+    "updatedAt": "2026-04-27T08:40:31.801Z",
+    "latestRunId": "run_1777279231798_2",
+    "lastVerifiedScopeSignature": "jabrm8l6|rainbond|173||verified",
+    "verifiedScope": {
+      "teamName": "jabrm8l6",
+      "regionName": "rainbond",
+      "appId": "173",
+      "verified": true
+    }
+  },
+  {
+    "sessionId": "cs_1777279791397_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "163",
+      "app_name": "163",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/jabrm8l6/region/rainbond/apps/163/overview",
+      "resource": {
+        "type": "app",
+        "id": "163",
+        "name": "163"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|163||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T08:49:51.397Z",
+    "updatedAt": "2026-04-27T08:51:59.596Z",
+    "latestRunId": "run_1777279919592_7",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777279800621_4",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_install_app_model",
+        "toolCallId": "ap_1777279800621_4",
+        "risk": "high",
+        "scope": "app",
+        "description": "执行 rainbond_install_app_model",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 173,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true,
+          "__await_version_input": true,
+          "suggested_version": "5.3"
+        },
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777279919657_8",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_install_app_model",
+        "toolCallId": "ap_1777279919657_8",
+        "risk": "high",
+        "scope": "app",
+        "description": "执行 rainbond_install_app_model",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 163,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true,
+          "__await_version_input": true,
+          "suggested_version": "5.3"
+        },
+        "decision": "approved"
+      }
+    ],
+    "lastVerifiedScopeSignature": "jabrm8l6|rainbond|163||verified",
+    "verifiedScope": {
+      "teamName": "jabrm8l6",
+      "regionName": "rainbond",
+      "appId": "163",
+      "verified": true
+    }
+  },
+  {
+    "sessionId": "cs_1777280549503_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "156",
+      "app_name": "156",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/jabrm8l6/region/rainbond/apps/156/overview",
+      "resource": {
+        "type": "app",
+        "id": "156",
+        "name": "156"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|156||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T09:02:29.503Z",
+    "updatedAt": "2026-04-27T09:02:29.645Z",
+    "latestRunId": "run_1777280549638_2",
+    "pendingWorkflowAction": {
+      "toolName": "rainbond_install_app_model",
+      "requiresApproval": true,
+      "arguments": {
+        "team_name": "jabrm8l6",
+        "region_name": "rainbond",
+        "app_id": 156,
+        "source": "cloud",
+        "market_name": "qiye",
+        "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+        "app_model_version": "5.3",
+        "is_deploy": true,
+        "__await_version_input": true,
+        "suggested_version": "5.3"
+      }
+    },
+    "lastVerifiedScopeSignature": "jabrm8l6|rainbond|156||verified",
+    "verifiedScope": {
+      "teamName": "jabrm8l6",
+      "regionName": "rainbond",
+      "appId": "156",
+      "verified": true
+    }
+  },
+  {
+    "sessionId": "cs_1777280593817_3",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "6",
+      "app_name": "6",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/default/region/rainbond/apps/6/overview",
+      "resource": {
+        "type": "app",
+        "id": "6",
+        "name": "6"
+      }
+    },
+    "contextSignature": "default|rainbond|6||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T09:03:13.817Z",
+    "updatedAt": "2026-04-27T09:03:20.463Z",
+    "latestRunId": "run_1777280600459_5",
+    "lastVerifiedScopeSignature": "default|rainbond|6||verified",
+    "verifiedScope": {
+      "teamName": "default",
+      "regionName": "rainbond",
+      "appId": "6",
+      "verified": true
+    },
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777280600504_6",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_install_app_model",
+        "toolCallId": "ap_1777280600504_6",
+        "risk": "high",
+        "scope": "app",
+        "description": "执行 rainbond_install_app_model",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 6,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true,
+          "__await_version_input": true,
+          "suggested_version": "5.3"
+        },
+        "decision": "approved"
+      }
+    ]
+  },
+  {
+    "sessionId": "cs_1777281335267_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "133",
+      "app_name": "133",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/default/region/rainbond/apps/133/overview",
+      "resource": {
+        "type": "app",
+        "id": "133",
+        "name": "133"
+      }
+    },
+    "contextSignature": "default|rainbond|133||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T09:15:35.268Z",
+    "updatedAt": "2026-04-27T09:15:35.427Z",
+    "latestRunId": "run_1777281335423_2",
+    "pendingWorkflowAction": {
+      "toolName": "rainbond_install_app_model",
+      "requiresApproval": true,
+      "arguments": {
+        "team_name": "default",
+        "region_name": "rainbond",
+        "app_id": 133,
+        "source": "cloud",
+        "market_name": "qiye",
+        "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+        "app_model_version": "5.3",
+        "is_deploy": true,
+        "__await_version_input": true,
+        "suggested_version": "5.3"
+      }
+    },
+    "lastVerifiedScopeSignature": "default|rainbond|133||verified",
+    "verifiedScope": {
+      "teamName": "default",
+      "regionName": "rainbond",
+      "appId": "133",
+      "verified": true
+    }
+  },
+  {
+    "sessionId": "cs_1777282048492_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "",
+      "app_name": "",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/jabrm8l6/region/rainbond/index",
+      "resource": {
+        "type": "page",
+        "id": "/team/jabrm8l6/region/rainbond/index",
+        "name": "/team/jabrm8l6/region/rainbond/index"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T09:27:28.492Z",
+    "updatedAt": "2026-04-27T09:33:03.510Z",
+    "latestRunId": "run_1777282383506_c",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777282057420_4",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_install_app_model",
+        "toolCallId": "ap_1777282057420_4",
+        "risk": "high",
+        "scope": "app",
+        "description": "执行 rainbond_install_app_model",
+        "arguments": {
+          "team_name": "pdt0yhfe",
+          "region_name": "rainbond",
+          "app_id": 24,
+          "source": "cloud",
+          "market_name": "RainbondMarket",
+          "app_model_id": "7f0d0509699e4425964c71be4b0fa428",
+          "app_model_version": "8.0.18",
+          "is_deploy": true,
+          "__await_version_input": true,
+          "suggested_version": "8.0.18"
+        },
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777282424008_g",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_create_app",
+        "toolCallId": "call_00_XVe9VzlafJ52JvrkiV7SUi8f",
+        "risk": "medium",
+        "scope": "team",
+        "description": "创建应用 测试发布",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_name": "测试发布",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777282438040_j",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_install_app_model",
+        "toolCallId": "call_00_uydGetpERsbZaXKujAbtBpN8",
+        "risk": "high",
+        "scope": "app",
+        "description": "安装模板 afc2d0fe7304452596df1e1e308fc8b3",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 185,
+          "source": "local",
+          "app_model_id": "afc2d0fe7304452596df1e1e308fc8b3",
+          "app_model_version": "0.1",
+          "is_deploy": true,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [],
+        "decision": "approved"
+      }
+    ]
+  },
+  {
+    "sessionId": "cs_1777283390071_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "183",
+      "app_name": "183",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/default/region/rainbond/apps/183/version",
+      "resource": {
+        "type": "app",
+        "id": "183",
+        "name": "183"
+      }
+    },
+    "contextSignature": "default|rainbond|183||candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T09:49:50.071Z",
+    "updatedAt": "2026-04-27T09:58:57.656Z",
+    "latestRunId": "run_1777283937650_3",
+    "lastVerifiedScopeSignature": "default|rainbond|183||verified",
+    "verifiedScope": {
+      "teamName": "default",
+      "regionName": "rainbond",
+      "appId": "183",
+      "verified": true
+    }
+  },
+  {
+    "sessionId": "cs_1777284940285_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "default",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "default",
+      "region_name": "rainbond",
+      "app_id": "183",
+      "app_name": "183",
+      "component_id": "afecaa69079c2ca94466a46525316e33",
+      "component_source": "",
+      "page": "/team/default/region/rainbond/apps/183/overview",
+      "resource": {
+        "type": "component",
+        "id": "afecaa69079c2ca94466a46525316e33",
+        "name": "afecaa69079c2ca94466a46525316e33"
+      }
+    },
+    "contextSignature": "default|rainbond|183|afecaa69079c2ca94466a46525316e33|candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T10:15:40.285Z",
+    "updatedAt": "2026-04-27T10:15:46.575Z",
+    "latestRunId": "run_1777284946571_3",
+    "lastVerifiedScopeSignature": "default|rainbond|183|afecaa69079c2ca94466a46525316e33|verified",
+    "verifiedScope": {
+      "teamName": "default",
+      "regionName": "rainbond",
+      "appId": "183",
+      "componentId": "afecaa69079c2ca94466a46525316e33",
+      "verified": true
+    }
+  },
+  {
+    "sessionId": "cs_1777286983021_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T10:49:43.021Z",
+    "updatedAt": "2026-04-27T10:51:44.014Z",
+    "latestRunId": "run_1777287104008_g",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "selectedWorkflow": "rainbond-fullstack-troubleshooter",
+      "nextAction": "inspect_runtime",
+      "summary": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "subflowData": {
+        "appStatus": "closed",
+        "componentCount": 1,
+        "inspectedComponentStatus": "waiting"
+      },
+      "toolCalls": [
+        {
+          "name": "rainbond_get_app_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_query_components",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_summary",
+          "status": "success"
+        }
+      ]
+    }
+  },
+  {
+    "sessionId": "cs_1777288439494_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "33ba9a45daa544779d3aa13a86a7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "33ba9a45daa544779d3aa13a86a7172a",
+        "name": "33ba9a45daa544779d3aa13a86a7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|33ba9a45daa544779d3aa13a86a7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T11:13:59.494Z",
+    "updatedAt": "2026-04-27T11:17:00.807Z",
+    "latestRunId": "run_1777288620803_g",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777288668612_k",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_vertical_scale_component",
+        "toolCallId": "call_00_GuBKJQvnEckXZtO7dzuuMf6P",
+        "risk": "medium",
+        "scope": "component",
+        "description": "调整组件 33ba9a45daa544779d3aa13a86a7172a 的资源配置",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 185,
+          "service_id": "33ba9a45daa544779d3aa13a86a7172a",
+          "new_memory": 512,
+          "new_cpu": 250,
+          "new_gpu": 0,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [],
+        "decision": "approved"
+      }
+    ]
+  },
+  {
+    "sessionId": "cs_1777289166680_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-27T11:26:06.680Z",
+    "updatedAt": "2026-04-28T02:50:00.645Z",
+    "latestRunId": "run_1777344600638_6",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777289216673_7",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_manage_component_envs",
+        "toolCallId": "call_00_BbPV0OsDD0ge7tUqXRJxRKcJ",
+        "risk": "medium",
+        "scope": "component",
+        "description": "修改组件 33ba9a45daa544779d3aa13a86a7172a 的环境变量",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 185,
+          "service_id": "33ba9a45daa544779d3aa13a86a7172a",
+          "operation": "create",
+          "attr_name": "DD",
+          "attr_value": "yy",
+          "name": "DD",
+          "scope": "inner",
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965"
+        },
+        "followUpActions": [],
+        "decision": "approved"
+      }
+    ],
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "nextAction": "inspect_runtime",
+      "summary": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "toolCalls": []
+    }
+  },
+  {
+    "sessionId": "cs_1777344411165_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "33ba9a45daa544779d3aa13a86a7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "33ba9a45daa544779d3aa13a86a7172a",
+        "name": "33ba9a45daa544779d3aa13a86a7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|33ba9a45daa544779d3aa13a86a7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T02:46:51.165Z",
+    "updatedAt": "2026-04-28T02:49:33.299Z",
+    "latestRunId": "run_1777344573293_5",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "nextAction": "inspect_runtime",
+      "summary": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "toolCalls": []
+    }
+  },
+  {
+    "sessionId": "cs_1777344618272_7",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "33ba9a45daa544779d3aa13a86a7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "33ba9a45daa544779d3aa13a86a7172a",
+        "name": "33ba9a45daa544779d3aa13a86a7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|33ba9a45daa544779d3aa13a86a7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T02:50:18.272Z",
+    "updatedAt": "2026-04-28T02:51:19.368Z",
+    "latestRunId": "run_1777344679363_a",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "nextAction": "inspect_runtime",
+      "summary": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "toolCalls": []
+    }
+  },
+  {
+    "sessionId": "cs_1777345020009_b",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T02:57:00.010Z",
+    "updatedAt": "2026-04-28T02:57:00.158Z",
+    "latestRunId": "run_1777345020148_c",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "selectedWorkflow": "rainbond-fullstack-troubleshooter",
+      "nextAction": "inspect_runtime",
+      "summary": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "subflowData": {
+        "appStatus": "closed",
+        "resolvedServiceId": "33ba9a45daa544779d3aa13a86a7172a",
+        "resolvedServiceAlias": "gra7172a",
+        "componentName": "gra7172a",
+        "componentCount": 1,
+        "inspectedComponentStatus": "waiting"
+      },
+      "toolCalls": [
+        {
+          "name": "rainbond_get_app_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_query_components",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_summary",
+          "status": "success"
+        }
+      ]
+    }
+  },
+  {
+    "sessionId": "cs_1777345065522_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T02:57:45.522Z",
+    "updatedAt": "2026-04-28T02:58:03.287Z",
+    "latestRunId": "run_1777345083282_4",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "selectedWorkflow": "rainbond-fullstack-troubleshooter",
+      "nextAction": "continue_runtime_diagnosis",
+      "summary": "继续沿着 rainbond-fullstack-troubleshooter → inspect-runtime 阶段推进。组件 gra7172a 的 canonical service_id 已确认是 33ba9a45daa544779d3aa13a86a7172a。我重新拉取了 Pod、Events 和组件详情，当前重点 Pod 为 default-demo-2048-678f697857-nlwm2（SCHEDULING）。",
+      "subflowData": {
+        "appStatus": "closed",
+        "componentCount": 1,
+        "inspectedComponentStatus": "",
+        "resolvedServiceId": "33ba9a45daa544779d3aa13a86a7172a",
+        "resolvedServiceAlias": "gra7172a",
+        "componentName": "gra7172a",
+        "podCount": 2,
+        "selectedPodName": "default-demo-2048-678f697857-nlwm2",
+        "selectedPodStatus": "SCHEDULING",
+        "currentCpu": 8000,
+        "currentMemory": 8192
+      },
+      "toolCalls": [
+        {
+          "name": "rainbond_get_app_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_query_components",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_summary",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_pods",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_events",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_pod_detail",
+          "status": "success"
+        }
+      ]
+    }
+  },
+  {
+    "sessionId": "cs_1777345392426_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T03:03:12.426Z",
+    "updatedAt": "2026-04-28T03:03:12.592Z",
+    "latestRunId": "run_1777345392585_2",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "selectedWorkflow": "rainbond-fullstack-troubleshooter",
+      "nextAction": "inspect_runtime",
+      "summary": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "subflowData": {
+        "appStatus": "closed",
+        "resolvedServiceId": "33ba9a45daa544779d3aa13a86a7172a",
+        "resolvedServiceAlias": "gra7172a",
+        "componentName": "gra7172a",
+        "componentCount": 1,
+        "inspectedComponentStatus": "waiting"
+      },
+      "toolCalls": [
+        {
+          "name": "rainbond_get_app_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_query_components",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_summary",
+          "status": "success"
+        }
+      ]
+    }
+  },
+  {
+    "sessionId": "cs_1777345481728_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T03:04:41.728Z",
+    "updatedAt": "2026-04-28T03:04:41.897Z",
+    "latestRunId": "run_1777345481890_2",
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "selectedWorkflow": "rainbond-fullstack-troubleshooter",
+      "nextAction": "inspect_runtime",
+      "summary": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "subflowData": {
+        "appStatus": "closed",
+        "resolvedServiceId": "33ba9a45daa544779d3aa13a86a7172a",
+        "resolvedServiceAlias": "gra7172a",
+        "componentName": "gra7172a",
+        "componentCount": 1,
+        "inspectedComponentStatus": "waiting"
+      },
+      "toolCalls": [
+        {
+          "name": "rainbond_get_app_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_query_components",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_component_summary",
+          "status": "success"
+        }
+      ]
+    }
+  },
+  {
+    "sessionId": "cs_1777346411748_3",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "",
+      "app_name": "",
+      "component_id": "",
+      "component_source": "",
+      "page": "/team/jabrm8l6/region/rainbond/index",
+      "resource": {
+        "type": "page",
+        "id": "/team/jabrm8l6/region/rainbond/index",
+        "name": "/team/jabrm8l6/region/rainbond/index"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|||candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T03:20:11.748Z",
+    "updatedAt": "2026-04-28T03:20:11.887Z",
+    "latestRunId": "run_1777346411880_4"
+  },
+  {
+    "sessionId": "cs_1777346520548_1",
+    "tenantId": "local-default",
+    "userId": 1,
+    "username": "admin",
+    "sourceSystem": "local-client",
+    "authMode": "user_jwt",
+    "teamName": "jabrm8l6",
+    "context": {
+      "view": "team",
+      "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+      "team_name": "jabrm8l6",
+      "region_name": "rainbond",
+      "app_id": "185",
+      "app_name": "185",
+      "component_id": "gra7172a",
+      "component_source": "query",
+      "page": "/team/jabrm8l6/region/rainbond/apps/185/overview",
+      "resource": {
+        "type": "component",
+        "id": "gra7172a",
+        "name": "gra7172a"
+      }
+    },
+    "contextSignature": "jabrm8l6|rainbond|185|gra7172a|candidate",
+    "status": "active",
+    "createdAt": "2026-04-28T03:22:00.548Z",
+    "updatedAt": "2026-04-28T03:25:37.936Z",
+    "latestRunId": "run_1777346737930_k",
+    "approvalLedger": [
+      {
+        "approvalId": "ap_1777346658187_d",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_vertical_scale_component",
+        "toolCallId": "call_00_YHJzUr01Wfp5ht6vUYboTYPe",
+        "risk": "medium",
+        "scope": "component",
+        "description": "调整组件 33ba9a45daa544779d3aa13a86a7172a 的资源配置",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 185,
+          "service_id": "33ba9a45daa544779d3aa13a86a7172a",
+          "new_memory": 1024,
+          "new_cpu": 1000,
+          "enterprise_id": "8948f3fcf66e0cd91bf1045e8ca4a965",
+          "new_gpu": 0
+        },
+        "followUpActions": [],
+        "decision": "approved"
+      },
+      {
+        "approvalId": "ap_1777346710535_i",
+        "kind": "mcp_tool",
+        "toolName": "rainbond_install_app_model",
+        "toolCallId": "ap_1777346710535_i",
+        "risk": "high",
+        "scope": "app",
+        "description": "执行 rainbond_install_app_model",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 185,
+          "source": "cloud",
+          "market_name": "RainbondMarket",
+          "app_model_id": "7f0d0509699e4425964c71be4b0fa428",
+          "app_model_version": "8.0.18",
+          "is_deploy": true,
+          "__await_version_input": true,
+          "suggested_version": "8.0.18"
+        },
+        "decision": "approved"
+      }
+    ],
+    "pendingWorkflowContinuation": {
+      "workflowId": "rainbond-app-assistant",
+      "selectedWorkflow": "rainbond-app-version-assistant",
+      "nextAction": "run_version_flow",
+      "summary": "已创建应用快照 v1.0.4，可以继续执行发布或回滚。",
+      "subflowData": {
+        "currentVersion": "1.0.3",
+        "snapshotCount": 1,
+        "latestSnapshotVersion": "1.0.3",
+        "latestSnapshotServiceCount": 0,
+        "snapshotVersion": "v1.0.4"
+      },
+      "toolCalls": [
+        {
+          "name": "rainbond_get_app_version_overview",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_list_app_version_snapshots",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_get_app_version_snapshot_detail",
+          "status": "success"
+        },
+        {
+          "name": "rainbond_create_app_version_snapshot",
+          "status": "success"
+        }
+      ]
+    }
   }
 ]

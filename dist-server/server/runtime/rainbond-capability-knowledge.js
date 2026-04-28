@@ -1,6 +1,7 @@
 import { MUTABLE_TOOL_POLICY_LIST } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createWorkflowRegistry } from "../workflows/registry.js";
 import { rainbondWorkflowMetadata } from "../../shared/workflow-metadata/rainbond.js";
+import { generatedEmbeddedWorkflowKnowledge } from "../../generated/rainbond/capability-knowledge.js";
 const EMBEDDED_WORKFLOW_KNOWLEDGE = {
     "rainbond-app-assistant": {
         useWhen: "用户希望由系统先判断下一步该部署、排障、验收、模板安装还是进入版本中心，或者当前诉求还不够明确。",
@@ -76,6 +77,30 @@ const EMBEDDED_WORKFLOW_KNOWLEDGE = {
         vocabulary: ["snapshot", "publish draft", "publish event", "rollback record"],
     },
 };
+function getWorkflowKnowledge(id) {
+    const generated = generatedEmbeddedWorkflowKnowledge[id];
+    const handwritten = EMBEDDED_WORKFLOW_KNOWLEDGE[id];
+    if (!generated && !handwritten) {
+        return undefined;
+    }
+    return {
+        useWhen: generated?.useWhen ||
+            handwritten?.useWhen ||
+            "参考当前 server workflow 路由。",
+        avoidWhen: generated?.avoidWhen ||
+            handwritten?.avoidWhen ||
+            "超出当前嵌入式能力边界的任务。",
+        preferredTools: Array.isArray(generated?.preferredTools) && generated.preferredTools.length > 0
+            ? [...generated.preferredTools]
+            : handwritten?.preferredTools || [],
+        scopeHint: generated?.scopeHint ||
+            handwritten?.scopeHint ||
+            "优先复用当前已知上下文。",
+        vocabulary: Array.isArray(generated?.vocabulary) && generated.vocabulary.length > 0
+            ? [...generated.vocabulary]
+            : handwritten?.vocabulary,
+    };
+}
 const READ_ONLY_PREFIXES = ["rainbond_get_", "rainbond_query_", "rainbond_list_"];
 export function buildEmbeddedWorkflowKnowledgeSection() {
     const workflowRegistry = createWorkflowRegistry();
@@ -88,7 +113,7 @@ export function buildEmbeddedWorkflowKnowledgeSection() {
     ];
     for (const workflow of workflowRegistry.list()) {
         const metadata = metadataById.get(workflow.id);
-        const entry = EMBEDDED_WORKFLOW_KNOWLEDGE[workflow.id];
+        const entry = getWorkflowKnowledge(workflow.id);
         lines.push(`### ${workflow.id}`);
         lines.push(`- 概要：${metadata?.summary || workflow.description}`);
         lines.push(`- 适用场景：${entry?.useWhen || "参考当前 server workflow 路由。"}`);

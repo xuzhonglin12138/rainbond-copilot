@@ -1,3 +1,5 @@
+import { generatedRainbondWorkflowMetadata } from "../../generated/rainbond/workflow-metadata.js";
+
 export interface WorkflowDisplayMetadata {
   id: string;
   title: string;
@@ -8,7 +10,7 @@ export interface WorkflowDisplayMetadata {
   }>;
 }
 
-export const rainbondWorkflowMetadata: WorkflowDisplayMetadata[] = [
+const HANDWRITTEN_METADATA: WorkflowDisplayMetadata[] = [
   {
     id: "rainbond-app-assistant",
     title: "Rainbond App Assistant",
@@ -76,3 +78,26 @@ export const rainbondWorkflowMetadata: WorkflowDisplayMetadata[] = [
     ],
   },
 ];
+
+const generatedById = new Map<string, (typeof generatedRainbondWorkflowMetadata)[number]>(
+  generatedRainbondWorkflowMetadata.map((item) => [item.id, item])
+);
+
+export const rainbondWorkflowMetadata: WorkflowDisplayMetadata[] = HANDWRITTEN_METADATA.map(
+  (item) => {
+    const generated = generatedById.get(item.id);
+    if (!generated) {
+      return item;
+    }
+
+    return {
+      id: generated.id,
+      title: generated.title,
+      summary: generated.summary,
+      stages: generated.stages.map((stage) => ({
+        id: stage.id,
+        label: stage.label,
+      })),
+    };
+  }
+);

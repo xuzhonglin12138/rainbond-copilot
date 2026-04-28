@@ -15,7 +15,8 @@ import { CopilotSessionService, } from "../services/copilot-session-service.js";
 import { CopilotRunService } from "../services/copilot-run-service.js";
 import { createServerActionSkills } from "../runtime/server-action-skills.js";
 import { WorkflowExecutor } from "../workflows/executor.js";
-import { isContinueWorkflowActionPrompt } from "../workflows/executor.js";
+import { isContinueWorkflowActionPrompt, isWorkflowContinuationReferencePrompt, } from "../workflows/executor.js";
+import { logWorkflowDebug } from "../workflows/workflow-debug.js";
 import { buildPendingWorkflowActionCompletion } from "../workflows/pending-action-result.js";
 import { getMutableToolPolicy } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 function readContextString(context, ...keys) {
@@ -71,6 +72,60 @@ function parseSnapshotCreateVersionInput(message) {
     }
     const matched = normalized.match(/\b(v?\d+\.\d+(?:\.\d+)?)\b/i);
     return matched && matched[1] ? matched[1] : "";
+}
+function buildWorkflowContinuationPrompt(continuation, userMessage) {
+    const lines = [
+        "请基于以下刚刚完成的 Rainbond 工作流结果继续，不要说缺少前文上下文。",
+        `- workflow_id: ${continuation.workflowId}`,
+        continuation.selectedWorkflow
+            ? `- selected_workflow: ${continuation.selectedWorkflow}`
+            : "",
+        continuation.nextAction ? `- next_action: ${continuation.nextAction}` : "",
+        `- summary: ${continuation.summary}`,
+        continuation.subflowData
+            ? `- subflow_data: ${JSON.stringify(continuation.subflowData)}`
+            : "",
+        continuation.toolCalls && continuation.toolCalls.length > 0
+            ? `- tool_calls: ${JSON.stringify(continuation.toolCalls)}`
+            : "",
+        `用户刚刚的继续请求：${userMessage || "继续"}`,
+        "请沿着同一个 Rainbond workflow 继续下一步诊断、校验或动作推进。",
+    ].filter(Boolean);
+    return lines.join("\n");
+}
+function findSuggestedWorkflowAction(continuation, message) {
+    if (!continuation || !Array.isArray(continuation.suggestedActions)) {
+        return null;
+    }
+    const suggestions = continuation.suggestedActions;
+    if (suggestions.length === 0) {
+        return null;
+    }
+    const normalized = (message || "").trim().toLowerCase();
+    if (!normalized) {
+        return null;
+    }
+    const optionMatch = normalized.match(/方案\s*([a-z0-9一二三四]+)/i);
+    if (optionMatch && optionMatch[1]) {
+        const selectedKey = optionMatch[1].toUpperCase();
+        const matchedByKey = suggestions.find((item) => (item.optionKey || "").toUpperCase() === selectedKey);
+        if (matchedByKey) {
+            return matchedByKey;
+        }
+    }
+    const matchedByLabel = suggestions.find((item) => {
+        const label = (item.label || "").trim().toLowerCase();
+        return !!label && normalized.includes(label);
+    });
+    if (matchedByLabel) {
+        return matchedByLabel;
+    }
+    if (isWorkflowContinuationReferencePrompt(message)) {
+        return (suggestions.find((item) => item.recommended) ||
+            suggestions[0] ||
+            null);
+    }
+    return null;
 }
 function requestsRollbackToPreviousSnapshot(message) {
     const normalized = (message || "").trim();
@@ -837,6 +892,51 @@ export function createCopilotController(deps = {}) {
                     return;
                 }
                 const pendingSnapshotVersion = parseSnapshotCreateVersionInput(request.body.message);
+                const suggestedWorkflowAction = findSuggestedWorkflowAction(session.pendingWorkflowContinuation, request.body.message);
+                logWorkflowDebug("workflow.suggested_action.match", {
+                    message: request.body.message,
+                    hasContinuation: !!session.pendingWorkflowContinuation,
+                    suggestedActionCount: session.pendingWorkflowContinuation?.suggestedActions?.length || 0,
+                    matchedAction: suggestedWorkflowAction
+                        ? {
+                            optionKey: suggestedWorkflowAction.optionKey,
+                            label: suggestedWorkflowAction.label,
+                            toolName: suggestedWorkflowAction.pendingAction.toolName,
+                            requiresApproval: suggestedWorkflowAction.pendingAction.requiresApproval,
+                        }
+                        : null,
+                });
+                if (!session.pendingWorkflowAction &&
+                    suggestedWorkflowAction) {
+                    const selectedPendingAction = suggestedWorkflowAction.pendingAction;
+                    await sessionStore.update({
+                        ...session,
+                        pendingWorkflowAction: selectedPendingAction,
+                        pendingWorkflowContinuation: undefined,
+                    });
+                    if (selectedPendingAction.requiresApproval) {
+                        await queuePendingActionApproval({
+                            actor: request.actor,
+                            sessionId: request.params.sessionId,
+                            runId: run.runId,
+                            pendingAction: selectedPendingAction,
+                            continuation: session.pendingLlmContinuation,
+                            description: selectedPendingAction.description ||
+                                suggestedWorkflowAction.description,
+                            risk: selectedPendingAction.risk || "medium",
+                        });
+                        return;
+                    }
+                    const handledByWorkflow = await workflowExecutor.execute({
+                        actor: request.actor,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        message: "继续执行",
+                    });
+                    if (handledByWorkflow) {
+                        return;
+                    }
+                }
                 if (session.pendingWorkflowAction &&
                     deferredAction &&
                     session.pendingWorkflowAction.toolName === deferredAction.toolName &&
@@ -1141,6 +1241,10 @@ export function createCopilotController(deps = {}) {
                     actor: request.actor,
                     sessionId: request.params.sessionId,
                 });
+                const llmMessage = isWorkflowContinuationReferencePrompt(request.body.message) &&
+                    session.pendingWorkflowContinuation
+                    ? buildWorkflowContinuationPrompt(session.pendingWorkflowContinuation, request.body.message)
+                    : request.body.message;
                 const preferLegacyPlanner = enableLegacyActionSkills && deps.llmClient === null;
                 if (preferLegacyPlanner) {
                     await executeLegacyPlannedRun({
@@ -1156,7 +1260,7 @@ export function createCopilotController(deps = {}) {
                     actor: request.actor,
                     sessionId: request.params.sessionId,
                     runId: run.runId,
-                    message: request.body.message,
+                    message: llmMessage,
                     sessionContext: session.context,
                 });
                 if (!handledByLlm && enableLegacyActionSkills) {

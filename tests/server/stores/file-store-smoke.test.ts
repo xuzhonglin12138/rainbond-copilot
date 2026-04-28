@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -13,6 +13,7 @@ import {
   FileRunStore,
   FileSessionStore,
 } from "../../../src/server/stores/file-stores";
+import { resolveStoreFile } from "../../../src/server/stores/file-store-utils";
 
 const tempDirs: string[] = [];
 
@@ -82,5 +83,19 @@ describe("file-backed stores", () => {
       await reloadedEventStore.listByRun("run_123", "t_123", { afterSequence: 0 })
     ).toHaveLength(1);
     expect(await reloadedApprovalStore.getById("ap_123", "t_123")).toBeTruthy();
+  });
+
+  it("surfaces the corrupted store file path when json parsing fails", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "copilot-file-store-"));
+    tempDirs.push(dir);
+
+    const eventFile = resolveStoreFile(dir, "events");
+    await writeFile(eventFile, '[{"broken": "value"', "utf-8");
+
+    const eventStore = new FileEventStore(dir);
+
+    await expect(
+      eventStore.listByRun("run_123", "t_123", { afterSequence: 0 })
+    ).rejects.toThrow(`Failed to parse JSON store ${eventFile}`);
   });
 });

@@ -1,4 +1,5 @@
-export const rainbondWorkflowMetadata = [
+import { generatedRainbondWorkflowMetadata } from "../../generated/rainbond/workflow-metadata.js";
+const HANDWRITTEN_METADATA = [
     {
         id: "rainbond-app-assistant",
         title: "Rainbond App Assistant",
@@ -66,3 +67,19 @@ export const rainbondWorkflowMetadata = [
         ],
     },
 ];
+const generatedById = new Map(generatedRainbondWorkflowMetadata.map((item) => [item.id, item]));
+export const rainbondWorkflowMetadata = HANDWRITTEN_METADATA.map((item) => {
+    const generated = generatedById.get(item.id);
+    if (!generated) {
+        return item;
+    }
+    return {
+        id: generated.id,
+        title: generated.title,
+        summary: generated.summary,
+        stages: generated.stages.map((stage) => ({
+            id: stage.id,
+            label: stage.label,
+        })),
+    };
+});

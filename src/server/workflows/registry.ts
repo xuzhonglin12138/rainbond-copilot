@@ -1,3 +1,5 @@
+import { listCompiledEmbeddedWorkflows } from "./compiled-registry.js";
+
 export interface WorkflowDefinition {
   id: string;
   name: string;
@@ -56,13 +58,31 @@ export interface WorkflowRegistry {
   get(id: string): WorkflowDefinition | null;
 }
 
+function listMergedEmbeddedWorkflows(): WorkflowDefinition[] {
+  const compiledById = new Map(
+    listCompiledEmbeddedWorkflows().map((workflow) => [workflow.id, workflow])
+  );
+  const merged: WorkflowDefinition[] = [];
+
+  for (const workflow of EMBEDDED_WORKFLOWS) {
+    merged.push(compiledById.get(workflow.id) || workflow);
+    compiledById.delete(workflow.id);
+  }
+
+  for (const workflow of compiledById.values()) {
+    merged.push(workflow);
+  }
+
+  return merged;
+}
+
 export function createWorkflowRegistry(): WorkflowRegistry {
   return {
     list() {
-      return EMBEDDED_WORKFLOWS.slice();
+      return listMergedEmbeddedWorkflows();
     },
     get(id: string) {
-      return EMBEDDED_WORKFLOWS.find((workflow) => workflow.id === id) || null;
+      return listMergedEmbeddedWorkflows().find((workflow) => workflow.id === id) || null;
     },
   };
 }

@@ -1,3 +1,4 @@
+import { listCompiledEmbeddedWorkflows } from "./compiled-registry.js";
 const EMBEDDED_WORKFLOWS = [
     {
         id: "rainbond-app-assistant",
@@ -42,13 +43,25 @@ const EMBEDDED_WORKFLOWS = [
         stages: ["resolve-scope", "inspect-version-center", "execute-version-action", "report"],
     },
 ];
+function listMergedEmbeddedWorkflows() {
+    const compiledById = new Map(listCompiledEmbeddedWorkflows().map((workflow) => [workflow.id, workflow]));
+    const merged = [];
+    for (const workflow of EMBEDDED_WORKFLOWS) {
+        merged.push(compiledById.get(workflow.id) || workflow);
+        compiledById.delete(workflow.id);
+    }
+    for (const workflow of compiledById.values()) {
+        merged.push(workflow);
+    }
+    return merged;
+}
 export function createWorkflowRegistry() {
     return {
         list() {
-            return EMBEDDED_WORKFLOWS.slice();
+            return listMergedEmbeddedWorkflows();
         },
         get(id) {
-            return EMBEDDED_WORKFLOWS.find((workflow) => workflow.id === id) || null;
+            return listMergedEmbeddedWorkflows().find((workflow) => workflow.id === id) || null;
         },
     };
 }

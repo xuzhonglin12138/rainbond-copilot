@@ -24,5 +24,7 @@ npm run build:server
 echo "Starting Rainbond Copilot API server on ${COPILOT_API_HOST}:${COPILOT_API_PORT}"
 echo "Store mode: ${COPILOT_STORE_MODE}"
 echo "Data dir: ${COPILOT_DATA_DIR}"
+echo "Workflow debug: ${COPILOT_DEBUG_WORKFLOW:-${RAINBOND_DEBUG_WORKFLOW:-off}}"
+echo "Tip: export COPILOT_DEBUG_WORKFLOW=1 before running this script to enable workflow tracing"
 
 exec node dist-server/server/index.js

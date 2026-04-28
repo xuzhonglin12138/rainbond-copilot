@@ -25,6 +25,9 @@ function buildUiScopeFromSessionContext(sessionContext = {}) {
 function isCapabilityPrompt(message) {
     return /(你能做什么|可以做什么|有哪些流程|有哪些能力|有哪些工作流|workflow|skill|技能)/i.test(message || "");
 }
+function isGenericIssueInspectionPrompt(message) {
+    return /((这个|当前)?(组件|应用).*(怎么了|怎么回事|什么问题|有问题|出问题|啥情况))|((what'?s|what is).*(wrong|issue))|((component|app).*(wrong|issue))/i.test(message || "");
+}
 function buildCapabilitySummary() {
     return [
         "当前独立前端已经切到 Rainbond server workflow 主链路，优先使用以下嵌入式流程：",
@@ -122,7 +125,9 @@ export async function executeRainbondAppAssistant(input) {
             selectedWorkflow: subflow.selectedWorkflow,
         };
     }
-    if (/(修复|恢复服务|故障|异常|启动不起来|排查)/i.test(input.message) || normalizedMessage.includes("fix")) {
+    if (/(修复|恢复服务|故障|异常|启动不起来|排查)/i.test(input.message) ||
+        normalizedMessage.includes("fix") ||
+        isGenericIssueInspectionPrompt(input.message)) {
         const subflow = selectTroubleshooterSubflow();
         return {
             workflowId: "rainbond-app-assistant",

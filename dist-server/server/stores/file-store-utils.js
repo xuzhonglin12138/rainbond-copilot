@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 async function ensureParentDir(filePath) {
     await mkdir(dirname(filePath), { recursive: true });
@@ -16,10 +16,16 @@ export async function readJsonArray(filePath) {
         if (error?.code === "ENOENT") {
             return [];
         }
+        if (error instanceof SyntaxError) {
+            throw new Error(`Failed to parse JSON store ${filePath}: ${error.message}`);
+        }
         throw error;
     }
 }
 export async function writeJsonArray(filePath, records) {
     await ensureParentDir(filePath);
-    await writeFile(filePath, JSON.stringify(records, null, 2), "utf-8");
+    const tempFilePath = `${filePath}.tmp`;
+    const payload = JSON.stringify(records, null, 2);
+    await writeFile(tempFilePath, payload, "utf-8");
+    await rename(tempFilePath, filePath);
 }

@@ -20,6 +20,24 @@ interface ApprovalState {
   lastSequence: number;
 }
 
+function isUiDebugEnabled(env: ViteEnvRecord): boolean {
+  const raw = env.VITE_COPILOT_DEBUG_UI || "";
+  return /^(1|true|yes|on)$/i.test(raw.trim());
+}
+
+function logUiDebug(
+  enabled: boolean,
+  event: string,
+  payload?: Record<string, unknown>
+) {
+  if (!enabled) {
+    return;
+  }
+
+  const suffix = payload ? ` ${JSON.stringify(payload, null, 2)}` : "";
+  console.log(`[copilot-ui-debug] ${event}${suffix}`);
+}
+
 function getBrowserEnv(): ViteEnvRecord {
   const viteMeta = import.meta as ImportMeta & {
     env?: ViteEnvRecord;
@@ -172,7 +190,8 @@ function findStreamMessageIndex(messages: Message[], messageId: string): number 
 function applyPublicEvent(
   previousMessages: Message[],
   previousApprovals: Record<string, ApprovalState>,
-  event: PublicCopilotEvent
+  event: PublicCopilotEvent,
+  options: { debug?: boolean } = {}
 ): {
   messages: Message[];
   approvals: Record<string, ApprovalState>;
@@ -180,6 +199,22 @@ function applyPublicEvent(
   const nextMessages = previousMessages.slice();
   const nextApprovals = { ...previousApprovals };
   const data = event.data || {};
+
+  logUiDebug(!!options.debug, "event_received", {
+    type: event.type,
+    sequence: event.sequence,
+    runId: event.runId,
+    workflowId:
+      event.type === "workflow.completed" || event.type === "workflow.stage"
+        ? String(data.workflow_id || "")
+        : "",
+    summary:
+      event.type === "workflow.completed" &&
+      data &&
+      typeof (data as any).structured_result?.summary === "string"
+        ? (data as any).structured_result.summary
+        : "",
+  });
 
   switch (event.type) {
     case "chat.message.started": {
@@ -366,6 +401,7 @@ export default function App() {
     });
   }, [env]);
   const sessionContext = useMemo(() => buildSessionContext(env), [env]);
+  const uiDebug = useMemo(() => isUiDebugEnabled(env), [env]);
 
   useEffect(() => {
     messagesRef.current = messages;
@@ -410,8 +446,30 @@ export default function App() {
           const applied = applyPublicEvent(
             messagesRef.current,
             approvalsRef.current,
-            event
+            event,
+            { debug: uiDebug }
           );
+          logUiDebug(uiDebug, "event_applied", {
+            type: event.type,
+            sequence: event.sequence,
+            messageCountBefore: messagesRef.current.length,
+            messageCountAfter: applied.messages.length,
+            approvalCountBefore: Object.keys(approvalsRef.current).length,
+            approvalCountAfter: Object.keys(applied.approvals).length,
+            lastMessageType:
+              applied.messages[applied.messages.length - 1]?.type || "",
+            lastMessageContent:
+              applied.messages[applied.messages.length - 1]?.content || "",
+            hasStructuredSummary:
+              event.type === "workflow.completed" &&
+              typeof (event.data as any)?.structured_result?.summary === "string",
+            hasSuggestedActions:
+              event.type === "workflow.completed" &&
+              Array.isArray((event.data as any)?.structured_result?.suggestedActions),
+            hasProposedToolAction:
+              event.type === "workflow.completed" &&
+              !!(event.data as any)?.structured_result?.proposedToolAction,
+          });
           approvalsRef.current = applied.approvals;
           messagesRef.current = applied.messages;
           setApprovalStates(applied.approvals);
@@ -478,8 +536,30 @@ export default function App() {
           const applied = applyPublicEvent(
             messagesRef.current,
             approvalsRef.current,
-            event
+            event,
+            { debug: uiDebug }
           );
+          logUiDebug(uiDebug, "event_applied", {
+            type: event.type,
+            sequence: event.sequence,
+            messageCountBefore: messagesRef.current.length,
+            messageCountAfter: applied.messages.length,
+            approvalCountBefore: Object.keys(approvalsRef.current).length,
+            approvalCountAfter: Object.keys(applied.approvals).length,
+            lastMessageType:
+              applied.messages[applied.messages.length - 1]?.type || "",
+            lastMessageContent:
+              applied.messages[applied.messages.length - 1]?.content || "",
+            hasStructuredSummary:
+              event.type === "workflow.completed" &&
+              typeof (event.data as any)?.structured_result?.summary === "string",
+            hasSuggestedActions:
+              event.type === "workflow.completed" &&
+              Array.isArray((event.data as any)?.structured_result?.suggestedActions),
+            hasProposedToolAction:
+              event.type === "workflow.completed" &&
+              !!(event.data as any)?.structured_result?.proposedToolAction,
+          });
           approvalsRef.current = applied.approvals;
           messagesRef.current = applied.messages;
           setApprovalStates(applied.approvals);

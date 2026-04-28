@@ -28,6 +28,24 @@ export interface PendingLlmContinuation {
   messages: ChatMessage[];
 }
 
+export interface SuggestedWorkflowAction {
+  optionKey?: string;
+  label?: string;
+  description: string;
+  recommended?: boolean;
+  pendingAction: PendingWorkflowAction;
+}
+
+export interface PendingWorkflowContinuation {
+  workflowId: string;
+  selectedWorkflow?: string;
+  nextAction?: string;
+  summary: string;
+  subflowData?: Record<string, unknown>;
+  toolCalls?: Array<{ name: string; status: string }>;
+  suggestedActions?: SuggestedWorkflowAction[];
+}
+
 export interface SessionRecord {
   sessionId: string;
   tenantId: string;
@@ -43,6 +61,7 @@ export interface SessionRecord {
   approvalLedger?: SerializedApprovalLedger;
   pendingWorkflowAction?: PendingWorkflowAction;
   pendingLlmContinuation?: PendingLlmContinuation;
+  pendingWorkflowContinuation?: PendingWorkflowContinuation;
   status: SessionRecordStatus;
   latestRunId?: string;
   createdAt: string;
@@ -64,6 +83,7 @@ export interface CreateSessionRecordInput {
   approvalLedger?: SerializedApprovalLedger;
   pendingWorkflowAction?: PendingWorkflowAction;
   pendingLlmContinuation?: PendingLlmContinuation;
+  pendingWorkflowContinuation?: PendingWorkflowContinuation;
   status?: SessionRecordStatus;
   latestRunId?: string;
   createdAt?: string;
@@ -191,6 +211,7 @@ export function createSessionRecord(
     approvalLedger: input.approvalLedger,
     pendingWorkflowAction: input.pendingWorkflowAction,
     pendingLlmContinuation: input.pendingLlmContinuation,
+    pendingWorkflowContinuation: input.pendingWorkflowContinuation,
     status: input.status ?? "active",
     latestRunId: input.latestRunId,
     createdAt: now,

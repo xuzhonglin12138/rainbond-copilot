@@ -751,8 +751,6 @@ export class ServerLlmExecutor {
     const contextComponentSource = this.readContextString(
       sessionContext?.component_source
     );
-    const canTrustContextComponentId =
-      !!contextComponentId && contextComponentSource.toLowerCase() !== "route";
 
     if (!enterpriseId || !appIdRaw) {
       return nextInput;
@@ -763,14 +761,12 @@ export class ServerLlmExecutor {
 
     if (typeof nextInput.service_id === "string" && nextInput.service_id) {
       nextInput.service_id =
-        canTrustContextComponentId && nextInput.service_id === contextComponentId
-          ? contextComponentId
-          : await this.resolveServiceIdCandidate(
-              client,
-              enterpriseId,
-              appId,
-              nextInput.service_id
-            );
+        await this.resolveServiceIdCandidate(
+          client,
+          enterpriseId,
+          appId,
+          nextInput.service_id
+        );
     }
 
     if (Array.isArray(nextInput.service_ids) && nextInput.service_ids.length > 0) {
@@ -778,10 +774,6 @@ export class ServerLlmExecutor {
         nextInput.service_ids.map(async (item) => {
           if (typeof item !== "string" || !item) {
             return item;
-          }
-
-          if (canTrustContextComponentId && item === contextComponentId) {
-            return contextComponentId;
           }
 
           return this.resolveServiceIdCandidate(

@@ -36,6 +36,7 @@ export class SessionScopedRainbondActionAdapter {
         return this.realAdapter.scaleComponentMemory({
             ...scope,
             memory: input.memory,
+            ...(typeof input.cpu === "number" ? { cpu: input.cpu } : {}),
         });
     }
     async resolveScope(name) {

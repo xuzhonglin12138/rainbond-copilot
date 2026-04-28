@@ -46,6 +46,32 @@ describe("executeRainbondAppAssistant", () => {
     });
   });
 
+  it("routes generic component-problem questions into the troubleshooter subflow when app scope is present", async () => {
+    const result = await executeRainbondAppAssistant({
+      message: "这个组件怎么了",
+      actor: {
+        tenantId: "team-a",
+        userId: "u_1",
+        username: "alice",
+        sourceSystem: "rainbond-ui",
+        roles: [],
+      },
+      sessionContext: {
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: "app-001",
+        component_id: "gra7172a",
+      },
+    });
+
+    expect(result).toMatchObject({
+      workflowId: "rainbond-app-assistant",
+      workflowStage: "assess-state",
+      nextAction: "inspect_runtime",
+      selectedWorkflow: "rainbond-fullstack-troubleshooter",
+    });
+  });
+
   it("selects the bootstrap subflow for deploy-style requests", async () => {
     const result = await executeRainbondAppAssistant({
       message: "帮我把这个项目在 Rainbond 上跑起来",

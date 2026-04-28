@@ -1136,5 +1136,1598 @@
     "messageText": "帮我排查这个组件为啥运行异常",
     "status": "pending",
     "startedAt": "2026-04-27T01:46:30.285Z"
+  },
+  {
+    "runId": "run_1777279231798_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777279231659_1",
+    "messageText": "从云市场安装模板mysql到当前应用",
+    "status": "failed",
+    "startedAt": "2026-04-27T08:40:31.798Z",
+    "errorMessage": "Rainbond MCP request failed with status 500: {\"ok\": false, \"reason\": \"Object of type 'V1AppVersionBase' is not JSON serializable\", \"exceptionName\": \"TypeError\"}",
+    "finishedAt": "2026-04-27T08:40:34.971Z"
+  },
+  {
+    "runId": "run_1777279791524_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777279791397_1",
+    "messageText": "从云市场安装模板mysql到当前应用",
+    "status": "pending",
+    "startedAt": "2026-04-27T08:49:51.524Z",
+    "executionState": {
+      "runId": "run_1777279791524_2",
+      "sessionId": "cs_1777279791397_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "从云市场安装模板mysql到当前应用"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "5.3",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 173,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 5.3。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777279800577_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777279791397_1",
+    "messageText": "是",
+    "status": "completed",
+    "startedAt": "2026-04-27T08:50:00.577Z",
+    "executionState": {
+      "runId": "run_1777279800577_3",
+      "sessionId": "cs_1777279791397_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "是"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"installed\":true,\"source\":\"cloud\",\"app_id\":173,\"app_name\":\"nginx\",\"installed_app_name\":\"企业版控制台\",\"market_name\":\"qiye\",\"service_list\":[{\"ID\":382,\"service_id\":\"1e35fca0139947339f5375854efc7300\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"8fb29dbb717740b8a26d07c840912eb6\",\"service_alias\":\"grfc7300\",\"service_cname\":\"集群安装驱动服务\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/8fb29dbb717740b8a26d07c840912eb6:20210623154649\",\"cmd\":\"start web\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":128,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623154649\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:50:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":49,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:50:03\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grfc7300\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":360,\"service_id\":\"41c637a3486be8fda2001c5139375191\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"0000\",\"service_alias\":\"gr375191\",\"service_cname\":\"nginx\",\"service_region\":\"rainbond\",\"desc\":\"docker run application\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"alpine\",\"update_version\":1,\"image\":\"registry.cn-hangzhou.aliyuncs.com/goodrain/nginx:alpine\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":500,\"container_gpu\":0,\"min_memory\":512,\"setting\":\"\",\"extend_method\":\"stateless_multiple\",\"env\":\",\",\"inner_port\":0,\"volume_mount_path\":\"\",\"host_path\":\"/grdata/tenant/1cc40a372b00476d92c53588ca662402/service/41c637a3486be8fda2001c5139375191\",\"deploy_version\":\"\",\"code_from\":\"image_manual\",\"git_url\":null,\"create_time\":\"2026-04-27 16:32:21\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":\"\",\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"goodrain\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":0,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"docker_image\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:32:21\",\"check_uuid\":\"f0dba900-8390-4f13-ae18-99d30c27447b\",\"check_event_id\":\"74b68009a9694ea5bf8de4b9ad309ea5\",\"docker_cmd\":\"registry.cn-hangzhou.aliyuncs.com/goodrain/nginx:alpine\",\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"nginx\",\"job_strategy\":null,\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":381,\"service_id\":\"50078b7089c14f439a83b3e0ee47f1c8\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"43590b47d1ab48abb5600065bcf2ee83\",\"service_alias\":\"gr47f1c8\",\"service_cname\":\"消息与监控控制器\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/43590b47d1ab48abb5600065bcf2ee83:20210623154700\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":128,\"setting\":null,\"extend_method\":\"state_singleton\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623154700\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:50:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":49,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:50:03\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr47f1c8\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":384,\"service_id\":\"519239a0cff748a7bb6c395718329dd2\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"ba46fa740f9c428e8902b7363fe99911\",\"service_alias\":\"gr329dd2\",\"service_cname\":\"Rainbond-控制台\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/ba46fa740f9c428e8902b7363fe99911:20210623184855\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":1024,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623184855\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:50:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":1024,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":49,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:50:03\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr329dd2\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":383,\"service_id\":\"59b2862312234d429a5bc9a416b30fd2\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"ac229b5bc5b047cbb49df6f22a7c60a0\",\"service_alias\":\"grb30fd2\",\"service_cname\":\"控制台-UI\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/ac229b5bc5b047cbb49df6f22a7c60a0:20210618002822\",\"cmd\":\"start web\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":64,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210618002822\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:50:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":64,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":49,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:50:03\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grb30fd2\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":385,\"service_id\":\"b232909a92ce489bbaca63b41555ea6b\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"e4f7c638a89e4b8f86c1954a53a21a18\",\"service_alias\":\"gr55ea6b\",\"service_cname\":\"redis\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/e4f7c638a89e4b8f86c1954a53a21a18:20210423151037\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":256,\"setting\":null,\"extend_method\":\"state_singleton\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210423151037\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:50:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":256,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":49,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:50:03\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr55ea6b\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":380,\"service_id\":\"c92f44da90ec4affaa8ad002ed8ed5f3\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"41f920040ad544de8ff25936357ee6ad\",\"service_alias\":\"gr8ed5f3\",\"service_cname\":\"Mysql5.7\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/41f920040ad544de8ff25936357ee6ad:20210220171922\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":512,\"setting\":null,\"extend_method\":\"state_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210220171922\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:50:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":49,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:50:03\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr8ed5f3\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"}]}}",
+          "name": "rainbond_install_app_model",
+          "tool_call_id": "rainbond_install_app_model"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "final_output"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "rainbond_install_app_model"
+      ],
+      "finalOutput": "已完成模板安装，目标应用 企业版控制台 已进入后续部署流程。",
+      "status": "completed"
+    },
+    "finishedAt": "2026-04-27T08:50:04.082Z"
+  },
+  {
+    "runId": "run_1777279910590_6",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777279791397_1",
+    "messageText": "从开源应用市场安装Mysql",
+    "status": "pending",
+    "startedAt": "2026-04-27T08:51:50.590Z",
+    "executionState": {
+      "runId": "run_1777279910590_6",
+      "sessionId": "cs_1777279791397_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "从开源应用市场安装Mysql"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "5.3",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 163,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 5.3。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777279919592_7",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777279791397_1",
+    "messageText": "可以",
+    "status": "completed",
+    "startedAt": "2026-04-27T08:51:59.592Z",
+    "executionState": {
+      "runId": "run_1777279919592_7",
+      "sessionId": "cs_1777279791397_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "可以"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"installed\":true,\"source\":\"cloud\",\"app_id\":163,\"app_name\":\"xuzl\",\"installed_app_name\":\"企业版控制台\",\"market_name\":\"qiye\",\"service_list\":[{\"ID\":391,\"service_id\":\"0f1595cee5ab4a69b90058b7608f37dc\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"e4f7c638a89e4b8f86c1954a53a21a18\",\"service_alias\":\"gr8f37dc\",\"service_cname\":\"redis\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/e4f7c638a89e4b8f86c1954a53a21a18:20210423151037\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":256,\"setting\":null,\"extend_method\":\"state_singleton\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210423151037\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:52:02\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":256,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":50,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:52:02\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr8f37dc\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":387,\"service_id\":\"1460aeb1643845eaa33ad03620492d27\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"43590b47d1ab48abb5600065bcf2ee83\",\"service_alias\":\"gr492d27\",\"service_cname\":\"消息与监控控制器\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/43590b47d1ab48abb5600065bcf2ee83:20210623154700\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":128,\"setting\":null,\"extend_method\":\"state_singleton\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623154700\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:52:02\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":50,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:52:02\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr492d27\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":388,\"service_id\":\"4c18555297a44c2aafa5d84a5bb4a845\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"8fb29dbb717740b8a26d07c840912eb6\",\"service_alias\":\"grb4a845\",\"service_cname\":\"集群安装驱动服务\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/8fb29dbb717740b8a26d07c840912eb6:20210623154649\",\"cmd\":\"start web\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":128,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623154649\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:52:02\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":50,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:52:02\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grb4a845\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":386,\"service_id\":\"97c95f8ba1a64dde84050e28e4fbe992\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"41f920040ad544de8ff25936357ee6ad\",\"service_alias\":\"grfbe992\",\"service_cname\":\"Mysql5.7\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/41f920040ad544de8ff25936357ee6ad:20210220171922\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":512,\"setting\":null,\"extend_method\":\"state_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210220171922\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:52:02\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":50,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:52:02\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grfbe992\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":390,\"service_id\":\"9d3eb6f6027940869864fcb2b7ccac9f\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"ba46fa740f9c428e8902b7363fe99911\",\"service_alias\":\"grccac9f\",\"service_cname\":\"Rainbond-控制台\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/ba46fa740f9c428e8902b7363fe99911:20210623184855\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":1024,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623184855\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:52:02\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":1024,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":50,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:52:02\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grccac9f\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":389,\"service_id\":\"b2339e2332184063a54b715a73cd98a6\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"ac229b5bc5b047cbb49df6f22a7c60a0\",\"service_alias\":\"grcd98a6\",\"service_cname\":\"控制台-UI\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/ac229b5bc5b047cbb49df6f22a7c60a0:20210618002822\",\"cmd\":\"start web\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":64,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210618002822\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 16:52:02\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":64,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":50,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 16:52:02\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grcd98a6\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"}]}}",
+          "name": "rainbond_install_app_model",
+          "tool_call_id": "rainbond_install_app_model"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "final_output"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "rainbond_install_app_model"
+      ],
+      "finalOutput": "已完成模板安装，目标应用 企业版控制台 已进入后续部署流程。",
+      "status": "completed"
+    },
+    "finishedAt": "2026-04-27T08:52:02.942Z"
+  },
+  {
+    "runId": "run_1777280549638_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777280549503_1",
+    "messageText": "从云市场安装模板mysql到当前应用",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:02:29.638Z",
+    "executionState": {
+      "runId": "run_1777280549638_2",
+      "sessionId": "cs_1777280549503_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "从云市场安装模板mysql到当前应用"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "5.3",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 156,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 5.3。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777280593978_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777280593817_3",
+    "messageText": "从云市场安装模板mysql到当前应用",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:03:13.978Z",
+    "executionState": {
+      "runId": "run_1777280593978_4",
+      "sessionId": "cs_1777280593817_3",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "从云市场安装模板mysql到当前应用"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "5.3",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 6,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 5.3。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777280600459_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777280593817_3",
+    "messageText": "继续",
+    "status": "completed",
+    "startedAt": "2026-04-27T09:03:20.459Z",
+    "executionState": {
+      "runId": "run_1777280600459_5",
+      "sessionId": "cs_1777280593817_3",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "继续"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"installed\":true,\"source\":\"cloud\",\"app_id\":6,\"app_name\":\"test\",\"installed_app_name\":\"企业版控制台\",\"market_name\":\"qiye\",\"service_list\":[{\"ID\":395,\"service_id\":\"3f411bb009374c948cedc7ce400be261\",\"tenant_id\":\"c724cc2ead764c5c9700d2589a5f6675\",\"service_key\":\"8fb29dbb717740b8a26d07c840912eb6\",\"service_alias\":\"gr0be261\",\"service_cname\":\"集群安装驱动服务\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/8fb29dbb717740b8a26d07c840912eb6:20210623154649\",\"cmd\":\"start web\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":128,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623154649\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:03:23\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":52,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:03:23\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr0be261\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":393,\"service_id\":\"6fde0b4716164ebbb90b4b8d436bfd25\",\"tenant_id\":\"c724cc2ead764c5c9700d2589a5f6675\",\"service_key\":\"41f920040ad544de8ff25936357ee6ad\",\"service_alias\":\"gr6bfd25\",\"service_cname\":\"Mysql5.7\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/41f920040ad544de8ff25936357ee6ad:20210220171922\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":512,\"setting\":null,\"extend_method\":\"state_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210220171922\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:03:23\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":52,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:03:23\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr6bfd25\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":394,\"service_id\":\"740502ac9d344bdbafbea671d0da8e20\",\"tenant_id\":\"c724cc2ead764c5c9700d2589a5f6675\",\"service_key\":\"43590b47d1ab48abb5600065bcf2ee83\",\"service_alias\":\"grda8e20\",\"service_cname\":\"消息与监控控制器\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/43590b47d1ab48abb5600065bcf2ee83:20210623154700\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":128,\"setting\":null,\"extend_method\":\"state_singleton\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623154700\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:03:23\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":52,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:03:23\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grda8e20\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":398,\"service_id\":\"741cb8acd0634ff3bb1caf81023d917b\",\"tenant_id\":\"c724cc2ead764c5c9700d2589a5f6675\",\"service_key\":\"e4f7c638a89e4b8f86c1954a53a21a18\",\"service_alias\":\"gr3d917b\",\"service_cname\":\"redis\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/e4f7c638a89e4b8f86c1954a53a21a18:20210423151037\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":256,\"setting\":null,\"extend_method\":\"state_singleton\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210423151037\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:03:23\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":256,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":52,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:03:23\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr3d917b\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":396,\"service_id\":\"98da9738e3a64526bfbc0c751d287f69\",\"tenant_id\":\"c724cc2ead764c5c9700d2589a5f6675\",\"service_key\":\"ac229b5bc5b047cbb49df6f22a7c60a0\",\"service_alias\":\"gr287f69\",\"service_cname\":\"控制台-UI\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/ac229b5bc5b047cbb49df6f22a7c60a0:20210618002822\",\"cmd\":\"start web\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":64,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210618002822\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:03:23\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":64,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":52,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:03:23\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr287f69\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":397,\"service_id\":\"ff1653af2ab44bb088bee1b2a459b496\",\"tenant_id\":\"c724cc2ead764c5c9700d2589a5f6675\",\"service_key\":\"ba46fa740f9c428e8902b7363fe99911\",\"service_alias\":\"gr59b496\",\"service_cname\":\"Rainbond-控制台\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest\",\"update_version\":1,\"image\":\"hub.goodrain.com/cea3e589e1a14bf4b1c0ff1bea24ca80/ba46fa740f9c428e8902b7363fe99911:20210623184855\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":1024,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20210623184855\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:03:23\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":1024,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":52,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:03:23\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr59b496\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"}]}}",
+          "name": "rainbond_install_app_model",
+          "tool_call_id": "rainbond_install_app_model"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "final_output"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "rainbond_install_app_model"
+      ],
+      "finalOutput": "已完成模板安装，目标应用 企业版控制台 已进入后续部署流程。",
+      "status": "completed"
+    },
+    "finishedAt": "2026-04-27T09:03:24.590Z"
+  },
+  {
+    "runId": "run_1777281335423_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777281335267_1",
+    "messageText": "帮我从开源应用市场安装一个mysql",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:15:35.423Z",
+    "executionState": {
+      "runId": "run_1777281335423_2",
+      "sessionId": "cs_1777281335267_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "帮我从开源应用市场安装一个mysql"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "5.3",
+        "arguments": {
+          "team_name": "default",
+          "region_name": "rainbond",
+          "app_id": 133,
+          "source": "cloud",
+          "market_name": "qiye",
+          "app_model_id": "d3288d7496474fab8cf8952104f61ebb",
+          "app_model_version": "5.3",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 5.3。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282048637_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "从应用市场安装一个mysql到这个应用",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:27:28.637Z",
+    "executionState": {
+      "runId": "run_1777282048637_2",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "从应用市场安装一个mysql到这个应用"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "8.0.18",
+        "arguments": {
+          "team_name": "pdt0yhfe",
+          "region_name": "rainbond",
+          "app_id": 24,
+          "source": "cloud",
+          "market_name": "RainbondMarket",
+          "app_model_id": "7f0d0509699e4425964c71be4b0fa428",
+          "app_model_version": "8.0.18",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 8.0.18。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282057349_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "继续执行",
+    "status": "completed",
+    "startedAt": "2026-04-27T09:27:37.349Z",
+    "executionState": {
+      "runId": "run_1777282057349_3",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "继续执行"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"installed\":true,\"source\":\"cloud\",\"app_id\":24,\"app_name\":\"nginx\",\"installed_app_name\":\"Mysql\",\"market_name\":\"RainbondMarket\",\"service_list\":[{\"ID\":83,\"service_id\":\"3b8c69be848e75f9751b334ba141494c\",\"tenant_id\":\"d9eb4c41d8a840ab89b74fdb520846fd\",\"service_key\":\"0000\",\"service_alias\":\"gr41494c\",\"service_cname\":\"nginx\",\"service_region\":\"rainbond\",\"desc\":\"docker run application\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"alpine\",\"update_version\":1,\"image\":\"registry.cn-hangzhou.aliyuncs.com/goodrain/nginx:alpine\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":2000,\"container_gpu\":0,\"min_memory\":4096,\"setting\":\"\",\"extend_method\":\"stateless_multiple\",\"env\":\",\",\"inner_port\":0,\"volume_mount_path\":\"\",\"host_path\":\"/grdata/tenant/d9eb4c41d8a840ab89b74fdb520846fd/service/3b8c69be848e75f9751b334ba141494c\",\"deploy_version\":\"\",\"code_from\":\"image_manual\",\"git_url\":null,\"create_time\":\"2026-04-01 16:41:03\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":2,\"language\":\"\",\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":128,\"is_service\":false,\"namespace\":\"goodrain\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":0,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"docker_image\",\"create_status\":\"complete\",\"update_time\":\"2026-04-07 11:28:50\",\"check_uuid\":\"8714b8a1-c597-4112-bb4e-0c3e0c5a8982\",\"check_event_id\":\"647b2f8bf30c49e182bd289d12d12230\",\"docker_cmd\":\"registry.cn-hangzhou.aliyuncs.com/goodrain/nginx:alpine\",\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"nginx\",\"job_strategy\":null,\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":399,\"service_id\":\"6102cd87e6154d24a9725bfd38d89fe3\",\"tenant_id\":\"d9eb4c41d8a840ab89b74fdb520846fd\",\"service_key\":\"be3b54695c9e454f8d35f0a9d65c4061\",\"service_alias\":\"grd89fe3\",\"service_cname\":\"mysql-8.0.18\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"8.0.18\",\"update_version\":1,\"image\":\"image.goodrain.com/655c233e59714d9191c0b9e856d84b44/e3ffa4ac5053432a068debd6bc97b601:20200103132419\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":512,\"setting\":null,\"extend_method\":\"state_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20200103132419\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:27:39\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":53,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:27:39\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"grd89fe3\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"}]}}",
+          "name": "rainbond_install_app_model",
+          "tool_call_id": "rainbond_install_app_model"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "final_output"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "rainbond_install_app_model"
+      ],
+      "finalOutput": "已完成模板安装，目标应用 Mysql 已进入后续部署流程。",
+      "status": "completed"
+    },
+    "finishedAt": "2026-04-27T09:27:39.999Z"
+  },
+  {
+    "runId": "run_1777282097106_6",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "建立一个新的快照版本",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:28:17.106Z",
+    "executionState": {
+      "runId": "run_1777282097106_6",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "建立一个新的快照版本"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已查询版本中心概览，下一步可继续进入快照、发布或回滚动作。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282106310_7",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "创建快照",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:28:26.310Z",
+    "executionState": {
+      "runId": "run_1777282106310_7",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "创建快照"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取版本中心概览，建议新快照版本为 v1.0.1。请直接回复版本号，我会为当前运行态创建新的快照。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282113549_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "1.0.1",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:28:33.549Z"
+  },
+  {
+    "runId": "run_1777282271339_9",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "发布到本地组件库",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:31:11.339Z",
+    "executionState": {
+      "runId": "run_1777282271339_9",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "发布到本地组件库"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已查询版本中心概览，下一步可继续进入快照、发布或回滚动作。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282283625_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "发布到本地组件库",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:31:23.625Z",
+    "executionState": {
+      "runId": "run_1777282283625_a",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "发布到本地组件库"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已查询版本中心概览，下一步可继续进入快照、发布或回滚动作。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282290053_b",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "发布",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:31:30.053Z",
+    "executionState": {
+      "runId": "run_1777282290053_b",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "发布"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已查询版本中心概览，下一步可继续进入快照、发布或回滚动作。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777282383506_c",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777282048492_1",
+    "messageText": "从本地组件库安装第一个应用到这个团队",
+    "status": "running",
+    "startedAt": "2026-04-27T09:33:03.506Z",
+    "executionState": {
+      "runId": "run_1777282383506_c",
+      "sessionId": "cs_1777282048492_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "你是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n## 你的角色和能力\n\n- 深入理解 Rainbond 的核心概念、架构和操作\n- 帮助用户部署、配置、管理和诊断 Rainbond 应用\n- 使用工具执行实际操作（查询状态、查看日志、重启组件等）\n- 在信息不足时先澄清，再执行\n- 回答要专业、清晰、结构化\n\n## 工具使用原则\n\n- 低风险操作（例如查询状态、查看日志）可以直接执行\n- 高风险操作（例如重启、扩容）要先明确影响，再通过审批流处理\n- 所有会修改 Rainbond 资源状态、配置、部署、升级、删除、分享、安装的写操作，都必须先确认是否需要审批\n- 对任何需要审批的写操作，不要先用自然语言询问“是否确认执行”；应直接调用相应工具，让系统进入统一审批流\n- 优先先查后改；如果上下文已经足够，不要为了凑参数重复调用上游列表接口\n- 如果工具结果能帮助回答，就先看结果再回答，不要跳过分析\n\n## 回答原则\n\n- 先理解用户问题，再决定是否用工具\n- 能直接回答的普通问题，就直接回答\n- 如果用户在问故障、状态、日志、部署问题，优先结合工具结果给结论\n- 回答时尽量解释原因，不只给结论\n- 一旦调用了工具，你的最终回复必须基于工具返回结果明确回答用户问题\n- 禁止在已有工具结果时输出空泛占位语句，例如“我已经完成当前分析，但没有生成额外回复”\n- 如果工具结果不足以完整回答，就明确说明目前已知信息、未知信息以及建议的下一步\n\n## Rainbond 嵌入式流程能力\n\n当前生产主链路只承诺 server/workflows 中已经接入的嵌入式 Rainbond 流程，不再把浏览器侧 prompt skills 当成独立执行脑。\n\n### rainbond-app-assistant\n- 概要：总控入口，负责上下文解析、状态判断和子流程选择。\n- 适用场景：用户希望由系统先判断下一步该部署、排障、验收、模板安装还是进入版本中心，或者当前诉求还不够明确。\n- 不适用场景：用户已经明确指定只执行某个子流程，或者任务属于 workspace 初始化 / 本地 env 同步。\n- 范围提示：至少需要 team_name 和 app_id 才能稳定进入主链路。\n- 优先工具：作为总控入口优先做上下文解析和子流程选择，不直接承诺 workspace 型文件操作\n- 流程阶段：resolve-context(解析上下文) -> assess-state(判断状态) -> select-subflow(选择子流程) -> report(汇总结果)\n\n### rainbond-fullstack-bootstrap\n- 概要：负责拓扑创建、组件复用和最小可运行部署。\n- 适用场景：应用尚未拉起，需要创建或复用拓扑并完成最小可运行部署。\n- 不适用场景：拓扑已存在且主要问题是运行态异常，或者任务是版本中心操作。\n- 范围提示：适合已经知道 team_name、region_name，并逐步补全 app_id 的部署场景。\n- 优先工具：rainbond_create_app、rainbond_create_component*、rainbond_build_component、rainbond_install_app_model\n- 共享词汇：building、waiting、running、abnormal、capacity-blocked\n- 流程阶段：resolve-scope(解析范围) -> check-topology(检查拓扑) -> create-or-reuse(创建或复用) -> deploy(部署)\n\n### rainbond-fullstack-troubleshooter\n- 概要：负责低风险运行态排障与收敛。\n- 适用场景：拓扑已经存在，但运行态未收敛，需要低风险检查、归类阻塞点并尝试平台侧修复。\n- 不适用场景：还没有完成拓扑创建，或者问题明显需要源码/构建层修复。\n- 范围提示：最好具备 app_id；若已有 component_id，可优先围绕该组件做聚焦诊断。\n- 优先工具：rainbond_get_app_detail、rainbond_get_component_summary、rainbond_get_component_logs、rainbond_get_component_pods\n- 共享词汇：topology_building、runtime_unhealthy、runtime_healthy、code_or_build_handoff_needed\n- 流程阶段：resolve-scope(解析范围) -> inspect-runtime(检查运行态) -> classify-blocker(归类阻塞点) -> repair-or-stop(修复或停止)\n\n### rainbond-delivery-verifier\n- 概要：Use only when the next step is already known to be final delivery verification for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：交付 / 验收 / verify delivery / 访问地址\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary\n- 共享词汇：delivered、delivered-but-needs-manual-validation、partially-delivered、blocked\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> report(summarize)\n\n### rainbond-template-installer\n- 概要：Use when installing a local or cloud Rainbond app template into an existing or newly created target app through the current Rainbond MCP template-install workflow.\n- 适用场景：模板安装 / 云市场安装 / 本地模板安装 / install template\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_query_cloud_markets、rainbond_query_local_app_models、rainbond_query_cloud_app_models、rainbond_query_app_model_versions、rainbond_install_app_model\n- 流程阶段：resolve-scope(resolve_context) -> discover-template(branch) -> resolve-version(tool_call) -> install(tool_call) -> report(summarize)\n\n### rainbond-app-version-assistant\n- 概要：Use when working in the Rainbond app version center flow under `/team/.../apps/:appID/version`, especially to create snapshots, publish to the local library or cloud market, inspect publish drafts and events, or rollback app runtime to a snapshot.\n- 适用场景：快照 / 发布 / 回滚 / version center\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_version_overview、rainbond_list_app_version_snapshots、rainbond_get_app_version_snapshot_detail、rainbond_create_app_version_snapshot、rainbond_create_app_share_record、rainbond_get_app_publish_candidates、rainbond_rollback_app_version_snapshot\n- 共享词汇：snapshot、publish draft、publish event、rollback record\n- 流程阶段：resolve-scope(resolve_context) -> inspect-version-center(tool_call) -> list-snapshots(tool_call) -> execute-version-action(branch) -> report(summarize)\n\nworkspace 型流程 rainbond-project-init、rainbond-env-sync 不在当前嵌入式主链路内；如任务依赖本地项目文件初始化或本地 env 落盘，应明确提示这是外部/后续流程。\n\n## Rainbond MCP 工具使用约束\n\n- 事实查询优先使用只读工具，当前只读工具前缀为：rainbond_get_、rainbond_query_、rainbond_list_。\n- 当上下文已经提供 team_name、region_name、app_id、component_id 时，优先直接带上这些参数，不要为了确认当前范围重复调用列表接口。\n- 当前 51 个可变更 MCP 工具受统一审批策略约束。\n- allowDirectExecution=true 的低风险写操作可以直接执行，典型示例：rainbond_check_helm_app、rainbond_check_yaml_app、rainbond_create_app_version_snapshot、rainbond_init_package_upload。\n- 其余会修改资源状态、配置、部署、安装、升级、删除或分享流程的工具，必须进入审批流，典型示例：rainbond_delete_component、rainbond_install_app_model、rainbond_manage_component_envs、rainbond_upgrade_app。\n- 当工具属于组件级变更时，要优先确认当前 component_id 是否可信；如果 component_source=route，则先避免把它直接当成 service_id 使用。\n\n## Rainbond 知识\n\n# Rainbond 核心概念\n\n## 基本概念\n\n### 组件 (Component)\n组件是 Rainbond 中最小的可部署单元，对应一个容器化应用。\n\n**组件类型**：\n- **无状态服务**：可以水平扩展，无持久化数据（如 Web 应用、API 服务）\n- **有状态服务**：需要持久化存储，有固定网络标识（如数据库、消息队列）\n- **任务型组件**：一次性或定时执行的任务（如数据处理、定时备份）\n\n**组件状态**：\n- `running`: 运行中，健康检查通过\n- `stopped`: 已停止\n- `abnormal`: 运行异常，可能是 OOMKilled、CrashLoopBackOff 等\n- `building`: 正在构建或部署中\n- `starting`: 正在启动\n\n### 应用 (Application)\n应用是一组相关组件的集合，通常代表一个完整的业务系统。\n\n**应用特性**：\n- 包含多个组件（前端、后端、数据库等）\n- 组件间可以通过服务发现互相访问\n- 可以整体管理（启动、停止、备份、恢复）\n- 支持应用模板和一键部署\n\n### 团队 (Team)\n团队是资源隔离和权限管理的基本单位。\n\n**团队功能**：\n- 资源配额管理（CPU、内存、存储）\n- 成员权限管理（管理员、开发者、观察者）\n- 应用和组件归属于团队\n- 团队间资源隔离\n\n### 集群 (Cluster)\n集群是底层 Kubernetes 集群的抽象。\n\n**集群类型**：\n- **本地集群**：Rainbond 安装所在的集群\n- **远程集群**：通过 kubeconfig 接入的外部集群\n- **边缘集群**：部署在边缘节点的轻量级集群\n\n## 组件生命周期\n\n### 1. 创建组件\n**方式**：\n- 源码构建（Git、SVN）\n- Docker 镜像\n- Docker Compose\n- Helm Chart\n- 应用市场\n\n### 2. 配置组件\n**配置项**：\n- 环境变量\n- 端口映射\n- 存储挂载\n- 健康检查\n- 资源限制（CPU、内存）\n- 自动伸缩策略\n\n### 3. 部署组件\n**部署流程**：\n1. 构建镜像（如果是源码）\n2. 推送到镜像仓库\n3. 创建 Kubernetes 资源（Deployment/StatefulSet）\n4. 等待 Pod 启动\n5. 执行健康检查\n6. 更新组件状态\n\n### 4. 运维组件\n**常见操作**：\n- 启动/停止/重启\n- 扩容/缩容\n- 更新配置\n- 查看日志\n- 查看监控指标\n- 进入容器终端\n\n## 关键概念对比\n\n| 概念 | Kubernetes 对应 | 说明 |\n|------|----------------|------|\n| 组件 | Deployment/StatefulSet | 应用的最小部署单元 |\n| 应用 | Namespace (部分) | 一组相关组件的集合 |\n| 团队 | Namespace | 资源隔离和权限管理 |\n| 端口 | Service | 服务访问入口 |\n| 存储 | PVC | 持久化数据存储 |\n\n## 最佳实践\n\n### 组件设计\n- 遵循单一职责原则，一个组件只做一件事\n- 无状态组件优先，便于水平扩展\n- 合理设置资源限制，避免资源争抢\n- 配置健康检查，确保服务可用性\n\n### 应用架构\n- 前后端分离，独立部署\n- 数据库使用有状态组件\n- 缓存和消息队列独立部署\n- 使用服务网格管理服务间通信\n\n### 资源管理\n- 为团队设置合理的资源配额\n- 监控资源使用情况，及时调整\n- 使用自动伸缩应对流量波动\n- 定期清理不用的资源\n\n\n---\n\n# Rainbond 故障排查指南\n\n## 常见问题诊断流程\n\n### 1. 组件启动失败\n\n**症状**：组件状态显示 `abnormal`，无法正常访问\n\n**诊断步骤**：\n1. **查看组件状态**\n   - 使用 `get-component-status` 工具\n   - 检查状态字段和错误信息\n\n2. **查看日志**\n   - 使用 `get-component-logs` 工具\n   - 重点关注最后 50-100 行日志\n   - 查找 ERROR、FATAL、Exception 等关键词\n\n3. **常见原因**：\n   - **OOMKilled**: 内存不足，需要扩容\n   - **CrashLoopBackOff**: 启动失败，检查配置和依赖\n   - **ImagePullBackOff**: 镜像拉取失败，检查镜像地址和权限\n   - **配置错误**: 环境变量、端口、挂载路径等配置错误\n\n### 2. 内存溢出 (OOM)\n\n**症状**：\n- 日志中出现 \"out of memory\"、\"heap limit\" 等关键词\n- 组件频繁重启\n- 状态显示 OOMKilled\n\n**解决方案**：\n1. **确认内存使用情况**\n   - 查看监控指标，确认内存使用率\n   - 分析是否有内存泄漏\n\n2. **扩容内存**\n   - 使用 `scale-component-memory` 工具\n   - 建议扩容 50%-100%（如 512MB → 1024MB）\n   - **注意**：扩容需要重启组件，属于高风险操作，需要用户审批\n\n3. **优化应用**\n   - 检查代码是否有内存泄漏\n   - 优化数据结构和算法\n   - 增加垃圾回收频率\n\n### 3. 服务无法访问\n\n**症状**：\n- 组件状态正常，但无法通过域名或 IP 访问\n- 返回 502、503、504 等错误\n\n**诊断步骤**：\n1. **检查组件状态**\n   - 确认组件是否真的在运行\n   - 检查健康检查是否通过\n\n2. **检查端口配置**\n   - 确认端口是否正确开放\n   - 检查端口协议（HTTP/TCP/UDP）\n   - 验证容器内端口和对外端口映射\n\n3. **检查网络策略**\n   - 确认是否有网络策略限制\n   - 检查防火墙规则\n   - 验证服务发现是否正常\n\n4. **检查网关配置**\n   - 确认域名解析是否正确\n   - 检查网关路由规则\n   - 验证 SSL 证书是否有效\n\n### 4. 性能问题\n\n**症状**：\n- 响应时间长\n- CPU 使用率高\n- 请求超时\n\n**诊断步骤**：\n1. **查看监控指标**\n   - CPU 使用率\n   - 内存使用率\n   - 网络流量\n   - 请求响应时间\n\n2. **分析日志**\n   - 查找慢查询\n   - 检查错误率\n   - 分析请求分布\n\n3. **优化方案**：\n   - **水平扩容**：增加实例数量\n   - **垂直扩容**：增加 CPU 和内存\n   - **代码优化**：优化算法和数据库查询\n   - **缓存优化**：增加缓存层，减少数据库压力\n\n### 5. 存储问题\n\n**症状**：\n- 磁盘空间不足\n- 数据丢失\n- 读写性能差\n\n**诊断步骤**：\n1. **检查存储使用情况**\n   - 查看存储卷使用率\n   - 确认是否达到配额上限\n\n2. **检查存储配置**\n   - 确认存储类型（本地存储/网络存储）\n   - 检查挂载路径是否正确\n   - 验证持久化配置\n\n3. **解决方案**：\n   - **扩容存储**：增加存储卷大小\n   - **清理数据**：删除不必要的文件\n   - **优化存储**：使用更快的存储类型\n   - **数据备份**：定期备份重要数据\n\n## 诊断工具使用\n\n### get-component-status\n**用途**：获取组件当前状态\n\n**返回信息**：\n- 组件名称\n- 运行状态（running/stopped/abnormal）\n- 内存配置\n- CPU 配置\n- 实例数量\n\n### get-component-logs\n**用途**：获取组件日志\n\n**参数**：\n- `name`: 组件名称\n- `lines`: 日志行数（默认 50）\n\n**使用场景**：\n- 启动失败时查看错误信息\n- 运行异常时分析原因\n- 性能问题时查找慢查询\n\n### restart-component\n**用途**：重启组件\n\n**风险等级**：高\n\n**使用场景**：\n- 配置更新后需要重启\n- 组件卡死需要强制重启\n- 内存泄漏需要释放资源\n\n**注意事项**：\n- 会导致服务短暂中断\n- 需要用户审批\n- 建议在低峰期操作\n\n### scale-component-memory\n**用途**：调整组件内存配置\n\n**风险等级**：中\n\n**使用场景**：\n- OOM 错误需要扩容\n- 内存使用率过高\n- 性能优化\n\n**注意事项**：\n- 需要重启组件\n- 需要用户审批\n- 建议逐步扩容，避免资源浪费\n\n## 最佳实践\n\n### 预防性监控\n- 设置合理的告警阈值\n- 定期检查资源使用情况\n- 关注错误日志和异常指标\n- 建立故障响应流程\n\n### 快速定位问题\n1. 先看状态，再看日志\n2. 从最近的变更入手\n3. 对比正常和异常时的差异\n4. 使用排除法缩小范围\n\n### 安全操作\n- 高风险操作必须审批\n- 重要操作前先备份\n- 在测试环境验证方案\n- 准备回滚预案\n"
+        },
+        {
+          "role": "system",
+          "content": "## Current Session Context\n- enterprise_id: 8948f3fcf66e0cd91bf1045e8ca4a965\n- team_name: jabrm8l6\n- region_name: rainbond\n- page: /team/jabrm8l6/region/rainbond/index\n当前最可能相关的内嵌 Rainbond 流程：rainbond-app-assistant。\n当前只有团队/集群范围，适合先查询应用列表、确定目标应用或进入模板安装 / 创建应用场景。\n当 team_name、region_name、app_id、component_id 已经在当前上下文中存在时，优先直接使用这些上下文值。\n除非用户明确要求查看团队列表、切换团队或跨团队比较，否则不要为了确认当前团队再次调用 rainbond_query_teams。\n除非用户明确要求查看集群列表、切换集群或跨集群比较，否则不要为了确认当前集群再次调用 rainbond_query_regions。\n如果上下文已经能唯一定位当前团队、集群、应用或组件，就直接进入对应查询，不要重复向用户索要这些参数。"
+        },
+        {
+          "role": "user",
+          "content": "从本地组件库安装第一个应用到这个团队"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "The user wants to install an application from the local component library into their team (jabrm8l6) in the rainbond region. This triggers the `rainbond-template-installer` flow.\n\nLet me follow the flow:\n1. resolve-scope: We have team_name=jabrm8l6, region_name=rainbond, enterprise_id=8948f3fcf66e0cd91bf1045e8ca4a965. We need an app_id - either an existing app or we need to create one first.\n\nFirst, let me check what apps exist in this team, and also query local app models to find available templates.\n\nLet me do both in parallel:\n- Get team apps\n- Query local app models",
+          "tool_calls": [
+            {
+              "id": "call_00_YLBm3hoGVl1yyUd3NjO6FEML",
+              "type": "function",
+              "function": {
+                "name": "rainbond_get_team_apps",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\"}"
+              }
+            },
+            {
+              "id": "call_01_h847NS3jnB4lzWa0CXHHhawO",
+              "type": "function",
+              "function": {
+                "name": "rainbond_query_local_app_models",
+                "arguments": "{\"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"scope\": \"\", \"page\": 1, \"page_size\": 20}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"team_name\":\"jabrm8l6\",\"region_name\":\"rainbond\",\"items\":[],\"total\":0}}",
+          "name": "rainbond_get_team_apps",
+          "tool_call_id": "call_00_YLBm3hoGVl1yyUd3NjO6FEML"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"scope\":\"enterprise\",\"items\":[{\"ID\":8,\"app_id\":\"afc2d0fe7304452596df1e1e308fc8b3\",\"app_name\":\"测试发布\",\"create_user\":null,\"create_team\":\"default\",\"pic\":\"\",\"source\":\"local\",\"dev_status\":\"\",\"scope\":\"enterprise\",\"describe\":\"测试\",\"is_ingerit\":true,\"create_time\":\"2026-04-02 14:57:31\",\"update_time\":\"2026-04-02 14:58:50\",\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"install_number\":0,\"is_official\":false,\"details\":\"This is a default description\",\"arch\":[\"amd64\"],\"is_version\":true,\"versions_info\":[{\"is_complete\":true,\"version\":\"0.1\",\"version_alias\":\"\",\"dev_status\":\"\",\"arch\":\"amd64\",\"cpu\":0,\"memory\":0}],\"min_memory\":64}],\"total\":1,\"page\":1,\"page_size\":20}}",
+          "name": "rainbond_query_local_app_models",
+          "tool_call_id": "call_01_h847NS3jnB4lzWa0CXHHhawO"
+        },
+        {
+          "role": "assistant",
+          "content": "本地组件库中只有一个模板：**\"测试发布\"**（版本 0.1），而当前团队 `jabrm8l6` 中还没有任何应用。我将先创建一个应用，然后安装这个模板。",
+          "reasoning_content": "Let me analyze the results:\n\n1. **Apps**: The team `jabrm8l6` has 0 apps. So we need to create an app first.\n2. **Local App Models**: There's 1 local template available:\n   - Name: \"测试发布\"\n   - App Model ID: `afc2d0fe7304452596df1e1e308fc8b3`\n   - Version: \"0.1\"\n   - Description: \"测试\"\n\nSince there's only one app model, \"测试发布\" is the first one. The user said \"从本地组件库安装第一个应用\", so they want to install this template.\n\nBut before installing, we need an app. The team has no apps, so we need to create one first.\n\nLet me think about the flow:\n1. We need to create an app in the team\n2. Then install the template into that app\n\nLet me proceed. First, let me create an app. But what should the app name be? The user didn't specify a name. I should ask... wait, the user said \"安装第一个应用\" - this could mean install the first template from the local library. Since the template is called \"测试发布\", I could name the app similarly.\n\nActually, let me ask the user what they want to name the app, since they didn't specify. But also, maybe I should just use the template name as the app name.\n\nHmm, let me think about the rainbond-template-installer flow:\n- resolve-scope: team_name=jabrm8l6, region_name=rainbond, enterprise_id=..., no app_id yet\n- discover-template: found \"测试发布\" with app_model_id=afc2d0fe7304452596df1e1e308fc8b3\n- We need an app. Since there are no apps, we need to create one.\n\nI should tell the user what I found and ask if they want me to create an app and install this template. But the user said \"安装第一个应用\" which is pretty clear - they want the first (and only) template installed.\n\nLet me just go ahead and create the app, then install the template. I'll name the app \"测试发布\" to match the template.\n\nWait, let me also check the versions for this model to make sure \"0.1\" is a valid version.\n\nActually, the versions_info already shows version \"0.1\" is complete and available. Let me proceed.\n\nNow, I need to:\n1. Create an app named \"测试发布\" in team jabrm8l6, region rainbond\n2. Install the app model into it\n\nBut the app creation is a write operation. And installing the app model is also a write operation. Both should go through approval flow.\n\nWait, let me reconsider. The user wants to install from the local component library. Let me present what I found and proceed. The user said \"第一个应用\" meaning the first one in the list.\n\nLet me present the findings and then take action. Actually, let me just go ahead since the user said \"从本地组件库安装第一个应用\" - this is a clear instruction.\n\nLet me create the app first.",
+          "tool_calls": [
+            {
+              "id": "call_00_XVe9VzlafJ52JvrkiV7SUi8f",
+              "type": "function",
+              "function": {
+                "name": "rainbond_create_app",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_name\": \"测试发布\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"ID\":185,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"group_name\":\"测试发布\",\"region_name\":\"rainbond\",\"is_default\":false,\"order_index\":0,\"note\":\"\",\"username\":\"admin\",\"governance_mode\":\"KUBERNETES_NATIVE_SERVICE\",\"create_time\":\"2026-04-27 17:33:45\",\"update_time\":\"2026-04-27 17:33:45\",\"app_type\":\"rainbond\",\"app_store_name\":\"\",\"app_store_url\":\"\",\"app_template_name\":\"\",\"version\":\"\",\"logo\":\"\",\"k8s_app\":\"default\",\"group_id\":185,\"app_id\":185,\"app_name\":\"测试发布\"}}",
+          "name": "rainbond_create_app",
+          "tool_call_id": "call_00_XVe9VzlafJ52JvrkiV7SUi8f"
+        },
+        {
+          "role": "assistant",
+          "content": "应用「测试发布」已创建（app_id: 185）。现在将模板安装进去：",
+          "reasoning_content": "App created successfully:\n- app_id: 185\n- app_name: 测试发布\n- team_name: jabrm8l6\n- region_name: rainbond\n\nNow I need to install the local app model into this app. The parameters:\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- source: local\n- app_model_id: afc2d0fe7304452596df1e1e308fc8b3\n- app_model_version: 0.1\n- is_deploy: true (we want to deploy it)\n\nThis is a write operation that requires approval. Let me call rainbond_install_app_model.",
+          "tool_calls": [
+            {
+              "id": "call_00_uydGetpERsbZaXKujAbtBpN8",
+              "type": "function",
+              "function": {
+                "name": "rainbond_install_app_model",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_id\": 185, \"source\": \"local\", \"app_model_id\": \"afc2d0fe7304452596df1e1e308fc8b3\", \"app_model_version\": \"0.1\", \"is_deploy\": true}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"installed\":true,\"source\":\"local\",\"app_id\":185,\"app_name\":\"测试发布\",\"installed_app_name\":\"测试发布\",\"market_name\":null,\"service_list\":[{\"ID\":400,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"466ebf6a63543fc2e88aacd355198275\",\"service_alias\":\"gra7172a\",\"service_cname\":\"demo-2048\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest-amd64\",\"update_version\":1,\"image\":\"goodrain.me/466ebf6a63543fc2e88aacd355198275:20260402142641\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":512,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20260402142641\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:34:10\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":54,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 17:34:10\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"demo-2048\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"}]}}",
+          "name": "rainbond_install_app_model",
+          "tool_call_id": "call_00_uydGetpERsbZaXKujAbtBpN8"
+        }
+      ],
+      "iteration": 3,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "call_00_YLBm3hoGVl1yyUd3NjO6FEML",
+        "call_01_h847NS3jnB4lzWa0CXHHhawO",
+        "call_00_XVe9VzlafJ52JvrkiV7SUi8f",
+        "call_00_uydGetpERsbZaXKujAbtBpN8"
+      ],
+      "finalOutput": null,
+      "status": "running"
+    }
+  },
+  {
+    "runId": "run_1777283390222_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777283390071_1",
+    "messageText": "新建一个快照",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:49:50.222Z",
+    "executionState": {
+      "runId": "run_1777283390222_2",
+      "sessionId": "cs_1777283390071_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "新建一个快照"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已创建应用快照 v1.0.1，可以继续执行发布或回滚。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777283937650_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777283390071_1",
+    "messageText": "查询当前应用的信息",
+    "status": "pending",
+    "startedAt": "2026-04-27T09:58:57.650Z"
+  },
+  {
+    "runId": "run_1777284940417_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777284940285_1",
+    "messageText": "帮我排查这个应用",
+    "status": "pending",
+    "startedAt": "2026-04-27T10:15:40.417Z",
+    "executionState": {
+      "runId": "run_1777284940417_2",
+      "sessionId": "cs_1777284940285_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "帮我排查这个应用"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777284946571_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777284940285_1",
+    "messageText": "继续",
+    "status": "failed",
+    "startedAt": "2026-04-27T10:15:46.571Z",
+    "errorMessage": "Rainbond MCP request failed with status 404: 数据中心资源不存在",
+    "finishedAt": "2026-04-27T10:16:27.617Z"
+  },
+  {
+    "runId": "run_1777286983149_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777286983021_1",
+    "messageText": "帮我排查这个组价的问题",
+    "status": "pending",
+    "startedAt": "2026-04-27T10:49:43.149Z",
+    "executionState": {
+      "runId": "run_1777286983149_2",
+      "sessionId": "cs_1777286983021_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "帮我排查这个组价的问题"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777286988793_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777286983021_1",
+    "messageText": "继续",
+    "status": "pending",
+    "startedAt": "2026-04-27T10:49:48.793Z"
+  },
+  {
+    "runId": "run_1777287104008_g",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777286983021_1",
+    "messageText": "走方案a吧",
+    "status": "pending",
+    "startedAt": "2026-04-27T10:51:44.008Z"
+  },
+  {
+    "runId": "run_1777288439616_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777288439494_1",
+    "messageText": "这个组件怎么了",
+    "status": "pending",
+    "startedAt": "2026-04-27T11:13:59.616Z"
+  },
+  {
+    "runId": "run_1777288522366_9",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777288439494_1",
+    "messageText": "可以",
+    "status": "pending",
+    "startedAt": "2026-04-27T11:15:22.366Z"
+  },
+  {
+    "runId": "run_1777288620803_g",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777288439494_1",
+    "messageText": "帮我调整回合理的资源",
+    "status": "running",
+    "startedAt": "2026-04-27T11:17:00.803Z",
+    "executionState": {
+      "runId": "run_1777288620803_g",
+      "sessionId": "cs_1777288439494_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "你是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n## 你的角色和能力\n\n- 深入理解 Rainbond 的核心概念、架构和操作\n- 帮助用户部署、配置、管理和诊断 Rainbond 应用\n- 使用工具执行实际操作（查询状态、查看日志、重启组件等）\n- 在信息不足时先澄清，再执行\n- 回答要专业、清晰、结构化\n\n## 工具使用原则\n\n- 低风险操作（例如查询状态、查看日志）可以直接执行\n- 高风险操作（例如重启、扩容）要先明确影响，再通过审批流处理\n- 所有会修改 Rainbond 资源状态、配置、部署、升级、删除、分享、安装的写操作，都必须先确认是否需要审批\n- 对任何需要审批的写操作，不要先用自然语言询问“是否确认执行”；应直接调用相应工具，让系统进入统一审批流\n- 优先先查后改；如果上下文已经足够，不要为了凑参数重复调用上游列表接口\n- 如果工具结果能帮助回答，就先看结果再回答，不要跳过分析\n\n## 回答原则\n\n- 先理解用户问题，再决定是否用工具\n- 能直接回答的普通问题，就直接回答\n- 如果用户在问故障、状态、日志、部署问题，优先结合工具结果给结论\n- 回答时尽量解释原因，不只给结论\n- 一旦调用了工具，你的最终回复必须基于工具返回结果明确回答用户问题\n- 禁止在已有工具结果时输出空泛占位语句，例如“我已经完成当前分析，但没有生成额外回复”\n- 如果工具结果不足以完整回答，就明确说明目前已知信息、未知信息以及建议的下一步\n\n## Rainbond 嵌入式流程能力\n\n当前生产主链路只承诺 server/workflows 中已经接入的嵌入式 Rainbond 流程，不再把浏览器侧 prompt skills 当成独立执行脑。\n\n### rainbond-app-assistant\n- 概要：总控入口，负责上下文解析、状态判断和子流程选择。\n- 适用场景：用户希望由系统先判断下一步该部署、排障、验收、模板安装还是进入版本中心，或者当前诉求还不够明确。\n- 不适用场景：用户已经明确指定只执行某个子流程，或者任务属于 workspace 初始化 / 本地 env 同步。\n- 范围提示：至少需要 team_name 和 app_id 才能稳定进入主链路。\n- 优先工具：作为总控入口优先做上下文解析和子流程选择，不直接承诺 workspace 型文件操作\n- 流程阶段：resolve-context(解析上下文) -> assess-state(判断状态) -> select-subflow(选择子流程) -> report(汇总结果)\n\n### rainbond-fullstack-bootstrap\n- 概要：负责拓扑创建、组件复用和最小可运行部署。\n- 适用场景：应用尚未拉起，需要创建或复用拓扑并完成最小可运行部署。\n- 不适用场景：拓扑已存在且主要问题是运行态异常，或者任务是版本中心操作。\n- 范围提示：适合已经知道 team_name、region_name，并逐步补全 app_id 的部署场景。\n- 优先工具：rainbond_create_app、rainbond_create_component*、rainbond_build_component、rainbond_install_app_model\n- 共享词汇：building、waiting、running、abnormal、capacity-blocked\n- 流程阶段：resolve-scope(解析范围) -> check-topology(检查拓扑) -> create-or-reuse(创建或复用) -> deploy(部署)\n\n### rainbond-fullstack-troubleshooter\n- 概要：Use only when the current task is already known to be runtime or build troubleshooting for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：排障 / 排查 / 修复 / 恢复服务 / 构建失败 / 启动异常 / troubleshoot / debug\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary、rainbond_get_component_pods、rainbond_get_pod_detail、rainbond_get_component_events、rainbond_get_component_logs、rainbond_get_component_build_logs、rainbond_manage_component_envs、rainbond_manage_component_connection_envs、rainbond_manage_component_dependency、rainbond_manage_component_probe\n- 共享词汇：topology_building、runtime_unhealthy、runtime_healthy、code_or_build_handoff_needed\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> inspect-runtime(branch) -> classify-and-repair(branch) -> report(summarize)\n\n### rainbond-delivery-verifier\n- 概要：Use only when the next step is already known to be final delivery verification for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：交付 / 验收 / verify delivery / 访问地址\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary\n- 共享词汇：delivered、delivered-but-needs-manual-validation、partially-delivered、blocked\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> report(summarize)\n\n### rainbond-template-installer\n- 概要：Use when installing a local or cloud Rainbond app template into an existing or newly created target app through the current Rainbond MCP template-install workflow.\n- 适用场景：模板安装 / 云市场安装 / 本地模板安装 / install template\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_query_cloud_markets、rainbond_query_local_app_models、rainbond_query_cloud_app_models、rainbond_query_app_model_versions、rainbond_install_app_model\n- 流程阶段：resolve-scope(resolve_context) -> discover-template(branch) -> resolve-version(tool_call) -> install(tool_call) -> report(summarize)\n\n### rainbond-app-version-assistant\n- 概要：Use when working in the Rainbond app version center flow under `/team/.../apps/:appID/version`, especially to create snapshots, publish to the local library or cloud market, inspect publish drafts and events, or rollback app runtime to a snapshot.\n- 适用场景：快照 / 发布 / 回滚 / version center\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_version_overview、rainbond_list_app_version_snapshots、rainbond_get_app_version_snapshot_detail、rainbond_create_app_version_snapshot、rainbond_create_app_share_record、rainbond_get_app_publish_candidates、rainbond_rollback_app_version_snapshot\n- 共享词汇：snapshot、publish draft、publish event、rollback record\n- 流程阶段：resolve-scope(resolve_context) -> inspect-version-center(tool_call) -> list-snapshots(tool_call) -> execute-version-action(branch) -> report(summarize)\n\nworkspace 型流程 rainbond-project-init、rainbond-env-sync 不在当前嵌入式主链路内；如任务依赖本地项目文件初始化或本地 env 落盘，应明确提示这是外部/后续流程。\n\n## Rainbond MCP 工具使用约束\n\n- 事实查询优先使用只读工具，当前只读工具前缀为：rainbond_get_、rainbond_query_、rainbond_list_。\n- 当上下文已经提供 team_name、region_name、app_id、component_id 时，优先直接带上这些参数，不要为了确认当前范围重复调用列表接口。\n- 当前 51 个可变更 MCP 工具受统一审批策略约束。\n- allowDirectExecution=true 的低风险写操作可以直接执行，典型示例：rainbond_check_helm_app、rainbond_check_yaml_app、rainbond_create_app_version_snapshot、rainbond_init_package_upload。\n- 其余会修改资源状态、配置、部署、安装、升级、删除或分享流程的工具，必须进入审批流，典型示例：rainbond_delete_component、rainbond_install_app_model、rainbond_manage_component_envs、rainbond_upgrade_app。\n- 当工具属于组件级变更时，要优先确认当前 component_id 是否可信；如果 component_source=route，则先避免把它直接当成 service_id 使用。\n\n## Rainbond 知识\n\n# Rainbond 核心概念\n\n## 基本概念\n\n### 组件 (Component)\n组件是 Rainbond 中最小的可部署单元，对应一个容器化应用。\n\n**组件类型**：\n- **无状态服务**：可以水平扩展，无持久化数据（如 Web 应用、API 服务）\n- **有状态服务**：需要持久化存储，有固定网络标识（如数据库、消息队列）\n- **任务型组件**：一次性或定时执行的任务（如数据处理、定时备份）\n\n**组件状态**：\n- `running`: 运行中，健康检查通过\n- `stopped`: 已停止\n- `abnormal`: 运行异常，可能是 OOMKilled、CrashLoopBackOff 等\n- `building`: 正在构建或部署中\n- `starting`: 正在启动\n\n### 应用 (Application)\n应用是一组相关组件的集合，通常代表一个完整的业务系统。\n\n**应用特性**：\n- 包含多个组件（前端、后端、数据库等）\n- 组件间可以通过服务发现互相访问\n- 可以整体管理（启动、停止、备份、恢复）\n- 支持应用模板和一键部署\n\n### 团队 (Team)\n团队是资源隔离和权限管理的基本单位。\n\n**团队功能**：\n- 资源配额管理（CPU、内存、存储）\n- 成员权限管理（管理员、开发者、观察者）\n- 应用和组件归属于团队\n- 团队间资源隔离\n\n### 集群 (Cluster)\n集群是底层 Kubernetes 集群的抽象。\n\n**集群类型**：\n- **本地集群**：Rainbond 安装所在的集群\n- **远程集群**：通过 kubeconfig 接入的外部集群\n- **边缘集群**：部署在边缘节点的轻量级集群\n\n## 组件生命周期\n\n### 1. 创建组件\n**方式**：\n- 源码构建（Git、SVN）\n- Docker 镜像\n- Docker Compose\n- Helm Chart\n- 应用市场\n\n### 2. 配置组件\n**配置项**：\n- 环境变量\n- 端口映射\n- 存储挂载\n- 健康检查\n- 资源限制（CPU、内存）\n- 自动伸缩策略\n\n### 3. 部署组件\n**部署流程**：\n1. 构建镜像（如果是源码）\n2. 推送到镜像仓库\n3. 创建 Kubernetes 资源（Deployment/StatefulSet）\n4. 等待 Pod 启动\n5. 执行健康检查\n6. 更新组件状态\n\n### 4. 运维组件\n**常见操作**：\n- 启动/停止/重启\n- 扩容/缩容\n- 更新配置\n- 查看日志\n- 查看监控指标\n- 进入容器终端\n\n## 关键概念对比\n\n| 概念 | Kubernetes 对应 | 说明 |\n|------|----------------|------|\n| 组件 | Deployment/StatefulSet | 应用的最小部署单元 |\n| 应用 | Namespace (部分) | 一组相关组件的集合 |\n| 团队 | Namespace | 资源隔离和权限管理 |\n| 端口 | Service | 服务访问入口 |\n| 存储 | PVC | 持久化数据存储 |\n\n## 最佳实践\n\n### 组件设计\n- 遵循单一职责原则，一个组件只做一件事\n- 无状态组件优先，便于水平扩展\n- 合理设置资源限制，避免资源争抢\n- 配置健康检查，确保服务可用性\n\n### 应用架构\n- 前后端分离，独立部署\n- 数据库使用有状态组件\n- 缓存和消息队列独立部署\n- 使用服务网格管理服务间通信\n\n### 资源管理\n- 为团队设置合理的资源配额\n- 监控资源使用情况，及时调整\n- 使用自动伸缩应对流量波动\n- 定期清理不用的资源\n\n\n---\n\n# Rainbond 故障排查指南\n\n## 常见问题诊断流程\n\n### 1. 组件启动失败\n\n**症状**：组件状态显示 `abnormal`，无法正常访问\n\n**诊断步骤**：\n1. **查看组件状态**\n   - 使用 `get-component-status` 工具\n   - 检查状态字段和错误信息\n\n2. **查看日志**\n   - 使用 `get-component-logs` 工具\n   - 重点关注最后 50-100 行日志\n   - 查找 ERROR、FATAL、Exception 等关键词\n\n3. **常见原因**：\n   - **OOMKilled**: 内存不足，需要扩容\n   - **CrashLoopBackOff**: 启动失败，检查配置和依赖\n   - **ImagePullBackOff**: 镜像拉取失败，检查镜像地址和权限\n   - **配置错误**: 环境变量、端口、挂载路径等配置错误\n\n### 2. 内存溢出 (OOM)\n\n**症状**：\n- 日志中出现 \"out of memory\"、\"heap limit\" 等关键词\n- 组件频繁重启\n- 状态显示 OOMKilled\n\n**解决方案**：\n1. **确认内存使用情况**\n   - 查看监控指标，确认内存使用率\n   - 分析是否有内存泄漏\n\n2. **扩容内存**\n   - 使用 `scale-component-memory` 工具\n   - 建议扩容 50%-100%（如 512MB → 1024MB）\n   - **注意**：扩容需要重启组件，属于高风险操作，需要用户审批\n\n3. **优化应用**\n   - 检查代码是否有内存泄漏\n   - 优化数据结构和算法\n   - 增加垃圾回收频率\n\n### 3. 服务无法访问\n\n**症状**：\n- 组件状态正常，但无法通过域名或 IP 访问\n- 返回 502、503、504 等错误\n\n**诊断步骤**：\n1. **检查组件状态**\n   - 确认组件是否真的在运行\n   - 检查健康检查是否通过\n\n2. **检查端口配置**\n   - 确认端口是否正确开放\n   - 检查端口协议（HTTP/TCP/UDP）\n   - 验证容器内端口和对外端口映射\n\n3. **检查网络策略**\n   - 确认是否有网络策略限制\n   - 检查防火墙规则\n   - 验证服务发现是否正常\n\n4. **检查网关配置**\n   - 确认域名解析是否正确\n   - 检查网关路由规则\n   - 验证 SSL 证书是否有效\n\n### 4. 性能问题\n\n**症状**：\n- 响应时间长\n- CPU 使用率高\n- 请求超时\n\n**诊断步骤**：\n1. **查看监控指标**\n   - CPU 使用率\n   - 内存使用率\n   - 网络流量\n   - 请求响应时间\n\n2. **分析日志**\n   - 查找慢查询\n   - 检查错误率\n   - 分析请求分布\n\n3. **优化方案**：\n   - **水平扩容**：增加实例数量\n   - **垂直扩容**：增加 CPU 和内存\n   - **代码优化**：优化算法和数据库查询\n   - **缓存优化**：增加缓存层，减少数据库压力\n\n### 5. 存储问题\n\n**症状**：\n- 磁盘空间不足\n- 数据丢失\n- 读写性能差\n\n**诊断步骤**：\n1. **检查存储使用情况**\n   - 查看存储卷使用率\n   - 确认是否达到配额上限\n\n2. **检查存储配置**\n   - 确认存储类型（本地存储/网络存储）\n   - 检查挂载路径是否正确\n   - 验证持久化配置\n\n3. **解决方案**：\n   - **扩容存储**：增加存储卷大小\n   - **清理数据**：删除不必要的文件\n   - **优化存储**：使用更快的存储类型\n   - **数据备份**：定期备份重要数据\n\n## 诊断工具使用\n\n### get-component-status\n**用途**：获取组件当前状态\n\n**返回信息**：\n- 组件名称\n- 运行状态（running/stopped/abnormal）\n- 内存配置\n- CPU 配置\n- 实例数量\n\n### get-component-logs\n**用途**：获取组件日志\n\n**参数**：\n- `name`: 组件名称\n- `lines`: 日志行数（默认 50）\n\n**使用场景**：\n- 启动失败时查看错误信息\n- 运行异常时分析原因\n- 性能问题时查找慢查询\n\n### restart-component\n**用途**：重启组件\n\n**风险等级**：高\n\n**使用场景**：\n- 配置更新后需要重启\n- 组件卡死需要强制重启\n- 内存泄漏需要释放资源\n\n**注意事项**：\n- 会导致服务短暂中断\n- 需要用户审批\n- 建议在低峰期操作\n\n### scale-component-memory\n**用途**：调整组件内存配置\n\n**风险等级**：中\n\n**使用场景**：\n- OOM 错误需要扩容\n- 内存使用率过高\n- 性能优化\n\n**注意事项**：\n- 需要重启组件\n- 需要用户审批\n- 建议逐步扩容，避免资源浪费\n\n## 最佳实践\n\n### 预防性监控\n- 设置合理的告警阈值\n- 定期检查资源使用情况\n- 关注错误日志和异常指标\n- 建立故障响应流程\n\n### 快速定位问题\n1. 先看状态，再看日志\n2. 从最近的变更入手\n3. 对比正常和异常时的差异\n4. 使用排除法缩小范围\n\n### 安全操作\n- 高风险操作必须审批\n- 重要操作前先备份\n- 在测试环境验证方案\n- 准备回滚预案\n"
+        },
+        {
+          "role": "system",
+          "content": "## Current Session Context\n- enterprise_id: 8948f3fcf66e0cd91bf1045e8ca4a965\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- component_id: 33ba9a45daa544779d3aa13a86a7172a\n- component_source: query\n- page: /team/jabrm8l6/region/rainbond/apps/185/overview\n当前最可能相关的内嵌 Rainbond 流程：rainbond-fullstack-troubleshooter、rainbond-delivery-verifier。\n当前上下文已经聚焦到组件级，优先围绕该组件做运行态诊断、交付确认或针对性配置检查。\n当 team_name、region_name、app_id、component_id 已经在当前上下文中存在时，优先直接使用这些上下文值。\n除非用户明确要求查看团队列表、切换团队或跨团队比较，否则不要为了确认当前团队再次调用 rainbond_query_teams。\n除非用户明确要求查看集群列表、切换集群或跨集群比较，否则不要为了确认当前集群再次调用 rainbond_query_regions。\n如果上下文已经能唯一定位当前团队、集群、应用或组件，就直接进入对应查询，不要重复向用户索要这些参数。"
+        },
+        {
+          "role": "user",
+          "content": "帮我调整回合理的资源"
+        },
+        {
+          "role": "assistant",
+          "content": "我来先查看当前组件的资源使用情况和状态，然后给出合理的调整建议。",
+          "reasoning_content": "The user is asking me to adjust resources back to reasonable levels for the current component. Let me first understand the current state of the component by getting its summary, which will show me the current resource allocation (CPU, memory) and status.\n\nLet me start by getting the component summary using the context we have:\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- component_id: 33ba9a45daa544779d3aa13a86a7172a",
+          "tool_calls": [
+            {
+              "id": "call_00_YLC4oXQJUZoOoHlEDOgHgmNl",
+              "type": "function",
+              "function": {
+                "name": "rainbond_get_component_summary",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_id\": 185, \"service_id\": \"33ba9a45daa544779d3aa13a86a7172a\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"team_name\":\"jabrm8l6\",\"region_name\":\"rainbond\",\"app_id\":185,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"service\":{\"ID\":400,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"466ebf6a63543fc2e88aacd355198275\",\"service_alias\":\"gra7172a\",\"service_cname\":\"demo-2048\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest-amd64\",\"update_version\":1,\"image\":\"goodrain.me/466ebf6a63543fc2e88aacd355198275:20260402142641\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":4000,\"container_gpu\":0,\"min_memory\":8192,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20260402142641\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:34:10\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":54,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-27 18:49:13\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"demo-2048\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\",\"status\":\"waiting\",\"access_infos\":[\"http://gra7172a-8080-jabrm8l6.14.103.233.199.nip.io\"]},\"status\":{\"status\":\"waiting\"},\"resource\":{\"memory\":8704,\"disk\":0,\"cpu\":4250},\"ports\":{\"items\":[{\"ID\":350,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":8080,\"mapping_port\":8080,\"lb_mapping_port\":0,\"protocol\":\"http\",\"port_alias\":\"GR1982758080\",\"is_inner_service\":true,\"is_outer_service\":true,\"k8s_service_name\":\"demo-2048\",\"name\":null}],\"total\":1},\"envs\":{\"items\":[{\"ID\":6974,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":8080,\"name\":\"连接地址\",\"attr_name\":\"GR1982758080_HOST\",\"attr_value\":\"demo-2048\",\"is_change\":false,\"scope\":\"outer\",\"create_time\":\"2026-04-27 17:34:10\"},{\"ID\":6975,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":8080,\"name\":\"端口\",\"attr_name\":\"GR1982758080_PORT\",\"attr_value\":\"8080\",\"is_change\":false,\"scope\":\"outer\",\"create_time\":\"2026-04-27 17:34:10\"}],\"total\":2},\"build_envs\":{\"items\":[],\"total\":0},\"volumes\":{\"items\":[],\"total\":0},\"mnts\":{\"items\":[],\"total\":0},\"probe\":null,\"autoscaler_rules\":{\"items\":[],\"total\":0},\"recent_events\":{\"items\":[{\"create_time\":\"2026-04-27T18:49:13+08:00\",\"event_id\":\"ec0ab7002ec6484ca0fb492f2375bf37\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"target\":\"pod\",\"target_id\":\"default-demo-2048-68457b9c76-k6rvh\",\"request_body\":\"\",\"user_name\":\"system\",\"start_time\":\"2026-04-27T18:49:13+08:00\",\"end_time\":\"\",\"opt_type\":\"Unschedulable\",\"syn_type\":0,\"status\":\"failure\",\"final_status\":\"empty\",\"message\":\"CPU资源不足，请降低需求或联系管理员\",\"reason\":\"\"},{\"create_time\":\"2026-04-27T18:49:13+08:00\",\"event_id\":\"8d09691a5773454689b1aa040bbfc612\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"{\\\"container_memory\\\": 8192, \\\"container_cpu\\\": 4000, \\\"container_gpu\\\": 0, \\\"operator\\\": \\\"admin\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\"}\",\"user_name\":\"admin\",\"start_time\":\"2026-04-27T18:49:13+08:00\",\"end_time\":\"2026-04-27T18:49:13+08:00\",\"opt_type\":\"vertical-service\",\"syn_type\":0,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"upgrade service gra7172a success\",\"reason\":\"\"},{\"create_time\":\"2026-04-27T17:34:11+08:00\",\"event_id\":\"7895d6568eb145448467786dc327dafa\",\"tenant_id\":\"\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"\",\"user_name\":\"\",\"start_time\":\"2026-04-27T17:34:11+08:00\",\"end_time\":\"2026-04-27T17:34:11+08:00\",\"opt_type\":\"upgrade\",\"syn_type\":0,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"Start service gra7172a success\",\"reason\":\"\"},{\"create_time\":\"2026-04-27T17:34:10+08:00\",\"event_id\":\"7dc3ab55c38744d4b38e18a33e4db4b3\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"\",\"user_name\":\"admin\",\"start_time\":\"2026-04-27T17:34:10+08:00\",\"end_time\":\"2026-04-27T17:34:11+08:00\",\"opt_type\":\"build-service\",\"syn_type\":0,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"Build success\",\"reason\":\"\"}],\"total\":4,\"page\":1,\"page_size\":5,\"has_next\":false}}}",
+          "name": "rainbond_get_component_summary",
+          "tool_call_id": "call_00_YLC4oXQJUZoOoHlEDOgHgmNl"
+        },
+        {
+          "role": "assistant",
+          "content": "## 诊断分析\n\n当前组件 **demo-2048** 的状态如下：\n\n| 项目 | 当前值 | 状态 |\n|------|--------|------|\n| **状态** | `waiting` | ❌ 无法调度 |\n| **CPU** | 4250m (4.25 核) | ⚠️ 过高 |\n| **内存** | 8704MB (8.5GB) | ⚠️ 过高 |\n\n**根因**：从最近事件可以看到，之前有人将资源从默认值大幅上调到了 **4 核 CPU / 8GB 内存**，导致集群资源不足，Pod 调度失败，报错：\n\n> \"CPU资源不足，请降低需求或联系管理员\"\n\ndemo-2048 是一个轻量级的网页小游戏，正常情况下 **128m~250m CPU + 256MB~512MB 内存** 完全足够。\n\n---\n\n## 建议调整方案\n\n| 资源 | 当前（异常） | 建议调整为 |\n|------|------------|-----------|\n| CPU | 4250m | **250m** |\n| 内存 | 8704MB | **512MB** |\n\n现在为你触发缩容审批：",
+          "reasoning_content": "Let me analyze the current state of this component:\n\n**Component**: demo-2048\n- Service ID: 33ba9a45daa544779d3aa13a86a7172a\n- Type: Application (stateless_multiple)\n- Source: From market (app_publish)\n\n**Current Resource Allocation**:\n- CPU: 4250m (4.25 cores) - from resource.cpu\n- Memory: 8704MB (8.5GB) - from resource.memory\n- min_cpu: 4000 (4 cores)\n- min_memory: 8192 (8GB)\n- Disk: 0\n\n**Status**: waiting (not running)\n\n**Recent Events**:\n1. The admin scaled the component from its original state to 4000m CPU / 8192MB memory (event: \"upgrade service gra7172a success\")\n2. After the scale-up, it failed with \"CPU资源不足，请降低需求或联系管理员\" (Insufficient CPU resources, please reduce requirements or contact administrator) - Unschedulable\n\nSo the component is currently in a \"waiting\" state because it can't be scheduled due to insufficient CPU resources. The previous admin bumped the resources to 4 CPU and 8GB memory, which is way too high for a simple demo-2048 game app. \n\nThe component was installed from the market. It's a simple 2048 game web app (demo-2048). A reasonable resource allocation would be something like:\n- CPU: 128m or 256m (typical for a simple web app)\n- Memory: 256MB or 512MB\n\nLet me look at the original configuration: min_cpu was 4000 and min_memory was 8192. That's clearly excessive for a demo 2048 game.\n\nA demo-2048 game (container with nginx serving static files or a simple Node.js/Python app) typically needs:\n- CPU: ~100-250m\n- Memory: ~128-512MB\n\nI should recommend reasonable defaults, but this is a write operation (rainbond_vertical_scale_component), so it needs to go through the approval flow.\n\nLet me suggest:\n- CPU: 250m (0.25 cores)\n- Memory: 512MB\n\nThese are reasonable for a demo 2048 game app. Let me proceed with the vertical scale operation, which will trigger the approval flow.",
+          "tool_calls": [
+            {
+              "id": "call_00_GuBKJQvnEckXZtO7dzuuMf6P",
+              "type": "function",
+              "function": {
+                "name": "rainbond_vertical_scale_component",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_id\": 185, \"service_id\": \"33ba9a45daa544779d3aa13a86a7172a\", \"new_memory\": 512, \"new_cpu\": 250, \"new_gpu\": 0}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"scaled\":true,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"new_memory\":512,\"new_gpu\":0,\"new_cpu\":250}}",
+          "name": "rainbond_vertical_scale_component",
+          "tool_call_id": "call_00_GuBKJQvnEckXZtO7dzuuMf6P"
+        }
+      ],
+      "iteration": 2,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "call_00_YLC4oXQJUZoOoHlEDOgHgmNl",
+        "call_00_GuBKJQvnEckXZtO7dzuuMf6P"
+      ],
+      "finalOutput": null,
+      "status": "running"
+    }
+  },
+  {
+    "runId": "run_1777289166811_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777289166680_1",
+    "messageText": "新建一个快照",
+    "status": "pending",
+    "startedAt": "2026-04-27T11:26:06.811Z",
+    "executionState": {
+      "runId": "run_1777289166811_2",
+      "sessionId": "cs_1777289166680_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "新建一个快照"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已创建应用快照 v1.0.1，可以继续执行发布或回滚。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777289189261_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777289166680_1",
+    "messageText": "添加环境变量DD=yy",
+    "status": "running",
+    "startedAt": "2026-04-27T11:26:29.261Z",
+    "executionState": {
+      "runId": "run_1777289189261_3",
+      "sessionId": "cs_1777289166680_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "你是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n## 你的角色和能力\n\n- 深入理解 Rainbond 的核心概念、架构和操作\n- 帮助用户部署、配置、管理和诊断 Rainbond 应用\n- 使用工具执行实际操作（查询状态、查看日志、重启组件等）\n- 在信息不足时先澄清，再执行\n- 回答要专业、清晰、结构化\n\n## 工具使用原则\n\n- 低风险操作（例如查询状态、查看日志）可以直接执行\n- 高风险操作（例如重启、扩容）要先明确影响，再通过审批流处理\n- 所有会修改 Rainbond 资源状态、配置、部署、升级、删除、分享、安装的写操作，都必须先确认是否需要审批\n- 对任何需要审批的写操作，不要先用自然语言询问“是否确认执行”；应直接调用相应工具，让系统进入统一审批流\n- 优先先查后改；如果上下文已经足够，不要为了凑参数重复调用上游列表接口\n- 如果工具结果能帮助回答，就先看结果再回答，不要跳过分析\n\n## 回答原则\n\n- 先理解用户问题，再决定是否用工具\n- 能直接回答的普通问题，就直接回答\n- 如果用户在问故障、状态、日志、部署问题，优先结合工具结果给结论\n- 回答时尽量解释原因，不只给结论\n- 一旦调用了工具，你的最终回复必须基于工具返回结果明确回答用户问题\n- 禁止在已有工具结果时输出空泛占位语句，例如“我已经完成当前分析，但没有生成额外回复”\n- 如果工具结果不足以完整回答，就明确说明目前已知信息、未知信息以及建议的下一步\n\n## Rainbond 嵌入式流程能力\n\n当前生产主链路只承诺 server/workflows 中已经接入的嵌入式 Rainbond 流程，不再把浏览器侧 prompt skills 当成独立执行脑。\n\n### rainbond-app-assistant\n- 概要：总控入口，负责上下文解析、状态判断和子流程选择。\n- 适用场景：用户希望由系统先判断下一步该部署、排障、验收、模板安装还是进入版本中心，或者当前诉求还不够明确。\n- 不适用场景：用户已经明确指定只执行某个子流程，或者任务属于 workspace 初始化 / 本地 env 同步。\n- 范围提示：至少需要 team_name 和 app_id 才能稳定进入主链路。\n- 优先工具：作为总控入口优先做上下文解析和子流程选择，不直接承诺 workspace 型文件操作\n- 流程阶段：resolve-context(解析上下文) -> assess-state(判断状态) -> select-subflow(选择子流程) -> report(汇总结果)\n\n### rainbond-fullstack-bootstrap\n- 概要：负责拓扑创建、组件复用和最小可运行部署。\n- 适用场景：应用尚未拉起，需要创建或复用拓扑并完成最小可运行部署。\n- 不适用场景：拓扑已存在且主要问题是运行态异常，或者任务是版本中心操作。\n- 范围提示：适合已经知道 team_name、region_name，并逐步补全 app_id 的部署场景。\n- 优先工具：rainbond_create_app、rainbond_create_component*、rainbond_build_component、rainbond_install_app_model\n- 共享词汇：building、waiting、running、abnormal、capacity-blocked\n- 流程阶段：resolve-scope(解析范围) -> check-topology(检查拓扑) -> create-or-reuse(创建或复用) -> deploy(部署)\n\n### rainbond-fullstack-troubleshooter\n- 概要：Use only when the current task is already known to be runtime or build troubleshooting for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：排障 / 排查 / 修复 / 恢复服务 / 构建失败 / 启动异常 / troubleshoot / debug\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary、rainbond_get_component_pods、rainbond_get_pod_detail、rainbond_get_component_events、rainbond_get_component_logs、rainbond_get_component_build_logs、rainbond_manage_component_envs、rainbond_manage_component_connection_envs、rainbond_manage_component_dependency、rainbond_manage_component_probe\n- 共享词汇：topology_building、runtime_unhealthy、runtime_healthy、code_or_build_handoff_needed\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> inspect-runtime(branch) -> classify-and-repair(branch) -> report(summarize)\n\n### rainbond-delivery-verifier\n- 概要：Use only when the next step is already known to be final delivery verification for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：交付 / 验收 / verify delivery / 访问地址\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary\n- 共享词汇：delivered、delivered-but-needs-manual-validation、partially-delivered、blocked\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> report(summarize)\n\n### rainbond-template-installer\n- 概要：Use when installing a local or cloud Rainbond app template into an existing or newly created target app through the current Rainbond MCP template-install workflow.\n- 适用场景：模板安装 / 云市场安装 / 本地模板安装 / install template\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_query_cloud_markets、rainbond_query_local_app_models、rainbond_query_cloud_app_models、rainbond_query_app_model_versions、rainbond_install_app_model\n- 流程阶段：resolve-scope(resolve_context) -> discover-template(branch) -> resolve-version(tool_call) -> install(tool_call) -> report(summarize)\n\n### rainbond-app-version-assistant\n- 概要：Use when working in the Rainbond app version center flow under `/team/.../apps/:appID/version`, especially to create snapshots, publish to the local library or cloud market, inspect publish drafts and events, or rollback app runtime to a snapshot.\n- 适用场景：快照 / 发布 / 回滚 / version center\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_version_overview、rainbond_list_app_version_snapshots、rainbond_get_app_version_snapshot_detail、rainbond_create_app_version_snapshot、rainbond_create_app_share_record、rainbond_get_app_publish_candidates、rainbond_rollback_app_version_snapshot\n- 共享词汇：snapshot、publish draft、publish event、rollback record\n- 流程阶段：resolve-scope(resolve_context) -> inspect-version-center(tool_call) -> list-snapshots(tool_call) -> execute-version-action(branch) -> report(summarize)\n\nworkspace 型流程 rainbond-project-init、rainbond-env-sync 不在当前嵌入式主链路内；如任务依赖本地项目文件初始化或本地 env 落盘，应明确提示这是外部/后续流程。\n\n## Rainbond MCP 工具使用约束\n\n- 事实查询优先使用只读工具，当前只读工具前缀为：rainbond_get_、rainbond_query_、rainbond_list_。\n- 当上下文已经提供 team_name、region_name、app_id、component_id 时，优先直接带上这些参数，不要为了确认当前范围重复调用列表接口。\n- 当前 51 个可变更 MCP 工具受统一审批策略约束。\n- allowDirectExecution=true 的低风险写操作可以直接执行，典型示例：rainbond_check_helm_app、rainbond_check_yaml_app、rainbond_create_app_version_snapshot、rainbond_init_package_upload。\n- 其余会修改资源状态、配置、部署、安装、升级、删除或分享流程的工具，必须进入审批流，典型示例：rainbond_delete_component、rainbond_install_app_model、rainbond_manage_component_envs、rainbond_upgrade_app。\n- 当工具属于组件级变更时，要优先确认当前 component_id 是否可信；如果 component_source=route，则先避免把它直接当成 service_id 使用。\n\n## Rainbond 知识\n\n# Rainbond 核心概念\n\n## 基本概念\n\n### 组件 (Component)\n组件是 Rainbond 中最小的可部署单元，对应一个容器化应用。\n\n**组件类型**：\n- **无状态服务**：可以水平扩展，无持久化数据（如 Web 应用、API 服务）\n- **有状态服务**：需要持久化存储，有固定网络标识（如数据库、消息队列）\n- **任务型组件**：一次性或定时执行的任务（如数据处理、定时备份）\n\n**组件状态**：\n- `running`: 运行中，健康检查通过\n- `stopped`: 已停止\n- `abnormal`: 运行异常，可能是 OOMKilled、CrashLoopBackOff 等\n- `building`: 正在构建或部署中\n- `starting`: 正在启动\n\n### 应用 (Application)\n应用是一组相关组件的集合，通常代表一个完整的业务系统。\n\n**应用特性**：\n- 包含多个组件（前端、后端、数据库等）\n- 组件间可以通过服务发现互相访问\n- 可以整体管理（启动、停止、备份、恢复）\n- 支持应用模板和一键部署\n\n### 团队 (Team)\n团队是资源隔离和权限管理的基本单位。\n\n**团队功能**：\n- 资源配额管理（CPU、内存、存储）\n- 成员权限管理（管理员、开发者、观察者）\n- 应用和组件归属于团队\n- 团队间资源隔离\n\n### 集群 (Cluster)\n集群是底层 Kubernetes 集群的抽象。\n\n**集群类型**：\n- **本地集群**：Rainbond 安装所在的集群\n- **远程集群**：通过 kubeconfig 接入的外部集群\n- **边缘集群**：部署在边缘节点的轻量级集群\n\n## 组件生命周期\n\n### 1. 创建组件\n**方式**：\n- 源码构建（Git、SVN）\n- Docker 镜像\n- Docker Compose\n- Helm Chart\n- 应用市场\n\n### 2. 配置组件\n**配置项**：\n- 环境变量\n- 端口映射\n- 存储挂载\n- 健康检查\n- 资源限制（CPU、内存）\n- 自动伸缩策略\n\n### 3. 部署组件\n**部署流程**：\n1. 构建镜像（如果是源码）\n2. 推送到镜像仓库\n3. 创建 Kubernetes 资源（Deployment/StatefulSet）\n4. 等待 Pod 启动\n5. 执行健康检查\n6. 更新组件状态\n\n### 4. 运维组件\n**常见操作**：\n- 启动/停止/重启\n- 扩容/缩容\n- 更新配置\n- 查看日志\n- 查看监控指标\n- 进入容器终端\n\n## 关键概念对比\n\n| 概念 | Kubernetes 对应 | 说明 |\n|------|----------------|------|\n| 组件 | Deployment/StatefulSet | 应用的最小部署单元 |\n| 应用 | Namespace (部分) | 一组相关组件的集合 |\n| 团队 | Namespace | 资源隔离和权限管理 |\n| 端口 | Service | 服务访问入口 |\n| 存储 | PVC | 持久化数据存储 |\n\n## 最佳实践\n\n### 组件设计\n- 遵循单一职责原则，一个组件只做一件事\n- 无状态组件优先，便于水平扩展\n- 合理设置资源限制，避免资源争抢\n- 配置健康检查，确保服务可用性\n\n### 应用架构\n- 前后端分离，独立部署\n- 数据库使用有状态组件\n- 缓存和消息队列独立部署\n- 使用服务网格管理服务间通信\n\n### 资源管理\n- 为团队设置合理的资源配额\n- 监控资源使用情况，及时调整\n- 使用自动伸缩应对流量波动\n- 定期清理不用的资源\n\n\n---\n\n# Rainbond 故障排查指南\n\n## 常见问题诊断流程\n\n### 1. 组件启动失败\n\n**症状**：组件状态显示 `abnormal`，无法正常访问\n\n**诊断步骤**：\n1. **查看组件状态**\n   - 使用 `get-component-status` 工具\n   - 检查状态字段和错误信息\n\n2. **查看日志**\n   - 使用 `get-component-logs` 工具\n   - 重点关注最后 50-100 行日志\n   - 查找 ERROR、FATAL、Exception 等关键词\n\n3. **常见原因**：\n   - **OOMKilled**: 内存不足，需要扩容\n   - **CrashLoopBackOff**: 启动失败，检查配置和依赖\n   - **ImagePullBackOff**: 镜像拉取失败，检查镜像地址和权限\n   - **配置错误**: 环境变量、端口、挂载路径等配置错误\n\n### 2. 内存溢出 (OOM)\n\n**症状**：\n- 日志中出现 \"out of memory\"、\"heap limit\" 等关键词\n- 组件频繁重启\n- 状态显示 OOMKilled\n\n**解决方案**：\n1. **确认内存使用情况**\n   - 查看监控指标，确认内存使用率\n   - 分析是否有内存泄漏\n\n2. **扩容内存**\n   - 使用 `scale-component-memory` 工具\n   - 建议扩容 50%-100%（如 512MB → 1024MB）\n   - **注意**：扩容需要重启组件，属于高风险操作，需要用户审批\n\n3. **优化应用**\n   - 检查代码是否有内存泄漏\n   - 优化数据结构和算法\n   - 增加垃圾回收频率\n\n### 3. 服务无法访问\n\n**症状**：\n- 组件状态正常，但无法通过域名或 IP 访问\n- 返回 502、503、504 等错误\n\n**诊断步骤**：\n1. **检查组件状态**\n   - 确认组件是否真的在运行\n   - 检查健康检查是否通过\n\n2. **检查端口配置**\n   - 确认端口是否正确开放\n   - 检查端口协议（HTTP/TCP/UDP）\n   - 验证容器内端口和对外端口映射\n\n3. **检查网络策略**\n   - 确认是否有网络策略限制\n   - 检查防火墙规则\n   - 验证服务发现是否正常\n\n4. **检查网关配置**\n   - 确认域名解析是否正确\n   - 检查网关路由规则\n   - 验证 SSL 证书是否有效\n\n### 4. 性能问题\n\n**症状**：\n- 响应时间长\n- CPU 使用率高\n- 请求超时\n\n**诊断步骤**：\n1. **查看监控指标**\n   - CPU 使用率\n   - 内存使用率\n   - 网络流量\n   - 请求响应时间\n\n2. **分析日志**\n   - 查找慢查询\n   - 检查错误率\n   - 分析请求分布\n\n3. **优化方案**：\n   - **水平扩容**：增加实例数量\n   - **垂直扩容**：增加 CPU 和内存\n   - **代码优化**：优化算法和数据库查询\n   - **缓存优化**：增加缓存层，减少数据库压力\n\n### 5. 存储问题\n\n**症状**：\n- 磁盘空间不足\n- 数据丢失\n- 读写性能差\n\n**诊断步骤**：\n1. **检查存储使用情况**\n   - 查看存储卷使用率\n   - 确认是否达到配额上限\n\n2. **检查存储配置**\n   - 确认存储类型（本地存储/网络存储）\n   - 检查挂载路径是否正确\n   - 验证持久化配置\n\n3. **解决方案**：\n   - **扩容存储**：增加存储卷大小\n   - **清理数据**：删除不必要的文件\n   - **优化存储**：使用更快的存储类型\n   - **数据备份**：定期备份重要数据\n\n## 诊断工具使用\n\n### get-component-status\n**用途**：获取组件当前状态\n\n**返回信息**：\n- 组件名称\n- 运行状态（running/stopped/abnormal）\n- 内存配置\n- CPU 配置\n- 实例数量\n\n### get-component-logs\n**用途**：获取组件日志\n\n**参数**：\n- `name`: 组件名称\n- `lines`: 日志行数（默认 50）\n\n**使用场景**：\n- 启动失败时查看错误信息\n- 运行异常时分析原因\n- 性能问题时查找慢查询\n\n### restart-component\n**用途**：重启组件\n\n**风险等级**：高\n\n**使用场景**：\n- 配置更新后需要重启\n- 组件卡死需要强制重启\n- 内存泄漏需要释放资源\n\n**注意事项**：\n- 会导致服务短暂中断\n- 需要用户审批\n- 建议在低峰期操作\n\n### scale-component-memory\n**用途**：调整组件内存配置\n\n**风险等级**：中\n\n**使用场景**：\n- OOM 错误需要扩容\n- 内存使用率过高\n- 性能优化\n\n**注意事项**：\n- 需要重启组件\n- 需要用户审批\n- 建议逐步扩容，避免资源浪费\n\n## 最佳实践\n\n### 预防性监控\n- 设置合理的告警阈值\n- 定期检查资源使用情况\n- 关注错误日志和异常指标\n- 建立故障响应流程\n\n### 快速定位问题\n1. 先看状态，再看日志\n2. 从最近的变更入手\n3. 对比正常和异常时的差异\n4. 使用排除法缩小范围\n\n### 安全操作\n- 高风险操作必须审批\n- 重要操作前先备份\n- 在测试环境验证方案\n- 准备回滚预案\n"
+        },
+        {
+          "role": "system",
+          "content": "## Current Session Context\n- enterprise_id: 8948f3fcf66e0cd91bf1045e8ca4a965\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- page: /team/jabrm8l6/region/rainbond/apps/185/version\n当前最可能相关的内嵌 Rainbond 流程：rainbond-app-version-assistant。\n当前页面位于版本中心，优先处理快照、发布、回滚，并优先考虑快照、发布记录、发布事件相关 MCP 工具。\n在这个页面语境下，优先按“快照、发布、回滚”的版本中心语义回答问题。\n当 team_name、region_name、app_id、component_id 已经在当前上下文中存在时，优先直接使用这些上下文值。\n除非用户明确要求查看团队列表、切换团队或跨团队比较，否则不要为了确认当前团队再次调用 rainbond_query_teams。\n除非用户明确要求查看集群列表、切换集群或跨集群比较，否则不要为了确认当前集群再次调用 rainbond_query_regions。\n如果上下文已经能唯一定位当前团队、集群、应用或组件，就直接进入对应查询，不要重复向用户索要这些参数。"
+        },
+        {
+          "role": "user",
+          "content": "添加环境变量DD=yy"
+        },
+        {
+          "role": "assistant",
+          "content": "我需要先了解当前应用下有哪些组件，才能知道要把环境变量加到哪个组件上。让我查一下。",
+          "reasoning_content": "The user wants to add an environment variable `DD=yy`. They are currently on the version center page for app 185 in team jabrm8l6. However, adding an environment variable is a component-level operation, not a version center operation.\n\nBefore I can add an environment variable, I need to know which component (service_id) to add it to. The user hasn't specified which component. Let me first check what components exist in this app.\n\nLet me query the components in this app first.",
+          "tool_calls": [
+            {
+              "id": "call_00_SFTZTShFAe7QqSAvyppTZhDq",
+              "type": "function",
+              "function": {
+                "name": "rainbond_query_components",
+                "arguments": "{\"enterprise_id\": \"8948f3fcf66e0cd91bf1045e8ca4a965\", \"app_id\": 185}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"items\":[{\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"service_alias\":\"gra7172a\",\"service_cname\":\"demo-2048\",\"service_region\":\"rainbond\",\"service_source\":\"market\",\"create_status\":\"complete\",\"app_id\":185,\"app_name\":\"测试发布\",\"team_id\":\"1cc40a372b00476d92c53588ca662402\",\"team_name\":\"jabrm8l6\",\"enterprise_id\":\"8948f3fcf66e0cd91bf1045e8ca4a965\",\"create_time\":\"2026-04-27 17:34:10\",\"update_time\":\"2026-04-27 19:17:50\"}],\"total\":1,\"page\":1,\"page_size\":20}}",
+          "name": "rainbond_query_components",
+          "tool_call_id": "call_00_SFTZTShFAe7QqSAvyppTZhDq"
+        },
+        {
+          "role": "assistant",
+          "content": "当前应用「测试发布」下只有一个组件 **demo-2048**（`33ba9a45daa544779d3aa13a86a7172a`）。我来为它添加环境变量 `DD=yy`。",
+          "reasoning_content": "There's only one component in this app:\n\n- service_id: `33ba9a45daa544779d3aa13a86a7172a`\n- service_cname: `demo-2048`\n- app_name: `测试发布`\n\nThe user wants to add an environment variable `DD=yy`. This is a write operation that modifies component configuration, so it needs to go through the approval flow via `rainbond_manage_component_envs`.\n\nLet me use `rainbond_manage_component_envs` with operation `create` to add the env var `DD=yy`.\n\nParameters:\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- service_id: 33ba9a45daa544779d3aa13a86a7172a\n- operation: create\n- attr_name: DD\n- attr_value: yy\n- name: DD (human-readable name)\n- scope: inner (default for custom envs)\n\nThis is a write operation - adding an env var to a component. According to the rules, this needs to go through the approval flow. Let me call the tool directly.",
+          "tool_calls": [
+            {
+              "id": "call_00_BbPV0OsDD0ge7tUqXRJxRKcJ",
+              "type": "function",
+              "function": {
+                "name": "rainbond_manage_component_envs",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_id\": 185, \"service_id\": \"33ba9a45daa544779d3aa13a86a7172a\", \"operation\": \"create\", \"attr_name\": \"DD\", \"attr_value\": \"yy\", \"name\": \"DD\", \"scope\": \"inner\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"created\":true,\"env\":{\"ID\":6976,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":0,\"name\":\"DD\",\"attr_name\":\"DD\",\"attr_value\":\"yy\",\"is_change\":true,\"scope\":\"inner\",\"create_time\":\"2026-04-27 19:26:59\"}}}",
+          "name": "rainbond_manage_component_envs",
+          "tool_call_id": "call_00_BbPV0OsDD0ge7tUqXRJxRKcJ"
+        }
+      ],
+      "iteration": 2,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "call_00_SFTZTShFAe7QqSAvyppTZhDq",
+        "call_00_BbPV0OsDD0ge7tUqXRJxRKcJ"
+      ],
+      "finalOutput": null,
+      "status": "running"
+    }
+  },
+  {
+    "runId": "run_1777289248587_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777289166680_1",
+    "messageText": "继续新建快照1.0.3",
+    "status": "pending",
+    "startedAt": "2026-04-27T11:27:28.587Z",
+    "executionState": {
+      "runId": "run_1777289248587_a",
+      "sessionId": "cs_1777289166680_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "继续新建快照1.0.3"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已创建应用快照 1.0.3，可以继续执行发布或回滚。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344411319_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344411165_1",
+    "messageText": "删除环境变量DD,然后新建一个快照1.0.4",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:46:51.320Z",
+    "executionState": {
+      "runId": "run_1777344411319_2",
+      "sessionId": "cs_1777344411165_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD,然后新建一个快照1.0.4"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已创建应用快照 1.0.4，可以继续执行发布或回滚。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344552454_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344411165_1",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:49:12.454Z",
+    "executionState": {
+      "runId": "run_1777344552454_3",
+      "sessionId": "cs_1777344411165_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344564304_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344411165_1",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:49:24.304Z",
+    "executionState": {
+      "runId": "run_1777344564304_4",
+      "sessionId": "cs_1777344411165_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344573293_5",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344411165_1",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:49:33.293Z",
+    "executionState": {
+      "runId": "run_1777344573293_5",
+      "sessionId": "cs_1777344411165_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344600638_6",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777289166680_1",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:50:00.638Z",
+    "executionState": {
+      "runId": "run_1777344600638_6",
+      "sessionId": "cs_1777289166680_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344618412_8",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344618272_7",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:50:18.412Z",
+    "executionState": {
+      "runId": "run_1777344618412_8",
+      "sessionId": "cs_1777344618272_7",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344630770_9",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344618272_7",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:50:30.770Z",
+    "executionState": {
+      "runId": "run_1777344630770_9",
+      "sessionId": "cs_1777344618272_7",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777344679363_a",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777344618272_7",
+    "messageText": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:51:19.363Z",
+    "executionState": {
+      "runId": "run_1777344679363_a",
+      "sessionId": "cs_1777344618272_7",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "删除环境变量DD，将手动伸缩改为内存1gb，cpu500m,再添加一个新端口8081"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已识别团队 jabrm8l6 和应用 185，下一步将进入运行态判断。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777345020148_c",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777345020009_b",
+    "messageText": "这个组件是什么问题",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:57:00.148Z",
+    "executionState": {
+      "runId": "run_1777345020148_c",
+      "sessionId": "cs_1777345020009_b",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "这个组件是什么问题"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777345065639_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777345065522_1",
+    "messageText": "这个组件怎么了",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:57:45.639Z",
+    "executionState": {
+      "runId": "run_1777345065639_2",
+      "sessionId": "cs_1777345065522_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "这个组件怎么了"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777345071937_3",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777345065522_1",
+    "messageText": "继续",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:57:51.937Z"
+  },
+  {
+    "runId": "run_1777345083282_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777345065522_1",
+    "messageText": "继续",
+    "status": "pending",
+    "startedAt": "2026-04-28T02:58:03.282Z"
+  },
+  {
+    "runId": "run_1777345392585_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777345392426_1",
+    "messageText": "这个组件怎么了",
+    "status": "pending",
+    "startedAt": "2026-04-28T03:03:12.585Z",
+    "executionState": {
+      "runId": "run_1777345392585_2",
+      "sessionId": "cs_1777345392426_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "这个组件怎么了"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777345481890_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777345481728_1",
+    "messageText": "请你帮我排查这个组件的问题",
+    "status": "pending",
+    "startedAt": "2026-04-28T03:04:41.890Z",
+    "executionState": {
+      "runId": "run_1777345481890_2",
+      "sessionId": "cs_1777345481728_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "请你帮我排查这个组件的问题"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777346411880_4",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777346411748_3",
+    "messageText": "请你帮我查询团队的信息",
+    "status": "failed",
+    "startedAt": "2026-04-28T03:20:11.880Z",
+    "errorMessage": "Rainbond MCP request failed with status 500: Traceback (most recent call last):\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/rest_framework/views.py\", line 480, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/views/decorators/cache.py\", line 44, in _wrapped_view_func\n    response = view_func(request, *args, **kwargs)\n  File \"/app/ui/console/views/mcp_query.py\", line 444, in post\n    rpc_response = self._dispatch_rpc(payload, user, protocol_version=protocol_version)\n  File \"/app/ui/console/views/mcp_query.py\", line 242, in _dispatch_rpc\n    data = mcp_query_service.call_tool(user, tool_name, arguments)\n  File \"/app/ui/console/services/mcp_query_service.py\", line 478, in call_tool\n    return self.get_region_detail(user, arguments)\n  File \"/app/ui/console/services/mcp_query_service.py\", line 3160, in get_region_detail\n    region_model = self._get_region_model(user, region_id)\n  File \"/app/ui/console/services/mcp_query_service.py\", line 3400, in _get_region_model\n    region = region_services.get_region_by_region_id(region_id)\n  File \"/app/ui/console/services/region_services.py\", line 56, in get_region_by_region_id\n    return region_repo.get_region_by_region_id(region_id=region_id)\n  File \"/app/ui/console/repositories/region_repo.py\", line 33, in get_region_by_region_id\n    return RegionConfig.objects.get(region_id=region_id)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/manager.py\", line 82, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n  File \"/app/ui/py_venv/lib/python3.6/site-packages/django/db/models/query.py\", line 408, in get\n    self.model._meta.object_name\nconsole.models.main.RegionConfig.DoesNotExist: RegionConfig matching query does not exist.\n",
+    "finishedAt": "2026-04-28T03:20:25.824Z"
+  },
+  {
+    "runId": "run_1777346520662_2",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777346520548_1",
+    "messageText": "帮我查看这个组价的问题",
+    "status": "pending",
+    "startedAt": "2026-04-28T03:22:00.662Z"
+  },
+  {
+    "runId": "run_1777346610823_9",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777346520548_1",
+    "messageText": "帮我执行调整到 1 核 / 1GB",
+    "status": "running",
+    "startedAt": "2026-04-28T03:23:30.823Z",
+    "executionState": {
+      "runId": "run_1777346610823_9",
+      "sessionId": "cs_1777346520548_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "你是 Rainbond Copilot，一个专业的 Rainbond 云原生应用管理平台助手。\n\n## 你的角色和能力\n\n- 深入理解 Rainbond 的核心概念、架构和操作\n- 帮助用户部署、配置、管理和诊断 Rainbond 应用\n- 使用工具执行实际操作（查询状态、查看日志、重启组件等）\n- 在信息不足时先澄清，再执行\n- 回答要专业、清晰、结构化\n\n## 工具使用原则\n\n- 低风险操作（例如查询状态、查看日志）可以直接执行\n- 高风险操作（例如重启、扩容）要先明确影响，再通过审批流处理\n- 所有会修改 Rainbond 资源状态、配置、部署、升级、删除、分享、安装的写操作，都必须先确认是否需要审批\n- 对任何需要审批的写操作，不要先用自然语言询问“是否确认执行”；应直接调用相应工具，让系统进入统一审批流\n- 优先先查后改；如果上下文已经足够，不要为了凑参数重复调用上游列表接口\n- 如果工具结果能帮助回答，就先看结果再回答，不要跳过分析\n\n## 回答原则\n\n- 先理解用户问题，再决定是否用工具\n- 能直接回答的普通问题，就直接回答\n- 如果用户在问故障、状态、日志、部署问题，优先结合工具结果给结论\n- 回答时尽量解释原因，不只给结论\n- 一旦调用了工具，你的最终回复必须基于工具返回结果明确回答用户问题\n- 禁止在已有工具结果时输出空泛占位语句，例如“我已经完成当前分析，但没有生成额外回复”\n- 如果工具结果不足以完整回答，就明确说明目前已知信息、未知信息以及建议的下一步\n\n## Rainbond 嵌入式流程能力\n\n当前生产主链路只承诺 server/workflows 中已经接入的嵌入式 Rainbond 流程，不再把浏览器侧 prompt skills 当成独立执行脑。\n\n### rainbond-app-assistant\n- 概要：总控入口，负责上下文解析、状态判断和子流程选择。\n- 适用场景：用户希望由系统先判断下一步该部署、排障、验收、模板安装还是进入版本中心，或者当前诉求还不够明确。\n- 不适用场景：用户已经明确指定只执行某个子流程，或者任务属于 workspace 初始化 / 本地 env 同步。\n- 范围提示：至少需要 team_name 和 app_id 才能稳定进入主链路。\n- 优先工具：作为总控入口优先做上下文解析和子流程选择，不直接承诺 workspace 型文件操作\n- 流程阶段：resolve-context(解析上下文) -> assess-state(判断状态) -> select-subflow(选择子流程) -> report(汇总结果)\n\n### rainbond-fullstack-bootstrap\n- 概要：负责拓扑创建、组件复用和最小可运行部署。\n- 适用场景：应用尚未拉起，需要创建或复用拓扑并完成最小可运行部署。\n- 不适用场景：拓扑已存在且主要问题是运行态异常，或者任务是版本中心操作。\n- 范围提示：适合已经知道 team_name、region_name，并逐步补全 app_id 的部署场景。\n- 优先工具：rainbond_create_app、rainbond_create_component*、rainbond_build_component、rainbond_install_app_model\n- 共享词汇：building、waiting、running、abnormal、capacity-blocked\n- 流程阶段：resolve-scope(解析范围) -> check-topology(检查拓扑) -> create-or-reuse(创建或复用) -> deploy(部署)\n\n### rainbond-fullstack-troubleshooter\n- 概要：Use only when the current task is already known to be runtime or build troubleshooting for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：排障 / 排查 / 修复 / 恢复服务 / 构建失败 / 启动异常 / troubleshoot / debug\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary、rainbond_get_component_pods、rainbond_get_pod_detail、rainbond_get_component_events、rainbond_get_component_logs、rainbond_get_component_build_logs、rainbond_manage_component_envs、rainbond_manage_component_connection_envs、rainbond_manage_component_dependency、rainbond_manage_component_probe\n- 共享词汇：topology_building、runtime_unhealthy、runtime_healthy、code_or_build_handoff_needed\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> inspect-runtime(branch) -> classify-and-repair(branch) -> report(summarize)\n\n### rainbond-delivery-verifier\n- 概要：Use only when the next step is already known to be final delivery verification for an existing Rainbond app. Do not use as the first or default response to a generic current-project deployment request; route those to rainbond-app-assistant.\n- 适用场景：交付 / 验收 / verify delivery / 访问地址\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_detail、rainbond_query_components、rainbond_get_component_summary\n- 共享词汇：delivered、delivered-but-needs-manual-validation、partially-delivered、blocked\n- 流程阶段：resolve-scope(resolve_context) -> inspect-app(tool_call) -> inspect-components(tool_call) -> report(summarize)\n\n### rainbond-template-installer\n- 概要：Use when installing a local or cloud Rainbond app template into an existing or newly created target app through the current Rainbond MCP template-install workflow.\n- 适用场景：模板安装 / 云市场安装 / 本地模板安装 / install template\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_query_cloud_markets、rainbond_query_local_app_models、rainbond_query_cloud_app_models、rainbond_query_app_model_versions、rainbond_install_app_model\n- 流程阶段：resolve-scope(resolve_context) -> discover-template(branch) -> resolve-version(tool_call) -> install(tool_call) -> report(summarize)\n\n### rainbond-app-version-assistant\n- 概要：Use when working in the Rainbond app version center flow under `/team/.../apps/:appID/version`, especially to create snapshots, publish to the local library or cloud market, inspect publish drafts and events, or rollback app runtime to a snapshot.\n- 适用场景：快照 / 发布 / 回滚 / version center\n- 不适用场景：Not provided in the machine-readable contract yet.\n- 范围提示：Requires context: team_name, region_name, app_id\n- 优先工具：rainbond_get_app_version_overview、rainbond_list_app_version_snapshots、rainbond_get_app_version_snapshot_detail、rainbond_create_app_version_snapshot、rainbond_create_app_share_record、rainbond_get_app_publish_candidates、rainbond_rollback_app_version_snapshot\n- 共享词汇：snapshot、publish draft、publish event、rollback record\n- 流程阶段：resolve-scope(resolve_context) -> inspect-version-center(tool_call) -> list-snapshots(tool_call) -> execute-version-action(branch) -> report(summarize)\n\nworkspace 型流程 rainbond-project-init、rainbond-env-sync 不在当前嵌入式主链路内；如任务依赖本地项目文件初始化或本地 env 落盘，应明确提示这是外部/后续流程。\n\n## Rainbond MCP 工具使用约束\n\n- 事实查询优先使用只读工具，当前只读工具前缀为：rainbond_get_、rainbond_query_、rainbond_list_。\n- 当上下文已经提供 team_name、region_name、app_id、component_id 时，优先直接带上这些参数，不要为了确认当前范围重复调用列表接口。\n- 当前 51 个可变更 MCP 工具受统一审批策略约束。\n- allowDirectExecution=true 的低风险写操作可以直接执行，典型示例：rainbond_check_helm_app、rainbond_check_yaml_app、rainbond_create_app_version_snapshot、rainbond_init_package_upload。\n- 其余会修改资源状态、配置、部署、安装、升级、删除或分享流程的工具，必须进入审批流，典型示例：rainbond_delete_component、rainbond_install_app_model、rainbond_manage_component_envs、rainbond_upgrade_app。\n- 当工具属于组件级变更时，要优先确认当前 component_id 是否可信；如果 component_source=route，则先避免把它直接当成 service_id 使用。\n\n## Rainbond 知识\n\n# Rainbond 核心概念\n\n## 基本概念\n\n### 组件 (Component)\n组件是 Rainbond 中最小的可部署单元，对应一个容器化应用。\n\n**组件类型**：\n- **无状态服务**：可以水平扩展，无持久化数据（如 Web 应用、API 服务）\n- **有状态服务**：需要持久化存储，有固定网络标识（如数据库、消息队列）\n- **任务型组件**：一次性或定时执行的任务（如数据处理、定时备份）\n\n**组件状态**：\n- `running`: 运行中，健康检查通过\n- `stopped`: 已停止\n- `abnormal`: 运行异常，可能是 OOMKilled、CrashLoopBackOff 等\n- `building`: 正在构建或部署中\n- `starting`: 正在启动\n\n### 应用 (Application)\n应用是一组相关组件的集合，通常代表一个完整的业务系统。\n\n**应用特性**：\n- 包含多个组件（前端、后端、数据库等）\n- 组件间可以通过服务发现互相访问\n- 可以整体管理（启动、停止、备份、恢复）\n- 支持应用模板和一键部署\n\n### 团队 (Team)\n团队是资源隔离和权限管理的基本单位。\n\n**团队功能**：\n- 资源配额管理（CPU、内存、存储）\n- 成员权限管理（管理员、开发者、观察者）\n- 应用和组件归属于团队\n- 团队间资源隔离\n\n### 集群 (Cluster)\n集群是底层 Kubernetes 集群的抽象。\n\n**集群类型**：\n- **本地集群**：Rainbond 安装所在的集群\n- **远程集群**：通过 kubeconfig 接入的外部集群\n- **边缘集群**：部署在边缘节点的轻量级集群\n\n## 组件生命周期\n\n### 1. 创建组件\n**方式**：\n- 源码构建（Git、SVN）\n- Docker 镜像\n- Docker Compose\n- Helm Chart\n- 应用市场\n\n### 2. 配置组件\n**配置项**：\n- 环境变量\n- 端口映射\n- 存储挂载\n- 健康检查\n- 资源限制（CPU、内存）\n- 自动伸缩策略\n\n### 3. 部署组件\n**部署流程**：\n1. 构建镜像（如果是源码）\n2. 推送到镜像仓库\n3. 创建 Kubernetes 资源（Deployment/StatefulSet）\n4. 等待 Pod 启动\n5. 执行健康检查\n6. 更新组件状态\n\n### 4. 运维组件\n**常见操作**：\n- 启动/停止/重启\n- 扩容/缩容\n- 更新配置\n- 查看日志\n- 查看监控指标\n- 进入容器终端\n\n## 关键概念对比\n\n| 概念 | Kubernetes 对应 | 说明 |\n|------|----------------|------|\n| 组件 | Deployment/StatefulSet | 应用的最小部署单元 |\n| 应用 | Namespace (部分) | 一组相关组件的集合 |\n| 团队 | Namespace | 资源隔离和权限管理 |\n| 端口 | Service | 服务访问入口 |\n| 存储 | PVC | 持久化数据存储 |\n\n## 最佳实践\n\n### 组件设计\n- 遵循单一职责原则，一个组件只做一件事\n- 无状态组件优先，便于水平扩展\n- 合理设置资源限制，避免资源争抢\n- 配置健康检查，确保服务可用性\n\n### 应用架构\n- 前后端分离，独立部署\n- 数据库使用有状态组件\n- 缓存和消息队列独立部署\n- 使用服务网格管理服务间通信\n\n### 资源管理\n- 为团队设置合理的资源配额\n- 监控资源使用情况，及时调整\n- 使用自动伸缩应对流量波动\n- 定期清理不用的资源\n\n\n---\n\n# Rainbond 故障排查指南\n\n## 常见问题诊断流程\n\n### 1. 组件启动失败\n\n**症状**：组件状态显示 `abnormal`，无法正常访问\n\n**诊断步骤**：\n1. **查看组件状态**\n   - 使用 `get-component-status` 工具\n   - 检查状态字段和错误信息\n\n2. **查看日志**\n   - 使用 `get-component-logs` 工具\n   - 重点关注最后 50-100 行日志\n   - 查找 ERROR、FATAL、Exception 等关键词\n\n3. **常见原因**：\n   - **OOMKilled**: 内存不足，需要扩容\n   - **CrashLoopBackOff**: 启动失败，检查配置和依赖\n   - **ImagePullBackOff**: 镜像拉取失败，检查镜像地址和权限\n   - **配置错误**: 环境变量、端口、挂载路径等配置错误\n\n### 2. 内存溢出 (OOM)\n\n**症状**：\n- 日志中出现 \"out of memory\"、\"heap limit\" 等关键词\n- 组件频繁重启\n- 状态显示 OOMKilled\n\n**解决方案**：\n1. **确认内存使用情况**\n   - 查看监控指标，确认内存使用率\n   - 分析是否有内存泄漏\n\n2. **扩容内存**\n   - 使用 `scale-component-memory` 工具\n   - 建议扩容 50%-100%（如 512MB → 1024MB）\n   - **注意**：扩容需要重启组件，属于高风险操作，需要用户审批\n\n3. **优化应用**\n   - 检查代码是否有内存泄漏\n   - 优化数据结构和算法\n   - 增加垃圾回收频率\n\n### 3. 服务无法访问\n\n**症状**：\n- 组件状态正常，但无法通过域名或 IP 访问\n- 返回 502、503、504 等错误\n\n**诊断步骤**：\n1. **检查组件状态**\n   - 确认组件是否真的在运行\n   - 检查健康检查是否通过\n\n2. **检查端口配置**\n   - 确认端口是否正确开放\n   - 检查端口协议（HTTP/TCP/UDP）\n   - 验证容器内端口和对外端口映射\n\n3. **检查网络策略**\n   - 确认是否有网络策略限制\n   - 检查防火墙规则\n   - 验证服务发现是否正常\n\n4. **检查网关配置**\n   - 确认域名解析是否正确\n   - 检查网关路由规则\n   - 验证 SSL 证书是否有效\n\n### 4. 性能问题\n\n**症状**：\n- 响应时间长\n- CPU 使用率高\n- 请求超时\n\n**诊断步骤**：\n1. **查看监控指标**\n   - CPU 使用率\n   - 内存使用率\n   - 网络流量\n   - 请求响应时间\n\n2. **分析日志**\n   - 查找慢查询\n   - 检查错误率\n   - 分析请求分布\n\n3. **优化方案**：\n   - **水平扩容**：增加实例数量\n   - **垂直扩容**：增加 CPU 和内存\n   - **代码优化**：优化算法和数据库查询\n   - **缓存优化**：增加缓存层，减少数据库压力\n\n### 5. 存储问题\n\n**症状**：\n- 磁盘空间不足\n- 数据丢失\n- 读写性能差\n\n**诊断步骤**：\n1. **检查存储使用情况**\n   - 查看存储卷使用率\n   - 确认是否达到配额上限\n\n2. **检查存储配置**\n   - 确认存储类型（本地存储/网络存储）\n   - 检查挂载路径是否正确\n   - 验证持久化配置\n\n3. **解决方案**：\n   - **扩容存储**：增加存储卷大小\n   - **清理数据**：删除不必要的文件\n   - **优化存储**：使用更快的存储类型\n   - **数据备份**：定期备份重要数据\n\n## 诊断工具使用\n\n### get-component-status\n**用途**：获取组件当前状态\n\n**返回信息**：\n- 组件名称\n- 运行状态（running/stopped/abnormal）\n- 内存配置\n- CPU 配置\n- 实例数量\n\n### get-component-logs\n**用途**：获取组件日志\n\n**参数**：\n- `name`: 组件名称\n- `lines`: 日志行数（默认 50）\n\n**使用场景**：\n- 启动失败时查看错误信息\n- 运行异常时分析原因\n- 性能问题时查找慢查询\n\n### restart-component\n**用途**：重启组件\n\n**风险等级**：高\n\n**使用场景**：\n- 配置更新后需要重启\n- 组件卡死需要强制重启\n- 内存泄漏需要释放资源\n\n**注意事项**：\n- 会导致服务短暂中断\n- 需要用户审批\n- 建议在低峰期操作\n\n### scale-component-memory\n**用途**：调整组件内存配置\n\n**风险等级**：中\n\n**使用场景**：\n- OOM 错误需要扩容\n- 内存使用率过高\n- 性能优化\n\n**注意事项**：\n- 需要重启组件\n- 需要用户审批\n- 建议逐步扩容，避免资源浪费\n\n## 最佳实践\n\n### 预防性监控\n- 设置合理的告警阈值\n- 定期检查资源使用情况\n- 关注错误日志和异常指标\n- 建立故障响应流程\n\n### 快速定位问题\n1. 先看状态，再看日志\n2. 从最近的变更入手\n3. 对比正常和异常时的差异\n4. 使用排除法缩小范围\n\n### 安全操作\n- 高风险操作必须审批\n- 重要操作前先备份\n- 在测试环境验证方案\n- 准备回滚预案\n"
+        },
+        {
+          "role": "system",
+          "content": "## Current Session Context\n- enterprise_id: 8948f3fcf66e0cd91bf1045e8ca4a965\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- component_id: gra7172a\n- component_source: query\n- page: /team/jabrm8l6/region/rainbond/apps/185/overview\n当前最可能相关的内嵌 Rainbond 流程：rainbond-fullstack-troubleshooter、rainbond-delivery-verifier。\n当前上下文已经聚焦到组件级，优先围绕该组件做运行态诊断、交付确认或针对性配置检查。\n当 team_name、region_name、app_id、component_id 已经在当前上下文中存在时，优先直接使用这些上下文值。\n除非用户明确要求查看团队列表、切换团队或跨团队比较，否则不要为了确认当前团队再次调用 rainbond_query_teams。\n除非用户明确要求查看集群列表、切换集群或跨集群比较，否则不要为了确认当前集群再次调用 rainbond_query_regions。\n如果上下文已经能唯一定位当前团队、集群、应用或组件，就直接进入对应查询，不要重复向用户索要这些参数。"
+        },
+        {
+          "role": "user",
+          "content": "帮我执行调整到 1 核 / 1GB"
+        },
+        {
+          "role": "assistant",
+          "content": "好的，我先查一下组件当前状态，确认后再进行资源调整。",
+          "reasoning_content": "用户要求将组件 gra7172a 调整到 1 核 / 1GB。这是一个垂直扩缩容操作。\n\n从上下文看：\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- component_id: gra7172a (service_id)\n- component_source: query\n\n这个操作需要：\n- CPU: 1 核（需要确认单位，Rainbond 中 CPU 通常以毫核为单位，1核 = 1000）\n- 内存: 1GB = 1024 MB\n\n使用 `rainbond_vertical_scale_component` 工具，参数：\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- service_id: gra7172a\n- new_memory: 1024 (MB)\n- new_cpu: 需要确认单位。看参数定义是 `new_cpu`，需要确认是毫核还是核。不过先按工具要求传。\n\n但是等等，这是写操作，可能涉及审批。让我看看：`rainbond_vertical_scale_component` 是会修改资源状态的写操作。这属于高风险操作，需要进入审批流。\n\n但在执行之前，让我先确认当前组件的资源使用情况。我先查一下组件摘要，看看当前配置。\n\n不过用户已经明确要求调整到 1 核 / 1GB，信息足够。这是写操作，我需要进入审批流。\n\n让我先查看当前组件状态确认配置，同时准备审批。\n\n实际上，按照规则，高风险操作需要审批，我应该直接调用工具进入审批流，而不是先用自然语言询问。\n\n但是先看看组件当前状态也是合理的——让我先查一下摘要，确保组件存在且了解当前配置，然后再进入审批。\n\n让我直接先查一下组件摘要，然后再做扩容操作。",
+          "tool_calls": [
+            {
+              "id": "call_00_vZXyPds0ln3OdJaVloUJF4mO",
+              "type": "function",
+              "function": {
+                "name": "rainbond_get_component_summary",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_id\": 185, \"service_id\": \"gra7172a\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"team_name\":\"jabrm8l6\",\"region_name\":\"rainbond\",\"app_id\":185,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"service\":{\"ID\":400,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"466ebf6a63543fc2e88aacd355198275\",\"service_alias\":\"gra7172a\",\"service_cname\":\"demo-2048\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest-amd64\",\"update_version\":1,\"image\":\"goodrain.me/466ebf6a63543fc2e88aacd355198275:20260402142641\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":8000,\"container_gpu\":0,\"min_memory\":8192,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20260402142641\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:34:10\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":54,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-28 10:56:38\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"demo-2048\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\",\"status\":\"waiting\",\"access_infos\":[\"http://gra7172a-8080-jabrm8l6.14.103.233.199.nip.io\"]},\"status\":{\"status\":\"waiting\"},\"resource\":{\"memory\":9216,\"disk\":0,\"cpu\":9000},\"ports\":{\"items\":[{\"ID\":350,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":8080,\"mapping_port\":8080,\"lb_mapping_port\":0,\"protocol\":\"http\",\"port_alias\":\"GR1982758080\",\"is_inner_service\":true,\"is_outer_service\":true,\"k8s_service_name\":\"demo-2048\",\"name\":null}],\"total\":1},\"envs\":{\"items\":[{\"ID\":6974,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":8080,\"name\":\"连接地址\",\"attr_name\":\"GR1982758080_HOST\",\"attr_value\":\"demo-2048\",\"is_change\":false,\"scope\":\"outer\",\"create_time\":\"2026-04-27 17:34:10\"},{\"ID\":6975,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":8080,\"name\":\"端口\",\"attr_name\":\"GR1982758080_PORT\",\"attr_value\":\"8080\",\"is_change\":false,\"scope\":\"outer\",\"create_time\":\"2026-04-27 17:34:10\"},{\"ID\":6976,\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"container_port\":0,\"name\":\"DD\",\"attr_name\":\"DD\",\"attr_value\":\"yy\",\"is_change\":true,\"scope\":\"inner\",\"create_time\":\"2026-04-27 19:26:59\"}],\"total\":3},\"build_envs\":{\"items\":[],\"total\":0},\"volumes\":{\"items\":[],\"total\":0},\"mnts\":{\"items\":[],\"total\":0},\"probe\":null,\"autoscaler_rules\":{\"items\":[],\"total\":0},\"recent_events\":{\"items\":[{\"create_time\":\"2026-04-28T10:56:38+08:00\",\"event_id\":\"12b787b3fee349b6b4802eb1954315af\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"target\":\"pod\",\"target_id\":\"default-demo-2048-678f697857-nlwm2\",\"request_body\":\"\",\"user_name\":\"system\",\"start_time\":\"2026-04-28T10:56:38+08:00\",\"end_time\":\"\",\"opt_type\":\"Unschedulable\",\"syn_type\":0,\"status\":\"failure\",\"final_status\":\"empty\",\"message\":\"CPU资源不足，请降低需求或联系管理员\",\"reason\":\"\"},{\"create_time\":\"2026-04-28T10:56:38+08:00\",\"event_id\":\"c1c7e27fe1da48c8ac08d71443831359\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"{\\\"container_memory\\\": 8192, \\\"container_cpu\\\": 8000, \\\"container_gpu\\\": 0, \\\"operator\\\": \\\"admin\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\"}\",\"user_name\":\"admin\",\"start_time\":\"2026-04-28T10:56:38+08:00\",\"end_time\":\"2026-04-28T10:56:38+08:00\",\"opt_type\":\"vertical-service\",\"syn_type\":0,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"upgrade service gra7172a success\",\"reason\":\"\"},{\"create_time\":\"2026-04-28T10:56:25+08:00\",\"event_id\":\"6edbce6b4942495da8e3675679470a1f\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"{\\\"container_memory\\\": 1024, \\\"container_cpu\\\": 1000, \\\"container_gpu\\\": 0, \\\"operator\\\": \\\"admin\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\"}\",\"user_name\":\"admin\",\"start_time\":\"2026-04-28T10:56:25+08:00\",\"end_time\":\"2026-04-28T10:56:25+08:00\",\"opt_type\":\"vertical-service\",\"syn_type\":0,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"upgrade service gra7172a success\",\"reason\":\"\"},{\"create_time\":\"2026-04-27T19:26:59+08:00\",\"event_id\":\"0f771156eb8c4255a95241e372074e2d\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"{\\\"container_port\\\": 0, \\\"tenant_id\\\": \\\"1cc40a372b00476d92c53588ca662402\\\", \\\"service_id\\\": \\\"33ba9a45daa544779d3aa13a86a7172a\\\", \\\"name\\\": \\\"DD\\\", \\\"attr_name\\\": \\\"DD\\\", \\\"attr_value\\\": \\\"yy\\\", \\\"is_change\\\": true, \\\"scope\\\": \\\"inner\\\", \\\"env_name\\\": \\\"DD\\\", \\\"env_value\\\": \\\"yy\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\", \\\"operator\\\": \\\"admin\\\"}\",\"user_name\":\"admin\",\"start_time\":\"2026-04-27T19:26:59+08:00\",\"end_time\":\"2026-04-27T19:26:59+08:00\",\"opt_type\":\"add-service-env\",\"syn_type\":1,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"\",\"reason\":\"\"},{\"create_time\":\"2026-04-27T19:17:50+08:00\",\"event_id\":\"e2a2bd239e004c489c64d5d60ea8d4f3\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_id\":\"\",\"target\":\"service\",\"target_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"request_body\":\"{\\\"container_memory\\\": 512, \\\"container_cpu\\\": 250, \\\"container_gpu\\\": 0, \\\"operator\\\": \\\"admin\\\", \\\"enterprise_id\\\": \\\"8948f3fcf66e0cd91bf1045e8ca4a965\\\"}\",\"user_name\":\"admin\",\"start_time\":\"2026-04-27T19:17:50+08:00\",\"end_time\":\"2026-04-27T19:17:50+08:00\",\"opt_type\":\"vertical-service\",\"syn_type\":0,\"status\":\"success\",\"final_status\":\"complete\",\"message\":\"upgrade service gra7172a success\",\"reason\":\"\"}],\"total\":8,\"page\":1,\"page_size\":5,\"has_next\":true}}}",
+          "name": "rainbond_get_component_summary",
+          "tool_call_id": "call_00_vZXyPds0ln3OdJaVloUJF4mO"
+        },
+        {
+          "role": "assistant",
+          "content": "分析组件当前状态：\n\n| 项目 | 当前值 | 目标值 |\n|------|--------|--------|\n| **CPU** | 9000m (9核) | 1000m (1核) |\n| **内存** | 9216MB (9GB) | 1024MB (1GB) |\n| **状态** | waiting (无法调度) | — |\n\n从最近事件来看，之前尝试扩容到 8核/8GB 时因集群 **CPU资源不足** 导致 Pod 无法调度（Unschedulable），现在回退到 1核/1GB 是合理的。这个配置之前在 `2026-04-28 10:56:25` 曾成功执行过。\n\n现在为你执行垂直缩容，进入审批流程：",
+          "reasoning_content": "让我分析一下组件当前状态：\n\n1. **组件名称**: demo-2048 (gra7172a)\n2. **当前资源**: CPU 9000 毫核 (9核), 内存 9216 MB (9GB)\n3. **当前状态**: waiting（等待中）\n\n查看最近的 events，我发现了关键信息：\n\n- 最近一次扩容 (2026-04-28 10:56:38)：从 1核/1GB 调整到 8核/8GB，操作状态 success，但紧接着出现 Unschedulable 事件，原因是 **\"CPU资源不足，请降低需求或联系管理员\"**\n- 更早 (2026-04-28 10:56:25)：成功调整到 1核/1GB\n- 再之前 (2026-04-27 19:17:50)：512MB / 250m CPU\n\n所以当前组件处于 waiting 状态是因为之前尝试扩容到 8核/8GB 时集群资源不足。现在的资源配置显示是 9核/9GB（可能是 8核/8GB 的显示差异），但 Pod 无法调度。\n\n用户现在要把资源配置调整到 1核/1GB（1000m CPU, 1024MB 内存），这实际上是回退到之前成功过的配置。\n\n现在我需要调用 `rainbond_vertical_scale_component`，参数：\n- team_name: jabrm8l6\n- region_name: rainbond\n- app_id: 185\n- service_id: 33ba9a45daa544779d3aa13a86a7172a（这是真正的 service_id，不是 gra7172a）\n- new_memory: 1024 (MB)\n- new_cpu: 1000 (毫核)\n\n但是注意，上下文中 component_id 是 gra7172a，而实际的 service_id 是 `33ba9a45daa544779d3aa13a86a7172a`。工具应该能接受 gra7172a 作为 service_id 吧？让我看看工具定义...\n\n`rainbond_vertical_scale_component` 参数中有 `service_id`，而且需要用 service_id。上下文中 component_id 是 gra7172a，实际 service_id 是 `33ba9a45daa544779d3aa13a86a7172a`。我应该使用上下文中提供的 component_id，即 gra7172a，因为工具通常会接受别名。\n\n这是写操作，需要审批。按照规则，我应该直接调用工具进入审批流。\n\n1核 = 1000 毫核，1GB = 1024 MB。\n\n让我调用 rainbond_vertical_scale_component。",
+          "tool_calls": [
+            {
+              "id": "call_00_YHJzUr01Wfp5ht6vUYboTYPe",
+              "type": "function",
+              "function": {
+                "name": "rainbond_vertical_scale_component",
+                "arguments": "{\"team_name\": \"jabrm8l6\", \"region_name\": \"rainbond\", \"app_id\": 185, \"service_id\": \"gra7172a\", \"new_memory\": 1024, \"new_cpu\": 1000}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"scaled\":true,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"new_memory\":1024,\"new_gpu\":0,\"new_cpu\":1000}}",
+          "name": "rainbond_vertical_scale_component",
+          "tool_call_id": "call_00_YHJzUr01Wfp5ht6vUYboTYPe"
+        }
+      ],
+      "iteration": 2,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "call_00_vZXyPds0ln3OdJaVloUJF4mO",
+        "call_00_YHJzUr01Wfp5ht6vUYboTYPe"
+      ],
+      "finalOutput": null,
+      "status": "running"
+    }
+  },
+  {
+    "runId": "run_1777346704742_g",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777346520548_1",
+    "messageText": "从应用市场安装mysql到这个应用",
+    "status": "pending",
+    "startedAt": "2026-04-28T03:25:04.742Z",
+    "executionState": {
+      "runId": "run_1777346704742_g",
+      "sessionId": "cs_1777346520548_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "从应用市场安装mysql到这个应用"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": {
+        "toolName": "rainbond_install_app_model",
+        "requiresApproval": true,
+        "missingArgument": "app_model_version",
+        "suggestedValue": "8.0.18",
+        "arguments": {
+          "team_name": "jabrm8l6",
+          "region_name": "rainbond",
+          "app_id": 185,
+          "source": "cloud",
+          "market_name": "RainbondMarket",
+          "app_model_id": "7f0d0509699e4425964c71be4b0fa428",
+          "app_model_version": "8.0.18",
+          "is_deploy": true
+        }
+      },
+      "completedToolCallIds": [],
+      "finalOutput": "已查询云市场模板及其版本，建议安装版本为 8.0.18。如接受建议，可直接回复“继续执行”或“是的”；也可以直接回复目标版本号。",
+      "status": "completed"
+    }
+  },
+  {
+    "runId": "run_1777346710445_h",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777346520548_1",
+    "messageText": "是的",
+    "status": "completed",
+    "startedAt": "2026-04-28T03:25:10.445Z",
+    "executionState": {
+      "runId": "run_1777346710445_h",
+      "sessionId": "cs_1777346520548_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "是的"
+        },
+        {
+          "role": "tool",
+          "content": "{\"isError\":false,\"structuredContent\":{\"installed\":true,\"source\":\"cloud\",\"app_id\":185,\"app_name\":\"测试发布\",\"installed_app_name\":\"Mysql\",\"market_name\":\"RainbondMarket\",\"service_list\":[{\"ID\":400,\"service_id\":\"33ba9a45daa544779d3aa13a86a7172a\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"466ebf6a63543fc2e88aacd355198275\",\"service_alias\":\"gra7172a\",\"service_cname\":\"demo-2048\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"latest-amd64\",\"update_version\":1,\"image\":\"goodrain.me/466ebf6a63543fc2e88aacd355198275:20260402142641\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":1000,\"container_gpu\":0,\"min_memory\":1024,\"setting\":null,\"extend_method\":\"stateless_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20260402142641\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-27 17:34:10\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":54,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-28 11:24:20\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"demo-2048\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"},{\"ID\":401,\"service_id\":\"3c050493e9a1436e86b097cc3a6eb022\",\"tenant_id\":\"1cc40a372b00476d92c53588ca662402\",\"service_key\":\"be3b54695c9e454f8d35f0a9d65c4061\",\"service_alias\":\"gr6eb022\",\"service_cname\":\"mysql-8.0.18\",\"service_region\":\"rainbond\",\"desc\":\"install from market app\",\"category\":\"app_publish\",\"service_port\":0,\"is_web_service\":false,\"version\":\"8.0.18\",\"update_version\":1,\"image\":\"image.goodrain.com/655c233e59714d9191c0b9e856d84b44/e3ffa4ac5053432a068debd6bc97b601:20200103132419\",\"cmd\":\"\",\"min_node\":1,\"min_cpu\":250,\"container_gpu\":0,\"min_memory\":512,\"setting\":null,\"extend_method\":\"state_multiple\",\"env\":null,\"inner_port\":0,\"volume_mount_path\":null,\"host_path\":null,\"deploy_version\":\"20200103132419\",\"code_from\":null,\"git_url\":null,\"create_time\":\"2026-04-28 11:25:13\",\"git_project_id\":0,\"is_code_upload\":false,\"code_version\":null,\"service_type\":\"application\",\"creater\":1,\"language\":null,\"build_strategy\":\"\",\"protocol\":\"\",\"total_memory\":512,\"is_service\":false,\"namespace\":\"\",\"volume_type\":\"shared\",\"port_type\":\"multi_outer\",\"service_origin\":\"assistant\",\"tenant_service_group_id\":55,\"expired_time\":null,\"open_webhooks\":false,\"service_source\":\"market\",\"create_status\":\"complete\",\"update_time\":\"2026-04-28 11:25:13\",\"check_uuid\":\"\",\"check_event_id\":\"\",\"docker_cmd\":null,\"secret\":null,\"server_type\":\"git\",\"is_upgrate\":false,\"build_upgrade\":true,\"service_name\":\"\",\"oauth_service_id\":null,\"git_full_name\":null,\"k8s_component_name\":\"gr6eb022\",\"job_strategy\":\"\",\"arch\":\"amd64\",\"dockerfile\":\"\"}]}}",
+          "name": "rainbond_install_app_model",
+          "tool_call_id": "rainbond_install_app_model"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "final_output"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [
+        "rainbond_install_app_model"
+      ],
+      "finalOutput": "已完成模板安装，目标应用 Mysql 已进入后续部署流程。",
+      "status": "completed"
+    },
+    "finishedAt": "2026-04-28T03:25:14.089Z"
+  },
+  {
+    "runId": "run_1777346737930_k",
+    "tenantId": "local-default",
+    "sessionId": "cs_1777346520548_1",
+    "messageText": "帮我建立一个新快照",
+    "status": "pending",
+    "startedAt": "2026-04-28T03:25:37.930Z",
+    "executionState": {
+      "runId": "run_1777346737930_k",
+      "sessionId": "cs_1777346520548_1",
+      "tenantId": "local-default",
+      "messages": [
+        {
+          "role": "user",
+          "content": "帮我建立一个新快照"
+        }
+      ],
+      "iteration": 0,
+      "nextStep": {
+        "type": "run_again"
+      },
+      "pendingApprovals": [],
+      "deferredAction": null,
+      "completedToolCallIds": [],
+      "finalOutput": "已创建应用快照 v1.0.4，可以继续执行发布或回滚。",
+      "status": "completed"
+    }
   }
 ]

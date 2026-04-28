@@ -49,6 +49,10 @@ describe("copilot workflow routing", () => {
       body: { message: "给这个应用创建一个快照", stream: true },
     });
 
+    await new Promise((resolve) => {
+      setTimeout(resolve, 20);
+    });
+
     const stream = await controller.streamRunEvents({
       actor,
       params: {
@@ -135,6 +139,7 @@ describe("copilot workflow routing", () => {
           isError: false,
           structuredContent: {
             app_id: 1,
+            group_name: "manual-demo",
             status: "running",
             running_service_count: 2,
           },
@@ -819,25 +824,34 @@ describe("copilot workflow routing", () => {
         .mockResolvedValueOnce({
           isError: false,
           structuredContent: {
-            items: [{ name: "RainbondMarket" }],
-            total: 1,
-          },
-          content: [],
-        })
-        .mockResolvedValueOnce({
-          isError: false,
-          structuredContent: {
-            items: [{ app_id: "cloud-model-1", app_name: "Redis" }],
-            total: 1,
-          },
-          content: [],
-        })
-        .mockResolvedValueOnce({
-          isError: false,
-          structuredContent: {
-            app_model: { app_model_id: "cloud-model-1", app_model_name: "Redis" },
-            items: [{ version: "6.0.0" }, { version: "6.2.0" }],
+            items: [
+              {
+                name: "qiye",
+                alias: "好雨科技企业服务商店",
+                domain: "enterprise",
+              },
+              {
+                name: "RainbondMarket",
+                alias: "开源应用市场",
+                domain: "rainbond",
+              },
+            ],
             total: 2,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [{
+              app_id: "cloud-model-1",
+              app_name: "Redis",
+              versions: [
+                { app_version: "6.0.0" },
+                { app_version: "6.2.0" },
+              ],
+            }],
+            total: 1,
           },
           content: [],
         }),
@@ -902,17 +916,6 @@ describe("copilot workflow routing", () => {
         page_size: 20,
       }
     );
-    expect(workflowClient.callTool).toHaveBeenCalledWith(
-      "rainbond_query_app_model_versions",
-      {
-        enterprise_id: "eid-1",
-        source: "cloud",
-        market_name: "RainbondMarket",
-        app_model_id: "cloud-model-1",
-        page: 1,
-        page_size: 20,
-      }
-    );
     expect(
       stream.events.find((event) => event.type === "workflow.completed")
     ).toMatchObject({
@@ -922,6 +925,7 @@ describe("copilot workflow routing", () => {
             marketName: "RainbondMarket",
             appModelId: "cloud-model-1",
             appModelName: "Redis",
+            versionCount: 2,
             latestVersion: "6.2.0",
             proposedToolAction: {
               toolName: "rainbond_install_app_model",
@@ -1196,6 +1200,7 @@ describe("copilot workflow routing", () => {
           isError: false,
           structuredContent: {
             app_id: 1,
+            group_name: "manual-demo",
             status: "running",
             running_service_count: 2,
           },
@@ -1285,8 +1290,6 @@ describe("copilot workflow routing", () => {
       {
         enterprise_id: "eid-1",
         app_id: 1,
-        page: 1,
-        page_size: 20,
       }
     );
     expect(workflowClient.callTool).toHaveBeenCalledWith(
@@ -1298,9 +1301,7 @@ describe("copilot workflow routing", () => {
         service_id: "svc-1",
       }
     );
-    expect(
-      stream.events.find((event) => event.type === "workflow.completed")
-    ).toMatchObject({
+    expect(stream.events.find((event) => event.type === "workflow.completed")).toMatchObject({
       data: {
         next_action: "verify_delivery",
         structured_result: expect.objectContaining({
@@ -1310,7 +1311,10 @@ describe("copilot workflow routing", () => {
             inspectedComponentStatus: "running",
             runtimeState: "runtime_healthy",
             deliveryState: "delivered-but-needs-manual-validation",
+            preferredAccessUrl: "https://team-a-region-a.rainbond.me/manual-demo",
           },
+          compiled_skill: true,
+          compiled_workflow: "rainbond-delivery-verifier",
           selectedWorkflow: "rainbond-delivery-verifier",
           tool_calls: [
             { name: "rainbond_get_app_detail", status: "success" },
@@ -1322,7 +1326,325 @@ describe("copilot workflow routing", () => {
     });
   });
 
-  it.skip("executes snapshot creation directly when the user explicitly asks to create a snapshot", async () => {
+  it("continues delivery verifier with deterministic follow-up inspection when the user says continue", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+    const workflowClient = {
+      callTool: vi
+        .fn()
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            app_id: 1,
+            group_name: "manual-demo",
+            status: "running",
+            running_service_count: 1,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                service_id: "svc-1",
+                service_alias: "api",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "api",
+            },
+            status: {
+              status: "running",
+            },
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            app_id: 1,
+            group_name: "manual-demo",
+            status: "running",
+            running_service_count: 1,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                service_id: "svc-1",
+                service_alias: "api",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            service: {
+              service_id: "svc-1",
+              service_alias: "api",
+              component_name: "api",
+            },
+            status: {
+              status: "running",
+            },
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: ["GET /health 200"],
+            total: 1,
+          },
+          content: [],
+        });
+
+    const controller = createCopilotController({
+      llmClient,
+      sessionStore,
+      workflowToolClientFactory: async () => workflowClient as any,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+      enterpriseId: "eid-1",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          page: "/team/team-a/region/region-a/apps/app-001",
+        },
+      },
+    });
+
+    const firstRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "帮我验证这个应用是否已经交付完成", stream: true },
+    });
+
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: firstRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    llmClient.chat.mockClear();
+    workflowClient.callTool.mockClear();
+
+    const secondRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "继续", stream: true },
+    });
+
+    const secondStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: secondRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).not.toHaveBeenCalled();
+    expect(workflowClient.callTool).toHaveBeenCalledWith(
+      "rainbond_get_component_detail",
+      {
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: 1,
+        service_id: "svc-1",
+      }
+    );
+    expect(workflowClient.callTool).toHaveBeenCalledWith(
+      "rainbond_get_component_logs",
+      {
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: 1,
+        service_id: "svc-1",
+        action: "service",
+        lines: 50,
+      }
+    );
+    expect(
+      secondStream.events.find((event) => event.type === "workflow.completed")
+    ).toMatchObject({
+      data: {
+        workflow_stage: "continue_delivery_verification",
+        structured_result: expect.objectContaining({
+          subflowData: expect.objectContaining({
+            resolvedServiceId: "svc-1",
+            logLineCount: 1,
+          }),
+        }),
+      },
+    });
+  });
+
+  it("matches the cloud template model by user-mentioned template name instead of taking the first result", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+    const workflowClient = {
+      callTool: vi
+        .fn()
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                name: "qiye",
+                alias: "好雨科技企业服务商店",
+                domain: "enterprise",
+              },
+              {
+                name: "RainbondMarket",
+                alias: "开源应用市场",
+                domain: "rainbond",
+              },
+            ],
+            total: 2,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                app_id: "cloud-model-redis",
+                app_name: "Redis",
+                versions: [
+                  { app_version: "6.0.0" },
+                  { app_version: "6.2.0" },
+                ],
+              },
+              {
+                app_id: "cloud-model-mysql",
+                app_name: "MySQL",
+                versions: [
+                  { app_version: "8.0.35" },
+                  { app_version: "8.0.36" },
+                ],
+              },
+            ],
+            total: 2,
+          },
+          content: [],
+        }),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      workflowToolClientFactory: async () => workflowClient as any,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+      enterpriseId: "eid-1",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          page: "/team/team-a/region/region-a/apps/app-001",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "从云市场安装模板mysql到当前应用", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).not.toHaveBeenCalled();
+    expect(workflowClient.callTool).toHaveBeenCalledWith(
+      "rainbond_query_cloud_app_models",
+      {
+        enterprise_id: "eid-1",
+        market_name: "RainbondMarket",
+        page: 1,
+        page_size: 20,
+        query: "mysql",
+      }
+    );
+    const completed = stream.events.find((event) => event.type === "workflow.completed");
+    expect(completed).toMatchObject({
+      data: {
+        next_action: "install_template",
+        structured_result: expect.objectContaining({
+          selectedWorkflow: "rainbond-template-installer",
+          subflowData: expect.objectContaining({
+            marketName: "RainbondMarket",
+            appModelId: "cloud-model-mysql",
+            appModelName: "MySQL",
+            versionCount: 2,
+            latestVersion: "8.0.36",
+          }),
+        }),
+      },
+    });
+  });
+
+  it("executes snapshot creation directly when the user explicitly asks to create a snapshot", async () => {
     const llmClient = {
       chat: vi.fn(async () => ({
         content: "should not be called",
@@ -1421,6 +1743,7 @@ describe("copilot workflow routing", () => {
         team_name: "team-a",
         region_name: "region-a",
         app_id: 1,
+        version: "v1.0.1",
       }
     );
     const completed = stream.events.find((event) => event.type === "workflow.completed");
@@ -1433,7 +1756,7 @@ describe("copilot workflow routing", () => {
     });
   });
 
-  it("creates a snapshot after the user replies with a version number for a pending snapshot intent", async () => {
+  it("creates a snapshot directly with the user-specified version", async () => {
     const llmClient = {
       chat: vi.fn(async () => ({
         content: "should not be called",
@@ -1489,13 +1812,9 @@ describe("copilot workflow routing", () => {
         }),
     };
 
-    const sessionStore = createInMemorySessionStore();
-    const runStore = createInMemoryRunStore();
     const controller = createCopilotController({
       llmClient,
       workflowToolClientFactory: async () => workflowClient as any,
-      sessionStore,
-      runStore,
     });
 
     const actor = {
@@ -1518,37 +1837,10 @@ describe("copilot workflow routing", () => {
       },
     });
 
-    const initialRun = await controller.createMessageRun({
-      actor,
-      params: { sessionId: session.data.session_id },
-      body: { message: "帮我创建快照", stream: true },
-    });
-
-    const pendingSession = await sessionStore.getById(
-      session.data.session_id,
-      actor.tenantId
-    );
-    expect(pendingSession?.pendingWorkflowAction).toMatchObject({
-      toolName: "rainbond_create_app_version_snapshot",
-      requiresApproval: false,
-      arguments: expect.objectContaining({
-        app_id: 1,
-      }),
-    });
-    const deferredRun = await runStore.getById(initialRun.data.run_id, actor.tenantId);
-    expect(deferredRun?.executionState?.deferredAction).toMatchObject({
-      toolName: "rainbond_create_app_version_snapshot",
-      missingArgument: "version",
-      suggestedValue: "v1.0.3",
-      arguments: expect.objectContaining({
-        app_id: 1,
-      }),
-    });
-
     const run = await controller.createMessageRun({
       actor,
       params: { sessionId: session.data.session_id },
-      body: { message: "v1.0.3", stream: true },
+      body: { message: "帮我建立一个新的快照版本 v1.0.3", stream: true },
     });
 
     const stream = await controller.streamRunEvents({
@@ -1573,6 +1865,254 @@ describe("copilot workflow routing", () => {
     expect(completed?.data.structured_result.summary).toBe(
       "已创建应用快照 v1.0.3，可以继续执行发布或回滚。"
     );
+  });
+
+  it("routes explicit publish prompts into the publish-preparation path", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+    const workflowClient = {
+      callTool: vi
+        .fn()
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            overview: {
+              current_version: "v1.0.2",
+              template_id: "hidden-template-id",
+            },
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [
+              { version_id: 100, version: "v1.0.2" },
+              { version_id: 99, version: "v1.0.1" },
+            ],
+            total: 2,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            detail: {
+              services: [{ service_id: "svc-1" }],
+            },
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [{ app_id: "hidden-template-id", app_name: "demo-model" }],
+            total: 1,
+          },
+          content: [],
+        }),
+    };
+    const sessionStore = createInMemorySessionStore();
+
+    const controller = createCopilotController({
+      llmClient,
+      workflowToolClientFactory: async () => workflowClient as any,
+      sessionStore,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          page: "/team/team-a/region/region-a/apps/app-001/version",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "帮我把当前应用发布到版本中心", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(workflowClient.callTool).toHaveBeenCalledWith(
+      "rainbond_get_app_publish_candidates",
+      {
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: 1,
+        scope: "local",
+        preferred_app_id: "hidden-template-id",
+        preferred_version: "v1.0.2",
+      }
+    );
+    expect(
+      stream.events.find((event) => event.type === "workflow.completed")
+    ).toMatchObject({
+      data: {
+        structured_result: expect.objectContaining({
+          summary: expect.stringContaining("发布"),
+          subflowData: expect.objectContaining({
+            publishScope: "local",
+            publishVersion: "v1.0.2",
+          }),
+        }),
+      },
+    });
+
+    const storedSession = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(storedSession?.pendingWorkflowAction).toMatchObject({
+      toolName: "rainbond_create_app_share_record",
+      requiresApproval: true,
+      arguments: expect.objectContaining({
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: 1,
+      }),
+    });
+  });
+
+  it("routes latest-snapshot rollback prompts into a resolved rollback approval action", async () => {
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+    const workflowClient = {
+      callTool: vi.fn(async (toolName: string) => {
+        if (toolName === "rainbond_get_app_version_overview") {
+          return {
+            isError: false,
+            structuredContent: {
+              overview: {
+                current_version: "v1.0.2",
+              },
+            },
+            content: [],
+          };
+        }
+        if (toolName === "rainbond_list_app_version_snapshots") {
+          return {
+            isError: false,
+            structuredContent: {
+              items: [
+                { version_id: 100, version: "v1.0.2" },
+                { version_id: 99, version: "v1.0.1" },
+              ],
+              total: 2,
+            },
+            content: [],
+          };
+        }
+        if (toolName === "rainbond_get_app_version_snapshot_detail") {
+          return {
+            isError: false,
+            structuredContent: {
+              detail: {
+                services: [{ service_id: "svc-1" }],
+              },
+            },
+            content: [],
+          };
+        }
+        throw new Error(`Unexpected tool call ${toolName}`);
+      }),
+    };
+    const sessionStore = createInMemorySessionStore();
+
+    const controller = createCopilotController({
+      llmClient,
+      workflowToolClientFactory: async () => workflowClient as any,
+      sessionStore,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          page: "/team/team-a/region/region-a/apps/app-001/version",
+        },
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "帮我回滚到最近快照", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(
+      stream.events.find((event) => event.type === "workflow.completed")
+    ).toMatchObject({
+      data: {
+        structured_result: expect.objectContaining({
+          summary: expect.stringContaining("回滚"),
+          subflowData: expect.objectContaining({
+            rollbackVersion: "v1.0.2",
+          }),
+        }),
+      },
+    });
+
+    const storedSession = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(storedSession?.pendingWorkflowAction).toMatchObject({
+      toolName: "rainbond_rollback_app_version_snapshot",
+      requiresApproval: true,
+      arguments: expect.objectContaining({
+        version_id: 100,
+      }),
+    });
   });
 
   it("updates the pending template install action when the user replies with a target version", async () => {
@@ -2305,6 +2845,307 @@ describe("copilot workflow routing", () => {
             { name: "rainbond_get_component_summary", status: "success" },
           ],
         }),
+      },
+    });
+  });
+
+  it("reuses the previous workflow summary when the user only says continue after a troubleshooter result", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "继续沿着上一轮排障结论推进诊断。",
+        finish_reason: "stop",
+      })),
+    };
+    const workflowClient = {
+      callTool: vi
+        .fn()
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            app_id: 1,
+            status: "running",
+            running_service_count: 1,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                service_id: "svc-1",
+                service_alias: "api",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "api",
+            },
+            status: {
+              status: "abnormal",
+            },
+          },
+          content: [],
+        }),
+    };
+
+    const controller = createCopilotController({
+      llmClient,
+      workflowToolClientFactory: async () => workflowClient as any,
+      sessionStore,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+      enterpriseId: "eid-1",
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          page: "/team/team-a/region/region-a/apps/app-001",
+        },
+      },
+    });
+
+    const firstRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "帮我排查这个应用", stream: true },
+    });
+
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: firstRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    const storedSession = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(storedSession?.pendingWorkflowContinuation).toMatchObject({
+      workflowId: "rainbond-app-assistant",
+      selectedWorkflow: "rainbond-fullstack-troubleshooter",
+      nextAction: "inspect_runtime",
+      summary: "已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。",
+    });
+
+    llmClient.chat.mockClear();
+
+    const secondRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "继续", stream: true },
+    });
+
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: secondRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).toHaveBeenCalledTimes(1);
+    const llmMessages = llmClient.chat.mock.calls[0][0];
+    const finalUserMessage = llmMessages[llmMessages.length - 1];
+    expect(finalUserMessage.role).toBe("user");
+    expect(finalUserMessage.content).toContain(
+      "selected_workflow: rainbond-fullstack-troubleshooter"
+    );
+    expect(finalUserMessage.content).toContain(
+      "summary: 已读取应用、组件及关键组件摘要，下一步可继续进入低风险排障流程。"
+    );
+    expect(finalUserMessage.content).toContain("用户刚刚的继续请求：继续");
+  });
+
+  it("reuses the previous workflow summary for short follow-up prompts like 走方案a吧", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "按上一轮方案继续。",
+        finish_reason: "stop",
+      })),
+    };
+    const controller = createCopilotController({
+      llmClient,
+      sessionStore,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+        },
+      },
+    });
+
+    await sessionStore.update({
+      ...(await sessionStore.getById(session.data.session_id, actor.tenantId))!,
+      pendingWorkflowContinuation: {
+        workflowId: "rainbond-app-assistant",
+        selectedWorkflow: "rainbond-fullstack-troubleshooter",
+        nextAction: "inspect_runtime",
+        summary: "上一轮已经给出两个处理方案，建议优先走方案A。",
+        subflowData: {
+          resolvedServiceId: "svc-api",
+          resolvedServiceAlias: "api",
+        },
+        toolCalls: [{ name: "rainbond_get_component_summary", status: "success" }],
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "走方案a吧", stream: true },
+    });
+
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).toHaveBeenCalledTimes(1);
+    const llmMessages = llmClient.chat.mock.calls[0][0];
+    const finalUserMessage = llmMessages[llmMessages.length - 1];
+    expect(finalUserMessage.role).toBe("user");
+    expect(finalUserMessage.content).toContain("selected_workflow: rainbond-fullstack-troubleshooter");
+    expect(finalUserMessage.content).toContain("summary: 上一轮已经给出两个处理方案，建议优先走方案A。");
+    expect(finalUserMessage.content).toContain("用户刚刚的继续请求：走方案a吧");
+  });
+
+  it("promotes a suggested workflow action into approval when the user replies 可以", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+    const controller = createCopilotController({
+      llmClient,
+      sessionStore,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          component_id: "33ba9a45daa544779d3aa13a86a7172a",
+        },
+      },
+    });
+
+    await sessionStore.update({
+      ...(await sessionStore.getById(session.data.session_id, actor.tenantId))!,
+      pendingWorkflowContinuation: {
+        workflowId: "rainbond-app-assistant",
+        selectedWorkflow: "rainbond-fullstack-troubleshooter",
+        nextAction: "continue_runtime_diagnosis",
+        summary: "当前建议优先走方案A：调回合理资源。",
+        subflowData: {
+          resolvedServiceId: "33ba9a45daa544779d3aa13a86a7172a",
+        },
+        suggestedActions: [
+          {
+            optionKey: "A",
+            label: "调回合理资源",
+            description: "将组件调整到 250m CPU / 512MB 内存",
+            recommended: true,
+            pendingAction: {
+              kind: "action_skill",
+              toolName: "scale-component-memory",
+              requiresApproval: true,
+              risk: "medium",
+              description: "调整组件 33ba9a45daa544779d3aa13a86a7172a 的资源配置",
+              arguments: {
+                name: "33ba9a45daa544779d3aa13a86a7172a",
+                cpu: 250,
+                memory: 512,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    const run = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "可以", stream: true },
+    });
+
+    const stream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: run.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).not.toHaveBeenCalled();
+    expect(stream.events.map((event) => event.type)).toContain("approval.requested");
+    const updatedSession = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(updatedSession?.pendingWorkflowAction).toMatchObject({
+      kind: "action_skill",
+      toolName: "scale-component-memory",
+      arguments: {
+        name: "33ba9a45daa544779d3aa13a86a7172a",
+        cpu: 250,
+        memory: 512,
       },
     });
   });
@@ -3074,6 +3915,143 @@ describe("copilot workflow routing", () => {
       actor.tenantId
     );
     expect(storedSession?.pendingWorkflowAction).toBeUndefined();
+  });
+
+  it("continues app-version assistant with deterministic snapshot creation when the user says continue after version-center inspection", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const llmClient = {
+      chat: vi.fn(async () => ({
+        content: "should not be called",
+        finish_reason: "stop",
+      })),
+    };
+    const workflowClient = {
+      callTool: vi
+        .fn()
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            app_id: 1,
+            overview: {
+              current_version: "v1.0.0",
+            },
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            app_id: 1,
+            has_template: true,
+            items: [{ version_id: 100, version: "v1.0.0" }],
+            total: 1,
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            app_id: 1,
+            detail: {
+              version_id: 100,
+              version: "v1.0.0",
+              services: [{ service_id: "svc-1" }],
+            },
+          },
+          content: [],
+        })
+        .mockResolvedValueOnce({
+          isError: false,
+          structuredContent: {
+            snapshot: {
+              version: "v1.0.1",
+            },
+          },
+          content: [],
+        });
+
+    const controller = createCopilotController({
+      llmClient,
+      sessionStore,
+      workflowToolClientFactory: async () => workflowClient as any,
+    });
+
+    const actor = {
+      tenantId: "team-a",
+      userId: "u_1",
+      username: "alice",
+      sourceSystem: "rainbond-ui",
+      roles: [],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {
+        context: {
+          app_id: "app-001",
+          team_name: "team-a",
+          region_name: "region-a",
+          page: "/team/team-a/region/region-a/apps/app-001/version",
+        },
+      },
+    });
+
+    const firstRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "帮我查看版本中心", stream: true },
+    });
+
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: firstRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    llmClient.chat.mockClear();
+    workflowClient.callTool.mockClear();
+
+    const secondRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "继续", stream: true },
+    });
+
+    const secondStream = await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: secondRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    expect(llmClient.chat).not.toHaveBeenCalled();
+    expect(workflowClient.callTool).toHaveBeenCalledWith(
+      "rainbond_create_app_version_snapshot",
+      {
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: 1,
+        version: "v1.0.1",
+      }
+    );
+    expect(
+      secondStream.events.find((event) => event.type === "workflow.completed")
+    ).toMatchObject({
+      data: {
+        workflow_stage: "continue_version_flow",
+        structured_result: expect.objectContaining({
+          summary: "已创建应用快照 v1.0.1，可以继续执行发布或回滚。",
+          executedAction: {
+            toolName: "rainbond_create_app_version_snapshot",
+          },
+        }),
+      },
+    });
   });
 
   it.skip("requests approval and executes a high-risk pending workflow action after approval", async () => {
