@@ -44,6 +44,7 @@ export interface CompiledSkill {
   workflow: CompiledWorkflowDefinition;
   toolPolicy?: Record<string, unknown>;
   outputContract?: Record<string, unknown>;
+  narrativeBody: string;
 }
 
 export interface CompileReport {

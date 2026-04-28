@@ -1,7 +1,13 @@
 import { MUTABLE_TOOL_POLICY_LIST } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createWorkflowRegistry } from "../workflows/registry.js";
-import { rainbondWorkflowMetadata } from "../../shared/workflow-metadata/rainbond.js";
-import { generatedEmbeddedWorkflowKnowledge } from "../../generated/rainbond/capability-knowledge.js";
+import {
+  mergeRainbondWorkflowMetadata,
+  type WorkflowDisplayMetadata,
+} from "../../shared/workflow-metadata/rainbond.js";
+import {
+  getSkillCapabilityKnowledgeMap,
+  getSkillDisplayMetadata,
+} from "../skills/skill-registry.js";
 
 interface EmbeddedWorkflowKnowledgeEntry {
   useWhen: string;
@@ -91,10 +97,7 @@ const EMBEDDED_WORKFLOW_KNOWLEDGE: Record<string, EmbeddedWorkflowKnowledgeEntry
 };
 
 function getWorkflowKnowledge(id: string): EmbeddedWorkflowKnowledgeEntry | undefined {
-  const generated =
-    generatedEmbeddedWorkflowKnowledge[
-      id as keyof typeof generatedEmbeddedWorkflowKnowledge
-    ];
+  const generated = getSkillCapabilityKnowledgeMap()[id];
   const handwritten = EMBEDDED_WORKFLOW_KNOWLEDGE[id];
 
   if (!generated && !handwritten) {
@@ -129,8 +132,19 @@ const READ_ONLY_PREFIXES = ["rainbond_get_", "rainbond_query_", "rainbond_list_"
 
 export function buildEmbeddedWorkflowKnowledgeSection(): string {
   const workflowRegistry = createWorkflowRegistry();
+  const mergedMetadata: WorkflowDisplayMetadata[] = mergeRainbondWorkflowMetadata(
+    getSkillDisplayMetadata().map((item) => ({
+      id: item.id,
+      title: item.title,
+      summary: item.summary,
+      stages: item.stages.map((stage) => ({
+        id: stage.id,
+        label: stage.label,
+      })),
+    }))
+  );
   const metadataById = new Map(
-    rainbondWorkflowMetadata.map((item) => [item.id, item])
+    mergedMetadata.map((item) => [item.id, item])
   );
 
   const lines = [

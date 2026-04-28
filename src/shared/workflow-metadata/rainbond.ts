@@ -1,5 +1,3 @@
-import { generatedRainbondWorkflowMetadata } from "../../generated/rainbond/workflow-metadata.js";
-
 export interface WorkflowDisplayMetadata {
   id: string;
   title: string;
@@ -10,7 +8,7 @@ export interface WorkflowDisplayMetadata {
   }>;
 }
 
-const HANDWRITTEN_METADATA: WorkflowDisplayMetadata[] = [
+export const handwrittenRainbondWorkflowMetadata: WorkflowDisplayMetadata[] = [
   {
     id: "rainbond-app-assistant",
     title: "Rainbond App Assistant",
@@ -79,25 +77,43 @@ const HANDWRITTEN_METADATA: WorkflowDisplayMetadata[] = [
   },
 ];
 
-const generatedById = new Map<string, (typeof generatedRainbondWorkflowMetadata)[number]>(
-  generatedRainbondWorkflowMetadata.map((item) => [item.id, item])
-);
+export function mergeRainbondWorkflowMetadata(
+  derived: WorkflowDisplayMetadata[]
+): WorkflowDisplayMetadata[] {
+  const derivedById = new Map(derived.map((item) => [item.id, item]));
+  const merged: WorkflowDisplayMetadata[] = [];
+  const seen = new Set<string>();
 
-export const rainbondWorkflowMetadata: WorkflowDisplayMetadata[] = HANDWRITTEN_METADATA.map(
-  (item) => {
-    const generated = generatedById.get(item.id);
-    if (!generated) {
-      return item;
+  for (const handwritten of handwrittenRainbondWorkflowMetadata) {
+    const overlay = derivedById.get(handwritten.id);
+    if (overlay) {
+      merged.push({
+        id: overlay.id,
+        title: overlay.title,
+        summary: overlay.summary,
+        stages: overlay.stages.map((stage) => ({
+          id: stage.id,
+          label: stage.label,
+        })),
+      });
+    } else {
+      merged.push(handwritten);
     }
-
-    return {
-      id: generated.id,
-      title: generated.title,
-      summary: generated.summary,
-      stages: generated.stages.map((stage) => ({
-        id: stage.id,
-        label: stage.label,
-      })),
-    };
+    seen.add(handwritten.id);
   }
-);
+
+  for (const item of derived) {
+    if (!seen.has(item.id)) {
+      merged.push(item);
+    }
+  }
+
+  return merged;
+}
+
+/**
+ * @deprecated Server runtime should call mergeRainbondWorkflowMetadata with registry data.
+ * Retained for legacy callers that don't have access to the runtime registry.
+ */
+export const rainbondWorkflowMetadata: WorkflowDisplayMetadata[] =
+  handwrittenRainbondWorkflowMetadata;

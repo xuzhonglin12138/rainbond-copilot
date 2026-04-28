@@ -1,4 +1,4 @@
-import { compiledRainbondSkills } from "../../generated/rainbond/compiled-skills.js";
+import { getRegisteredSkill } from "../skills/skill-registry.js";
 import type { RequestActor } from "../../shared/types.js";
 import type { McpToolResult } from "../integrations/rainbond-mcp/types.js";
 import type { ExecutionScopeCandidate } from "./types.js";
@@ -42,7 +42,7 @@ export interface ExecuteCompiledWorkflowResult {
 }
 
 function getCompiledSkill(skillId: string) {
-  return compiledRainbondSkills.find((skill) => skill.id === skillId) || null;
+  return getRegisteredSkill(skillId);
 }
 
 export function canExecuteCompiledSkill(skillId: string): boolean {

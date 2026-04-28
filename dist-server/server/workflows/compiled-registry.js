@@ -1,6 +1,6 @@
-import { compiledRainbondSkills } from "../../generated/rainbond/compiled-skills.js";
+import { getRegisteredSkills } from "../skills/skill-registry.js";
 export function listCompiledEmbeddedWorkflows() {
-    return compiledRainbondSkills
+    return getRegisteredSkills()
         .filter((skill) => skill.mode === "embedded")
         .map((skill) => ({
         id: skill.id,

@@ -151,6 +151,24 @@ export async function loadSkillFromFile(sourcePath) {
         rawContent,
     });
 }
+export async function loadAllSkillsFromFs(rootDir) {
+    const files = await discoverSkillMarkdownFiles(rootDir);
+    const skills = [];
+    const errors = [];
+    for (const file of files) {
+        try {
+            skills.push(await loadSkillFromFile(file));
+        }
+        catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            errors.push(`${file}: ${message}`);
+        }
+    }
+    if (errors.length > 0) {
+        throw new Error(`Failed to load ${errors.length} skill(s) from ${rootDir}:\n  - ${errors.join("\n  - ")}`);
+    }
+    return skills;
+}
 export function compileSkillMarkdown(input) {
     const parsedMatter = matter(input.rawContent);
     const frontmatter = skillFrontmatterSchema.parse(parsedMatter.data);
@@ -171,9 +189,15 @@ export function compileSkillMarkdown(input) {
         workflow,
         toolPolicy,
         outputContract,
+        narrativeBody: extractNarrativeBody(parsedMatter.content),
     };
     validateCompiledSkillContract(compiledSkill);
     return compiledSkill;
+}
+function extractNarrativeBody(markdownBody) {
+    return markdownBody
+        .replace(/```ya?ml\s+(?:workflow|tool_policy|output_contract)[\s\S]*?\n```\s*/g, "")
+        .trim();
 }
 function parseOptionalObjectBlock(blocks, kind, sourcePath) {
     const block = blocks.find((candidate) => candidate.kind === kind);

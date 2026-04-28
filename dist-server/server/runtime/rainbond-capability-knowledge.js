@@ -1,7 +1,7 @@
 import { MUTABLE_TOOL_POLICY_LIST } from "../integrations/rainbond-mcp/mutable-tool-policy.js";
 import { createWorkflowRegistry } from "../workflows/registry.js";
-import { rainbondWorkflowMetadata } from "../../shared/workflow-metadata/rainbond.js";
-import { generatedEmbeddedWorkflowKnowledge } from "../../generated/rainbond/capability-knowledge.js";
+import { mergeRainbondWorkflowMetadata, } from "../../shared/workflow-metadata/rainbond.js";
+import { getSkillCapabilityKnowledgeMap, getSkillDisplayMetadata, } from "../skills/skill-registry.js";
 const EMBEDDED_WORKFLOW_KNOWLEDGE = {
     "rainbond-app-assistant": {
         useWhen: "用户希望由系统先判断下一步该部署、排障、验收、模板安装还是进入版本中心，或者当前诉求还不够明确。",
@@ -78,7 +78,7 @@ const EMBEDDED_WORKFLOW_KNOWLEDGE = {
     },
 };
 function getWorkflowKnowledge(id) {
-    const generated = generatedEmbeddedWorkflowKnowledge[id];
+    const generated = getSkillCapabilityKnowledgeMap()[id];
     const handwritten = EMBEDDED_WORKFLOW_KNOWLEDGE[id];
     if (!generated && !handwritten) {
         return undefined;
@@ -104,7 +104,16 @@ function getWorkflowKnowledge(id) {
 const READ_ONLY_PREFIXES = ["rainbond_get_", "rainbond_query_", "rainbond_list_"];
 export function buildEmbeddedWorkflowKnowledgeSection() {
     const workflowRegistry = createWorkflowRegistry();
-    const metadataById = new Map(rainbondWorkflowMetadata.map((item) => [item.id, item]));
+    const mergedMetadata = mergeRainbondWorkflowMetadata(getSkillDisplayMetadata().map((item) => ({
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        stages: item.stages.map((stage) => ({
+            id: stage.id,
+            label: stage.label,
+        })),
+    })));
+    const metadataById = new Map(mergedMetadata.map((item) => [item.id, item]));
     const lines = [
         "## Rainbond 嵌入式流程能力",
         "",

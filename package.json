@@ -5,11 +5,9 @@
   "type": "module",
   "scripts": {
     "skills:sync": "bash ./scripts/sync-rainbond-skills.sh",
-    "build:skills": "node ./scripts/build-rainbond-skills.mjs",
-    "watch:skills": "node ./scripts/watch-rainbond-skills.mjs",
     "dev": "vite",
-    "build": "npm run build:skills && tsc && vite build",
-    "build:server": "npm run build:skills && tsc -p tsconfig.server.json",
+    "build": "tsc && vite build",
+    "build:server": "tsc -p tsconfig.server.json",
     "start:server": "node dist-server/server/index.js",
     "test": "vitest run",
     "test:watch": "vitest"

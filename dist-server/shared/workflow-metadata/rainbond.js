@@ -1,5 +1,4 @@
-import { generatedRainbondWorkflowMetadata } from "../../generated/rainbond/workflow-metadata.js";
-const HANDWRITTEN_METADATA = [
+export const handwrittenRainbondWorkflowMetadata = [
     {
         id: "rainbond-app-assistant",
         title: "Rainbond App Assistant",
@@ -67,19 +66,37 @@ const HANDWRITTEN_METADATA = [
         ],
     },
 ];
-const generatedById = new Map(generatedRainbondWorkflowMetadata.map((item) => [item.id, item]));
-export const rainbondWorkflowMetadata = HANDWRITTEN_METADATA.map((item) => {
-    const generated = generatedById.get(item.id);
-    if (!generated) {
-        return item;
+export function mergeRainbondWorkflowMetadata(derived) {
+    const derivedById = new Map(derived.map((item) => [item.id, item]));
+    const merged = [];
+    const seen = new Set();
+    for (const handwritten of handwrittenRainbondWorkflowMetadata) {
+        const overlay = derivedById.get(handwritten.id);
+        if (overlay) {
+            merged.push({
+                id: overlay.id,
+                title: overlay.title,
+                summary: overlay.summary,
+                stages: overlay.stages.map((stage) => ({
+                    id: stage.id,
+                    label: stage.label,
+                })),
+            });
+        }
+        else {
+            merged.push(handwritten);
+        }
+        seen.add(handwritten.id);
     }
-    return {
-        id: generated.id,
-        title: generated.title,
-        summary: generated.summary,
-        stages: generated.stages.map((stage) => ({
-            id: stage.id,
-            label: stage.label,
-        })),
-    };
-});
+    for (const item of derived) {
+        if (!seen.has(item.id)) {
+            merged.push(item);
+        }
+    }
+    return merged;
+}
+/**
+ * @deprecated Server runtime should call mergeRainbondWorkflowMetadata with registry data.
+ * Retained for legacy callers that don't have access to the runtime registry.
+ */
+export const rainbondWorkflowMetadata = handwrittenRainbondWorkflowMetadata;

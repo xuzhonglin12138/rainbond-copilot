@@ -1,4 +1,4 @@
-import { compiledRainbondSkills } from "../../generated/rainbond/compiled-skills.js";
+import { getRegisteredSkill } from "../skills/skill-registry.js";
 import { logWorkflowDebug } from "./workflow-debug.js";
 const SUPPORTED_STAGE_KINDS = new Set([
     "resolve_context",
@@ -6,7 +6,7 @@ const SUPPORTED_STAGE_KINDS = new Set([
     "summarize",
 ]);
 function getCompiledSkill(skillId) {
-    return compiledRainbondSkills.find((skill) => skill.id === skillId) || null;
+    return getRegisteredSkill(skillId);
 }
 export function canExecuteCompiledSkill(skillId) {
     const skill = getCompiledSkill(skillId);
