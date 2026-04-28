@@ -573,6 +573,7 @@ export class WorkflowExecutor {
             message: params.message,
             actor: params.actor,
             sessionContext: session.context,
+            skillRouter: this.deps.skillRouter,
         });
         logWorkflowDebug("workflow.route.result", {
             workflowId: result.workflowId,
@@ -612,6 +613,12 @@ export class WorkflowExecutor {
             result,
             message: params.message,
         });
+        if (result.skillInput && Object.keys(result.skillInput).length > 0) {
+            subflowExecution.subflowData = {
+                ...(subflowExecution.subflowData || {}),
+                skillInput: result.skillInput,
+            };
+        }
         logWorkflowDebug("subflow.execution.result", {
             workflowId: result.workflowId,
             selectedWorkflow: result.selectedWorkflow,

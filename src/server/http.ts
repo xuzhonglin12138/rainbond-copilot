@@ -12,6 +12,13 @@ import { RainbondMcpClient } from "./integrations/rainbond-mcp/client.js";
 import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
 import { SessionScopedRainbondActionAdapter } from "./runtime/session-scoped-action-adapter.js";
 import {
+  createSkillRouter,
+  type SkillRouter,
+} from "./skills/skill-router.js";
+import { OpenAIClient } from "../llm/openai-client.js";
+import { CustomAnthropicClient } from "../llm/custom-anthropic-client.js";
+import { getLLMConfig } from "../llm/config.js";
+import {
   createInMemoryApprovalStore,
   type ApprovalStore,
 } from "./stores/approval-store.js";
@@ -46,6 +53,36 @@ export interface CreateCopilotApiServerOptions {
   env?: Record<string, string | undefined>;
   config?: Partial<ServerConfig>;
   authSubjectResolver?: AuthSubjectResolverLike;
+  skillRouter?: SkillRouter;
+}
+
+function buildOptionalSkillRouter(
+  env: Record<string, string | undefined>
+): SkillRouter | undefined {
+  const flag = (env.RAINBOND_SKILL_ROUTER || "").trim().toLowerCase();
+  if (flag !== "llm") {
+    return undefined;
+  }
+
+  let llmConfig;
+  try {
+    llmConfig = getLLMConfig();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[skill-router] disabled: cannot load LLM config (${message})`);
+    return undefined;
+  }
+
+  const llmClient =
+    llmConfig.provider === "anthropic"
+      ? new CustomAnthropicClient(llmConfig)
+      : new OpenAIClient(llmConfig);
+
+  console.log(
+    `[skill-router] enabled with provider=${llmConfig.provider} model=${llmConfig.model}`
+  );
+
+  return createSkillRouter({ llmClient });
 }
 
 function json(
@@ -131,6 +168,8 @@ export function createCopilotApiServer(
   };
   const stores = createStores(config);
   const broker = createSseBroker(stores.eventStore);
+  const skillRouter =
+    options.skillRouter || buildOptionalSkillRouter(options.env || process.env);
   const authSubjectResolver =
     options.authSubjectResolver ||
     new AuthSubjectResolver(
@@ -180,6 +219,7 @@ export function createCopilotApiServer(
     broker,
     runResumer: createInMemoryRunResumer(),
     enableRainbondAppAssistantWorkflow: true,
+    skillRouter,
     actionAdapterFactory: async ({ actor, sessionId }) => {
       const { client, session } = await createInitializedMcpClient({
         actor,

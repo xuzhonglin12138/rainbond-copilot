@@ -46,6 +46,7 @@ import {
   isContinueWorkflowActionPrompt,
   isWorkflowContinuationReferencePrompt,
 } from "../workflows/executor.js";
+import type { SkillRouter } from "../skills/skill-router.js";
 import { logWorkflowDebug } from "../workflows/workflow-debug.js";
 import { buildPendingWorkflowActionCompletion } from "../workflows/pending-action-result.js";
 import type {
@@ -75,6 +76,7 @@ interface ControllerDeps {
   }) => Promise<RainbondQueryToolClient> | RainbondQueryToolClient;
   enableRainbondAppAssistantWorkflow?: boolean;
   enableLegacyActionSkills?: boolean;
+  skillRouter?: SkillRouter;
 }
 
 interface CreateSessionRequest {
@@ -397,6 +399,7 @@ export function createCopilotController(deps: ControllerDeps = {}) {
     workflowToolClientFactory: deps.workflowToolClientFactory,
     enableRainbondAppAssistantWorkflow:
       deps.enableRainbondAppAssistantWorkflow,
+    skillRouter: deps.skillRouter,
   });
   const approvalService = new CopilotApprovalService({
     approvalStore,

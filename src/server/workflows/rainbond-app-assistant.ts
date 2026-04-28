@@ -6,6 +6,8 @@ import { selectTemplateInstallerSubflow } from "./subflows/template-installer.js
 import { selectVersionAssistantSubflow } from "./subflows/version-assistant.js";
 import { selectDeliveryVerifierSubflow } from "./subflows/delivery-verifier.js";
 import { selectTroubleshooterSubflow } from "./subflows/troubleshooter.js";
+import type { SkillRouter } from "../skills/skill-router.js";
+import { logWorkflowDebug } from "./workflow-debug.js";
 
 export interface AppAssistantResult {
   workflowId: "rainbond-app-assistant";
@@ -21,12 +23,27 @@ export interface AppAssistantResult {
   summary: string;
   candidateScope: ExecutionScopeCandidate;
   selectedWorkflow?: string;
+  skillInput?: Record<string, unknown>;
+  routedBy?: "llm" | "regex" | "context";
 }
 
 export interface ExecuteRainbondAppAssistantInput {
   message: string;
   actor: RequestActor;
   sessionContext?: Record<string, unknown>;
+  skillRouter?: SkillRouter;
+}
+
+const SKILL_ID_TO_NEXT_ACTION: Record<string, AppAssistantResult["nextAction"]> = {
+  "rainbond-fullstack-bootstrap": "bootstrap_topology",
+  "rainbond-fullstack-troubleshooter": "inspect_runtime",
+  "rainbond-delivery-verifier": "verify_delivery",
+  "rainbond-template-installer": "install_template",
+  "rainbond-app-version-assistant": "run_version_flow",
+};
+
+function nextActionForSkill(skillId: string): AppAssistantResult["nextAction"] {
+  return SKILL_ID_TO_NEXT_ACTION[skillId] || "inspect_runtime";
 }
 
 function buildUiScopeFromSessionContext(
@@ -99,6 +116,35 @@ export async function executeRainbondAppAssistant(
       summary: buildCapabilitySummary(),
       candidateScope,
     };
+  }
+
+  if (input.skillRouter) {
+    try {
+      const choice = await input.skillRouter.route({
+        message: input.message,
+        sessionContext: input.sessionContext,
+      });
+      if (choice && choice.skillId) {
+        logWorkflowDebug("workflow.route.llm_router", {
+          selectedWorkflow: choice.skillId,
+          inputKeys: Object.keys(choice.input || {}),
+        });
+        return {
+          workflowId: "rainbond-app-assistant",
+          workflowStage: "select-subflow",
+          nextAction: nextActionForSkill(choice.skillId),
+          summary: `LLM 路由器选择了 ${choice.skillId}。`,
+          candidateScope,
+          selectedWorkflow: choice.skillId,
+          skillInput: choice.input,
+          routedBy: "llm",
+        };
+      }
+    } catch (error) {
+      logWorkflowDebug("workflow.route.llm_router_error", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
   const isTemplateIntent = /(模板|template|market|市场|安装到当前应用)/i.test(

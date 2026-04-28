@@ -8,11 +8,35 @@ import { createSseBroker } from "./events/sse-broker.js";
 import { RainbondMcpClient } from "./integrations/rainbond-mcp/client.js";
 import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
 import { SessionScopedRainbondActionAdapter } from "./runtime/session-scoped-action-adapter.js";
+import { createSkillRouter, } from "./skills/skill-router.js";
+import { OpenAIClient } from "../llm/openai-client.js";
+import { CustomAnthropicClient } from "../llm/custom-anthropic-client.js";
+import { getLLMConfig } from "../llm/config.js";
 import { createInMemoryApprovalStore, } from "./stores/approval-store.js";
 import { createInMemoryEventStore, } from "./stores/event-store.js";
 import { FileApprovalStore, FileEventStore, FileRunStore, FileSessionStore, } from "./stores/file-stores.js";
 import { createInMemoryRunStore, } from "./stores/run-store.js";
 import { createInMemorySessionStore, } from "./stores/session-store.js";
+function buildOptionalSkillRouter(env) {
+    const flag = (env.RAINBOND_SKILL_ROUTER || "").trim().toLowerCase();
+    if (flag !== "llm") {
+        return undefined;
+    }
+    let llmConfig;
+    try {
+        llmConfig = getLLMConfig();
+    }
+    catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.warn(`[skill-router] disabled: cannot load LLM config (${message})`);
+        return undefined;
+    }
+    const llmClient = llmConfig.provider === "anthropic"
+        ? new CustomAnthropicClient(llmConfig)
+        : new OpenAIClient(llmConfig);
+    console.log(`[skill-router] enabled with provider=${llmConfig.provider} model=${llmConfig.model}`);
+    return createSkillRouter({ llmClient });
+}
 function json(response, statusCode, payload) {
     response.writeHead(statusCode, {
         "Content-Type": "application/json; charset=utf-8",
@@ -76,6 +100,7 @@ export function createCopilotApiServer(options = {}) {
     };
     const stores = createStores(config);
     const broker = createSseBroker(stores.eventStore);
+    const skillRouter = options.skillRouter || buildOptionalSkillRouter(options.env || process.env);
     const authSubjectResolver = options.authSubjectResolver ||
         new AuthSubjectResolver(new RainbondMcpClient({
             baseUrl: config.consoleBaseUrl,
@@ -109,6 +134,7 @@ export function createCopilotApiServer(options = {}) {
         broker,
         runResumer: createInMemoryRunResumer(),
         enableRainbondAppAssistantWorkflow: true,
+        skillRouter,
         actionAdapterFactory: async ({ actor, sessionId }) => {
             const { client, session } = await createInitializedMcpClient({
                 actor,

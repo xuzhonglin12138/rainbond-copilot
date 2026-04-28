@@ -4,6 +4,17 @@ import { selectTemplateInstallerSubflow } from "./subflows/template-installer.js
 import { selectVersionAssistantSubflow } from "./subflows/version-assistant.js";
 import { selectDeliveryVerifierSubflow } from "./subflows/delivery-verifier.js";
 import { selectTroubleshooterSubflow } from "./subflows/troubleshooter.js";
+import { logWorkflowDebug } from "./workflow-debug.js";
+const SKILL_ID_TO_NEXT_ACTION = {
+    "rainbond-fullstack-bootstrap": "bootstrap_topology",
+    "rainbond-fullstack-troubleshooter": "inspect_runtime",
+    "rainbond-delivery-verifier": "verify_delivery",
+    "rainbond-template-installer": "install_template",
+    "rainbond-app-version-assistant": "run_version_flow",
+};
+function nextActionForSkill(skillId) {
+    return SKILL_ID_TO_NEXT_ACTION[skillId] || "inspect_runtime";
+}
 function buildUiScopeFromSessionContext(sessionContext = {}) {
     const rawAppId = sessionContext.appId || sessionContext.app_id;
     const rawComponentId = sessionContext.componentId || sessionContext.component_id;
@@ -56,6 +67,35 @@ export async function executeRainbondAppAssistant(input) {
             summary: buildCapabilitySummary(),
             candidateScope,
         };
+    }
+    if (input.skillRouter) {
+        try {
+            const choice = await input.skillRouter.route({
+                message: input.message,
+                sessionContext: input.sessionContext,
+            });
+            if (choice && choice.skillId) {
+                logWorkflowDebug("workflow.route.llm_router", {
+                    selectedWorkflow: choice.skillId,
+                    inputKeys: Object.keys(choice.input || {}),
+                });
+                return {
+                    workflowId: "rainbond-app-assistant",
+                    workflowStage: "select-subflow",
+                    nextAction: nextActionForSkill(choice.skillId),
+                    summary: `LLM 路由器选择了 ${choice.skillId}。`,
+                    candidateScope,
+                    selectedWorkflow: choice.skillId,
+                    skillInput: choice.input,
+                    routedBy: "llm",
+                };
+            }
+        }
+        catch (error) {
+            logWorkflowDebug("workflow.route.llm_router_error", {
+                error: error instanceof Error ? error.message : String(error),
+            });
+        }
     }
     const isTemplateIntent = /(模板|template|market|市场|安装到当前应用)/i.test(input.message);
     if (isTemplateIntent &&

@@ -18,6 +18,7 @@ import {
   type RunExecutionState,
 } from "../runtime/run-execution-state.js";
 import { logWorkflowDebug } from "./workflow-debug.js";
+import type { SkillRouter } from "../skills/skill-router.js";
 
 interface WorkflowExecutorDeps {
   eventPublisher: PersistedEventPublisher;
@@ -26,6 +27,7 @@ interface WorkflowExecutorDeps {
   workflowRegistry?: WorkflowRegistry;
   workflowToolClientFactory?: WorkflowToolClientFactory;
   enableRainbondAppAssistantWorkflow?: boolean;
+  skillRouter?: SkillRouter;
 }
 
 export interface ExecuteWorkflowParams {
@@ -827,6 +829,7 @@ export class WorkflowExecutor {
       message: params.message,
       actor: params.actor,
       sessionContext: session.context,
+      skillRouter: this.deps.skillRouter,
     });
 
     logWorkflowDebug("workflow.route.result", {
@@ -870,6 +873,12 @@ export class WorkflowExecutor {
       result,
       message: params.message,
     });
+    if (result.skillInput && Object.keys(result.skillInput).length > 0) {
+      subflowExecution.subflowData = {
+        ...(subflowExecution.subflowData || {}),
+        skillInput: result.skillInput,
+      };
+    }
     logWorkflowDebug("subflow.execution.result", {
       workflowId: result.workflowId,
       selectedWorkflow: result.selectedWorkflow,
