@@ -1,0 +1,48 @@
+{
+  "name": "rainbond-copilot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "skills:sync": "bash ./scripts/sync-rainbond-skills.sh",
+    "build:skills": "node ./scripts/build-rainbond-skills.mjs",
+    "watch:skills": "node ./scripts/watch-rainbond-skills.mjs",
+    "dev": "vite",
+    "build": "npm run build:skills && tsc && vite build",
+    "build:server": "npm run build:skills && tsc -p tsconfig.server.json",
+    "start:server": "node dist-server/server/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "dotenv": "^17.3.1",
+    "glob": "^13.0.6",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.577.0",
+    "markdown-it": "^14.1.1",
+    "openai": "^6.27.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "yaml": "^2.8.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.1",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.27",
+    "jsdom": "^24.1.1",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4",
+    "vitest": "^2.0.5"
+  }
+}

@@ -1,0 +1,27 @@
+import { createServerId } from "../utils/id.js";
+import { createRunRecord, } from "../stores/run-store.js";
+export class CopilotRunService {
+    constructor(runStore, sessionStore) {
+        this.runStore = runStore;
+        this.sessionStore = sessionStore;
+    }
+    async createRun(input) {
+        const session = await this.sessionStore.getById(input.sessionId, input.actor.tenantId);
+        if (!session || session.userId !== input.actor.userId) {
+            throw new Error("Session not found");
+        }
+        const run = createRunRecord({
+            runId: createServerId("run"),
+            tenantId: input.actor.tenantId,
+            sessionId: input.sessionId,
+            messageText: input.message,
+        });
+        await this.runStore.create(run);
+        await this.sessionStore.update({
+            ...session,
+            latestRunId: run.runId,
+            updatedAt: new Date().toISOString(),
+        });
+        return run;
+    }
+}

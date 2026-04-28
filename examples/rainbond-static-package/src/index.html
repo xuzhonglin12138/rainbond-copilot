@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rainbond Static Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at top, #dbeafe 0%, #eff6ff 35%, #f8fafc 100%);
+        color: #0f172a;
+      }
+
+      .card {
+        width: min(680px, calc(100vw - 32px));
+        padding: 40px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+        backdrop-filter: blur(12px);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: clamp(32px, 5vw, 48px);
+        line-height: 1.05;
+      }
+
+      p {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1.7;
+        color: #334155;
+      }
+
+      .meta {
+        margin-top: 24px;
+        display: grid;
+        gap: 10px;
+        font-size: 14px;
+        color: #475569;
+      }
+
+      code {
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1e40af;
+        font-family: "SF Mono", "Menlo", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="eyebrow">Rainbond Deployment Probe</div>
+      <h1>Hello from Codex</h1>
+      <p>
+        这是一个用于验证 Rainbond 软件包构建链路的最小静态站点。
+        如果你能看到这个页面，说明上传、检测、构建和对外访问都已经打通。
+      </p>
+      <div class="meta">
+        <div>Artifact: <code>rainbond-static-package</code></div>
+        <div>Build output: <code>dist/index.html</code></div>
+      </div>
+    </main>
+  </body>
+  </html>
