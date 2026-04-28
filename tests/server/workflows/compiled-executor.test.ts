@@ -212,6 +212,69 @@ describe("compiled executor", () => {
     }
   });
 
+  it("falls back to candidateScope.componentId when LLM did not supply service_id", async () => {
+    // Regression: the LLM cannot reliably extract a service_id from a
+    // Chinese component name like "demo-2048 应用下的 2048-game 组件".
+    // The UI session context already carries the component_id of the page
+    // the user is on, so we route that into $input.service_id when no
+    // explicit value is provided.
+    const callTool = vi.fn(async (name: string) => ({
+      isError: false,
+      structuredContent: { ok: true, _tool: name },
+      content: [],
+    }));
+
+    await executeCompiledWorkflow({
+      skillId: "rainbond-fullstack-troubleshooter",
+      actor: baseActor,
+      candidateScope: {
+        ...baseScope,
+        componentId: "gr71871f",
+      },
+      input: {
+        // service_id intentionally omitted
+        inspection_mode: "build_logs",
+        event_id: "evt-99",
+      },
+      client: { callTool },
+      publishToolTrace: vi.fn(async () => {}),
+    });
+
+    const buildLogsCall = callTool.mock.calls.find(
+      ([name]) => name === "rainbond_get_component_build_logs"
+    );
+    expect(buildLogsCall?.[1]).toMatchObject({
+      service_id: "gr71871f",
+      event_id: "evt-99",
+    });
+  });
+
+  it("does not overwrite an explicit service_id from input", async () => {
+    const callTool = vi.fn(async (name: string) => ({
+      isError: false,
+      structuredContent: { ok: true, _tool: name },
+      content: [],
+    }));
+
+    await executeCompiledWorkflow({
+      skillId: "rainbond-fullstack-troubleshooter",
+      actor: baseActor,
+      candidateScope: { ...baseScope, componentId: "gr71871f" },
+      input: {
+        service_id: "explicit-svc",
+        inspection_mode: "build_logs",
+        event_id: "evt-1",
+      },
+      client: { callTool },
+      publishToolTrace: vi.fn(async () => {}),
+    });
+
+    const buildLogsCall = callTool.mock.calls.find(
+      ([name]) => name === "rainbond_get_component_build_logs"
+    );
+    expect(buildLogsCall?.[1]).toMatchObject({ service_id: "explicit-svc" });
+  });
+
   it("dispatches inspection_mode=logs to component logs", async () => {
     const callTool = vi.fn(async (name: string) => ({
       isError: false,

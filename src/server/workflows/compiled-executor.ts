@@ -87,7 +87,10 @@ export async function executeCompiledWorkflow(
   const toolCalls: Array<{ name: string; status: string }> = [];
   const toolOutputs = new Map<string, unknown>();
   let sequence = params.sequenceStart || 4;
-  const input = params.input || {};
+  const input = enrichInputWithContextFallbacks(
+    params.input || {},
+    params.candidateScope
+  );
   const branchContext: BranchEvalContext = {
     input,
     context: {
@@ -282,6 +285,32 @@ export async function executeCompiledWorkflow(
 // object key entirely so we never send literals like "$input.service_id" to
 // MCP tools.
 const UNRESOLVED_PLACEHOLDER = Symbol("unresolved-placeholder");
+
+/**
+ * Apply Rainbond-specific fallbacks before the input map is exposed to
+ * branch when-expressions and template resolution.
+ *
+ * Today: when the LLM router cannot extract `service_id` from a Chinese
+ * component name like "2048-game组件", fall back to the component_id the
+ * UI already provided in session.context (the page the user is currently
+ * looking at). `service_id` and `component_id` are synonyms in MCP — the
+ * former is the historical name kept in tool signatures, the latter is the
+ * canonical UI identifier.
+ */
+function enrichInputWithContextFallbacks(
+  input: Record<string, unknown>,
+  scope: ExecutionScopeCandidate
+): Record<string, unknown> {
+  const enriched: Record<string, unknown> = { ...input };
+  const supplied = enriched.service_id;
+  const hasSupplied =
+    typeof supplied === "string" && supplied.trim() !== "";
+
+  if (!hasSupplied && scope.componentId && scope.componentId.trim() !== "") {
+    enriched.service_id = scope.componentId;
+  }
+  return enriched;
+}
 
 function resolveTemplateArguments(
   value: unknown,
