@@ -73,6 +73,12 @@ interface ServerLlmExecutorDeps {
     scope?: string;
   }) => Promise<void>;
   enableLegacyActionSkills?: boolean;
+  persistChatHistoryTurn?: (input: {
+    actor: RequestActor;
+    sessionId: string;
+    userMessage: string;
+    assistantMessage: string;
+  }) => Promise<void>;
 }
 
 export interface ExecuteServerLlmRunParams {
@@ -80,9 +86,12 @@ export interface ExecuteServerLlmRunParams {
   sessionId: string;
   runId: string;
   message: string;
+  historyUserMessage?: string;
+  persistHistory?: boolean;
   sessionContext?: Record<string, unknown>;
   continuation?: PendingLlmContinuation;
   currentSkillId?: string;
+  chatHistory?: ChatMessage[];
 }
 
 export type QueryToolClientFactory = (params: {
@@ -272,6 +281,20 @@ export class ServerLlmExecutor {
     ) ||
       "我已经完成当前分析，但没有生成额外回复。";
 
+    if (
+      params.persistHistory !== false &&
+      this.deps.persistChatHistoryTurn &&
+      content &&
+      (params.historyUserMessage || params.message)
+    ) {
+      await this.deps.persistChatHistoryTurn({
+        actor: params.actor,
+        sessionId: params.sessionId,
+        userMessage: params.historyUserMessage || params.message,
+        assistantMessage: content,
+      });
+    }
+
     await this.publishAssistantMessage(
       params,
       content,
@@ -301,6 +324,7 @@ export class ServerLlmExecutor {
             }),
           },
           ...(buildSessionContextPromptMessages(params.sessionContext) as ChatMessage[]),
+          ...cloneChatMessages(params.chatHistory || []),
           {
             role: "user",
             content: params.message,

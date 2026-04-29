@@ -26,6 +26,7 @@ import {
   type RunStore,
 } from "../stores/run-store.js";
 import {
+  appendChatHistoryTurn,
   cloneChatMessages,
   createInMemorySessionStore,
   deriveCompletedToolCallIds,
@@ -496,6 +497,9 @@ export function createCopilotController(deps: ControllerDeps = {}) {
       requestApproval: async (input) => {
         await queuePendingActionApproval(input);
       },
+      persistChatHistoryTurn: async (input) => {
+        await appendSessionChatHistory(input);
+      },
     });
   };
 
@@ -514,6 +518,32 @@ export function createCopilotController(deps: ControllerDeps = {}) {
     return JSON.stringify({
       isError: params.output.isError,
       structuredContent: params.output.structuredContent || {},
+    });
+  };
+
+  const appendSessionChatHistory = async (params: {
+    actor: RequestActor;
+    sessionId: string;
+    userMessage: string;
+    assistantMessage: string;
+  }) => {
+    if (!params.userMessage || !params.assistantMessage) {
+      return;
+    }
+    const currentSession = await sessionStore.getById(
+      params.sessionId,
+      params.actor.tenantId
+    );
+    if (!currentSession || currentSession.userId !== params.actor.userId) {
+      return;
+    }
+    await sessionStore.update({
+      ...currentSession,
+      chatHistory: appendChatHistoryTurn(currentSession.chatHistory, [
+        { role: "user", content: params.userMessage },
+        { role: "assistant", content: params.assistantMessage },
+      ]),
+      updatedAt: new Date().toISOString(),
     });
   };
 
@@ -870,7 +900,10 @@ export function createCopilotController(deps: ControllerDeps = {}) {
             sessionId: params.sessionId,
             runId: params.runId,
             message: currentRun.messageText,
+            historyUserMessage: currentRun.messageText,
+            persistHistory: false,
             sessionContext: currentSession.context,
+            chatHistory: currentSession.chatHistory,
             currentSkillId:
               currentSession.pendingWorkflowContinuation?.selectedWorkflow,
             continuation: {
@@ -1799,7 +1832,10 @@ export function createCopilotController(deps: ControllerDeps = {}) {
           sessionId: request.params.sessionId,
           runId: run.runId,
           message: llmMessage,
+          historyUserMessage: request.body.message,
+          persistHistory: true,
           sessionContext: session.context,
+          chatHistory: session.chatHistory,
           currentSkillId: session.pendingWorkflowContinuation?.selectedWorkflow,
         });
 

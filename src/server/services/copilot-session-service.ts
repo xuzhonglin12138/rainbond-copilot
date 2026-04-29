@@ -89,6 +89,7 @@ export class CopilotSessionService {
       pendingWorkflowContinuation: contextChanged
         ? undefined
         : session.pendingWorkflowContinuation,
+      chatHistory: contextChanged ? undefined : session.chatHistory,
     };
 
     await this.sessionStore.update(updatedSession);

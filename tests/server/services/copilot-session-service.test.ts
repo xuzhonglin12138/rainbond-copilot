@@ -84,4 +84,51 @@ describe("CopilotSessionService", () => {
       component_id: "gr71871f",
     });
   });
+
+  it("clears persisted chat history when the session context signature changes", async () => {
+    const sessionStore = createInMemorySessionStore();
+    const service = new CopilotSessionService(sessionStore);
+
+    const session = await service.createSession({
+      actor: {
+        tenantId: "team-a",
+        userId: "u_1",
+        username: "alice",
+        sourceSystem: "rainbond-ui",
+        roles: [],
+        authMode: "user_jwt",
+        tenantName: "team-a",
+      },
+      context: {
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: "134",
+      },
+    });
+
+    await sessionStore.update({
+      ...session,
+      chatHistory: [
+        { role: "user", content: "你好" },
+        { role: "assistant", content: "你好，我记住了。" },
+      ],
+    });
+
+    const updated = await service.updateSessionContext(
+      session.sessionId,
+      {
+        tenantId: "team-a",
+        userId: "u_1",
+        tenantName: "team-a",
+      },
+      {
+        enterprise_id: "eid-1",
+        team_name: "team-a",
+        region_name: "region-a",
+        app_id: "135",
+      }
+    );
+
+    expect(updated.chatHistory).toBeUndefined();
+  });
 });

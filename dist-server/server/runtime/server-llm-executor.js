@@ -124,6 +124,17 @@ export class ServerLlmExecutor {
         const synthesizedSummary = this.buildAssistantSummaryFromToolResults(summaryMessages, params.message);
         const content = this.mergeAssistantContentWithToolResults(result.finalOutput || "", synthesizedSummary) ||
             "我已经完成当前分析，但没有生成额外回复。";
+        if (params.persistHistory !== false &&
+            this.deps.persistChatHistoryTurn &&
+            content &&
+            (params.historyUserMessage || params.message)) {
+            await this.deps.persistChatHistoryTurn({
+                actor: params.actor,
+                sessionId: params.sessionId,
+                userMessage: params.historyUserMessage || params.message,
+                assistantMessage: content,
+            });
+        }
         await this.publishAssistantMessage(params, content, lastStreamedAssistantMessageId || undefined);
         await this.publishRunStatus(params, "done");
         return true;
@@ -145,6 +156,7 @@ export class ServerLlmExecutor {
                     }),
                 },
                 ...buildSessionContextPromptMessages(params.sessionContext),
+                ...cloneChatMessages(params.chatHistory || []),
                 {
                     role: "user",
                     content: params.message,

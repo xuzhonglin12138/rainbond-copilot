@@ -62,6 +62,7 @@ export interface SessionRecord {
   pendingWorkflowAction?: PendingWorkflowAction;
   pendingLlmContinuation?: PendingLlmContinuation;
   pendingWorkflowContinuation?: PendingWorkflowContinuation;
+  chatHistory?: ChatMessage[];
   status: SessionRecordStatus;
   latestRunId?: string;
   createdAt: string;
@@ -84,6 +85,7 @@ export interface CreateSessionRecordInput {
   pendingWorkflowAction?: PendingWorkflowAction;
   pendingLlmContinuation?: PendingLlmContinuation;
   pendingWorkflowContinuation?: PendingWorkflowContinuation;
+  chatHistory?: ChatMessage[];
   status?: SessionRecordStatus;
   latestRunId?: string;
   createdAt?: string;
@@ -185,6 +187,7 @@ function derivePendingWorkflowAction(
 export function normalizeSessionRecord(session: SessionRecord): SessionRecord {
   return {
     ...session,
+    chatHistory: normalizeChatHistory(session.chatHistory),
     pendingWorkflowAction:
       session.pendingWorkflowAction ??
       derivePendingWorkflowAction(session.approvalLedger),
@@ -212,11 +215,47 @@ export function createSessionRecord(
     pendingWorkflowAction: input.pendingWorkflowAction,
     pendingLlmContinuation: input.pendingLlmContinuation,
     pendingWorkflowContinuation: input.pendingWorkflowContinuation,
+    chatHistory: normalizeChatHistory(input.chatHistory),
     status: input.status ?? "active",
     latestRunId: input.latestRunId,
     createdAt: now,
     updatedAt: input.updatedAt ?? now,
   });
+}
+
+const MAX_CHAT_HISTORY_MESSAGES = 12;
+
+export function normalizeChatHistory(
+  messages?: ChatMessage[]
+): ChatMessage[] | undefined {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return undefined;
+  }
+
+  const filtered = messages
+    .filter((message) => message && (message.role === "user" || message.role === "assistant"))
+    .map((message) => ({
+      role: message.role,
+      content: message.content || "",
+    } satisfies ChatMessage));
+
+  if (filtered.length === 0) {
+    return undefined;
+  }
+
+  return filtered.slice(-MAX_CHAT_HISTORY_MESSAGES);
+}
+
+export function appendChatHistoryTurn(
+  existingHistory: ChatMessage[] | undefined,
+  turn: ChatMessage[]
+): ChatMessage[] {
+  const normalizedExisting = normalizeChatHistory(existingHistory) || [];
+  const normalizedTurn = normalizeChatHistory(turn) || [];
+  return normalizeChatHistory([
+    ...normalizedExisting,
+    ...normalizedTurn,
+  ]) || [];
 }
 
 export class InMemorySessionStore implements SessionStore {

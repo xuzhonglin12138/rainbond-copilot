@@ -67,6 +67,7 @@ function derivePendingWorkflowAction(approvalLedger) {
 export function normalizeSessionRecord(session) {
     return {
         ...session,
+        chatHistory: normalizeChatHistory(session.chatHistory),
         pendingWorkflowAction: session.pendingWorkflowAction ??
             derivePendingWorkflowAction(session.approvalLedger),
     };
@@ -89,11 +90,36 @@ export function createSessionRecord(input) {
         pendingWorkflowAction: input.pendingWorkflowAction,
         pendingLlmContinuation: input.pendingLlmContinuation,
         pendingWorkflowContinuation: input.pendingWorkflowContinuation,
+        chatHistory: normalizeChatHistory(input.chatHistory),
         status: input.status ?? "active",
         latestRunId: input.latestRunId,
         createdAt: now,
         updatedAt: input.updatedAt ?? now,
     });
+}
+const MAX_CHAT_HISTORY_MESSAGES = 12;
+export function normalizeChatHistory(messages) {
+    if (!Array.isArray(messages) || messages.length === 0) {
+        return undefined;
+    }
+    const filtered = messages
+        .filter((message) => message && (message.role === "user" || message.role === "assistant"))
+        .map((message) => ({
+        role: message.role,
+        content: message.content || "",
+    }));
+    if (filtered.length === 0) {
+        return undefined;
+    }
+    return filtered.slice(-MAX_CHAT_HISTORY_MESSAGES);
+}
+export function appendChatHistoryTurn(existingHistory, turn) {
+    const normalizedExisting = normalizeChatHistory(existingHistory) || [];
+    const normalizedTurn = normalizeChatHistory(turn) || [];
+    return normalizeChatHistory([
+        ...normalizedExisting,
+        ...normalizedTurn,
+    ]) || [];
 }
 export class InMemorySessionStore {
     constructor() {

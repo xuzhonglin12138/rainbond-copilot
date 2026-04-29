@@ -50,6 +50,7 @@ export const MUTABLE_TOOL_POLICY_LIST: MutableToolPolicyEntry[] = [
   { name: "rainbond_install_app_by_market", scope: app, riskLevel: "high", approvalMessage: "从市场安装应用 {market}", allowDirectExecution: false },
   { name: "rainbond_install_app_model", scope: app, riskLevel: "high", approvalMessage: "安装模板 {market}", allowDirectExecution: false },
   { name: "rainbond_manage_component_autoscaler", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的伸缩策略", allowDirectExecution: false },
+  { name: "rainbond_update_component_build_source", scope: component, riskLevel: "high", approvalMessage: "修改组件 {component} 的构建源并可能触发后续构建变更", allowDirectExecution: false },
   { name: "rainbond_manage_component_connection_envs", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的连接信息", allowDirectExecution: false },
   { name: "rainbond_manage_component_dependency", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的依赖关系", allowDirectExecution: false },
   { name: "rainbond_manage_component_envs", scope: component, riskLevel: "medium", approvalMessage: "修改组件 {component} 的环境变量", allowDirectExecution: false },

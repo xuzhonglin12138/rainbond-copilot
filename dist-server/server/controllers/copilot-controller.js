@@ -10,7 +10,7 @@ import { CopilotApprovalService } from "../services/copilot-approval-service.js"
 import { createInMemoryApprovalStore, } from "../stores/approval-store.js";
 import { createInMemoryEventStore } from "../stores/event-store.js";
 import { createInMemoryRunStore, cloneRunExecutionState, } from "../stores/run-store.js";
-import { cloneChatMessages, createInMemorySessionStore, deriveCompletedToolCallIds, toPendingWorkflowActionFromRunApproval, toRunPendingApproval, } from "../stores/session-store.js";
+import { appendChatHistoryTurn, cloneChatMessages, createInMemorySessionStore, deriveCompletedToolCallIds, toPendingWorkflowActionFromRunApproval, toRunPendingApproval, } from "../stores/session-store.js";
 import { CopilotSessionService, } from "../services/copilot-session-service.js";
 import { CopilotRunService } from "../services/copilot-run-service.js";
 import { createServerActionSkills } from "../runtime/server-action-skills.js";
@@ -282,6 +282,9 @@ export function createCopilotController(deps = {}) {
             requestApproval: async (input) => {
                 await queuePendingActionApproval(input);
             },
+            persistChatHistoryTurn: async (input) => {
+                await appendSessionChatHistory(input);
+            },
         });
     };
     const serializeToolResultForContinuation = (params) => {
@@ -291,6 +294,23 @@ export function createCopilotController(deps = {}) {
         return JSON.stringify({
             isError: params.output.isError,
             structuredContent: params.output.structuredContent || {},
+        });
+    };
+    const appendSessionChatHistory = async (params) => {
+        if (!params.userMessage || !params.assistantMessage) {
+            return;
+        }
+        const currentSession = await sessionStore.getById(params.sessionId, params.actor.tenantId);
+        if (!currentSession || currentSession.userId !== params.actor.userId) {
+            return;
+        }
+        await sessionStore.update({
+            ...currentSession,
+            chatHistory: appendChatHistoryTurn(currentSession.chatHistory, [
+                { role: "user", content: params.userMessage },
+                { role: "assistant", content: params.assistantMessage },
+            ]),
+            updatedAt: new Date().toISOString(),
         });
     };
     const buildRunExecutionState = (params) => {
@@ -568,7 +588,10 @@ export function createCopilotController(deps = {}) {
                         sessionId: params.sessionId,
                         runId: params.runId,
                         message: currentRun.messageText,
+                        historyUserMessage: currentRun.messageText,
+                        persistHistory: false,
                         sessionContext: currentSession.context,
+                        chatHistory: currentSession.chatHistory,
                         currentSkillId: currentSession.pendingWorkflowContinuation?.selectedWorkflow,
                         continuation: {
                             iteration: currentExecutionState.iteration,
@@ -1319,7 +1342,10 @@ export function createCopilotController(deps = {}) {
                     sessionId: request.params.sessionId,
                     runId: run.runId,
                     message: llmMessage,
+                    historyUserMessage: request.body.message,
+                    persistHistory: true,
                     sessionContext: session.context,
+                    chatHistory: session.chatHistory,
                     currentSkillId: session.pendingWorkflowContinuation?.selectedWorkflow,
                 });
                 if (!handledByLlm && enableLegacyActionSkills) {

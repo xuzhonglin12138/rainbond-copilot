@@ -204,6 +204,86 @@ describe("copilot event stream", () => {
     });
   });
 
+  it("persists ordinary llm chat history and injects it into the next run", async () => {
+    const llmClient = {
+      chat: vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: "第一轮答复",
+          finish_reason: "stop",
+        })
+        .mockResolvedValueOnce({
+          content: "第二轮答复",
+          finish_reason: "stop",
+        }),
+    };
+    const sessionStore = createInMemorySessionStore();
+    const controller = createCopilotController({
+      llmClient,
+      sessionStore,
+    });
+    const actor = {
+      tenantId: "t_123",
+      userId: "u_456",
+      username: "alice",
+      sourceSystem: "ops-console",
+      roles: ["app_admin"],
+    };
+
+    const session = await controller.createSession({
+      actor,
+      body: {},
+    });
+
+    const firstRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "第一轮提问", stream: true },
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: firstRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    const storedAfterFirst = await sessionStore.getById(
+      session.data.session_id,
+      actor.tenantId
+    );
+    expect(storedAfterFirst?.chatHistory).toEqual([
+      { role: "user", content: "第一轮提问" },
+      { role: "assistant", content: "第一轮答复" },
+    ]);
+
+    const secondRun = await controller.createMessageRun({
+      actor,
+      params: { sessionId: session.data.session_id },
+      body: { message: "第二轮提问", stream: true },
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await controller.streamRunEvents({
+      actor,
+      params: {
+        sessionId: session.data.session_id,
+        runId: secondRun.data.run_id,
+      },
+      query: { after_sequence: "0" },
+    });
+
+    const secondCallMessages = llmClient.chat.mock.calls[1][0];
+    expect(secondCallMessages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ role: "user", content: "第一轮提问" }),
+        expect.objectContaining({ role: "assistant", content: "第一轮答复" }),
+        expect.objectContaining({ role: "user", content: "第二轮提问" }),
+      ])
+    );
+  });
+
   it("emits assistant message started, delta, and completed events for streamed llm text", async () => {
     const llmClient = {
       streamChat: vi.fn(async (_messages, _tools, onChunk) => {
