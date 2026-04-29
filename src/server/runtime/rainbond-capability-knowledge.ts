@@ -222,5 +222,6 @@ export function buildMcpToolUsageKnowledgeSection(): string {
     `- allowDirectExecution=true 的低风险写操作可以直接执行，典型示例：${directExamples}。`,
     `- 其余会修改资源状态、配置、部署、安装、升级、删除或分享流程的工具，必须进入审批流，典型示例：${approvalExamples}。`,
     "- 当工具属于组件级变更时，要优先确认当前 component_id 是否可信；如果 component_source=route，则先避免把它直接当成 service_id 使用。",
+    "- 如果用户要修改已有组件的构建源配置（例如源码仓库、镜像地址、源码版本、OAuth 仓库、启动命令、架构），优先使用 rainbond_update_component_build_source；只有在构建源已经正确、且用户明确要触发构建/部署时，才使用 rainbond_build_component。",
   ].join("\n");
 }

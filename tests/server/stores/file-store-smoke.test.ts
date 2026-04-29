@@ -98,4 +98,34 @@ describe("file-backed stores", () => {
       eventStore.listByRun("run_123", "t_123", { afterSequence: 0 })
     ).rejects.toThrow(`Failed to parse JSON store ${eventFile}`);
   });
+
+  it("serializes concurrent event appends without losing records", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "copilot-file-store-"));
+    tempDirs.push(dir);
+
+    const eventStore = new FileEventStore(dir);
+
+    await Promise.all(
+      Array.from({ length: 12 }).map((_, index) =>
+        eventStore.append(
+          createEventRecord({
+            tenantId: "t_123",
+            sessionId: "cs_123",
+            runId: "run_123",
+            sequence: index + 1,
+            eventType: "chat.trace",
+            payload: { step: index + 1 },
+          })
+        )
+      )
+    );
+
+    const events = await eventStore.listByRun("run_123", "t_123", {
+      afterSequence: 0,
+    });
+    expect(events).toHaveLength(12);
+    expect(events.map((event) => event.sequence).sort((a, b) => a - b)).toEqual(
+      Array.from({ length: 12 }).map((_, index) => index + 1)
+    );
+  });
 });

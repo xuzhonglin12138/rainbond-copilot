@@ -27,6 +27,8 @@ const workflowStageSchema = z.object({
     tool: z.string().min(1).optional(),
     args: z.record(z.unknown()).optional(),
     branches: z.array(workflowBranchSchema).min(1).optional(),
+    while: z.string().min(1).optional(),
+    max_iterations: z.number().int().positive().optional(),
 }).superRefine((stage, ctx) => {
     if (stage.kind === "tool_call" && !stage.tool) {
         ctx.addIssue({
@@ -38,6 +40,12 @@ const workflowStageSchema = z.object({
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "branch stage requires at least one branch entry",
+        });
+    }
+    if (stage.kind === "loop" && (!stage.branches || stage.branches.length === 0)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "loop stage requires at least one branch entry",
         });
     }
 });
@@ -313,6 +321,9 @@ function validateTemplateReferences(value, skill, location, declaredContext, dec
             return;
         }
         if (value.startsWith("$actor.")) {
+            return;
+        }
+        if (value.startsWith("$tool.")) {
             return;
         }
         throw new Error(`Skill ${skill.id} ${location} uses unsupported placeholder ${value}`);

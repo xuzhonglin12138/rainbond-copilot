@@ -1,9 +1,10 @@
 import type { CompiledWorkflowBranch } from "./compiled-types.js";
+import {
+  readWorkflowValueRef,
+  type WorkflowValueRefContext,
+} from "./workflow-value-ref.js";
 
-export interface BranchEvalContext {
-  input: Record<string, unknown>;
-  context: Record<string, unknown>;
-}
+export interface BranchEvalContext extends WorkflowValueRefContext {}
 
 export interface BranchSelection {
   branch: CompiledWorkflowBranch;
@@ -67,6 +68,16 @@ export function evalWhenExpression(
     return false;
   }
 
+  const orParts = splitLogical(expr, "||");
+  if (orParts.length > 1) {
+    return orParts.some((part) => evalWhenExpression(part, ctx));
+  }
+
+  const andParts = splitLogical(expr, "&&");
+  if (andParts.length > 1) {
+    return andParts.every((part) => evalWhenExpression(part, ctx));
+  }
+
   if (expr.startsWith("!")) {
     const inner = expr.slice(1).trim();
     return !readValueRef(inner, ctx);
@@ -76,7 +87,9 @@ export function evalWhenExpression(
   if (eqMatch) {
     const [, lhsRef, op, rhsRaw] = eqMatch;
     const lhs = readValueRef(lhsRef.trim(), ctx);
-    const rhs = parseLiteral(rhsRaw.trim());
+    const rhs = rhsRaw.trim().startsWith("$")
+      ? readValueRef(rhsRaw.trim(), ctx)
+      : parseLiteral(rhsRaw.trim());
     const equal = compareLoose(lhs, rhs);
     return op === "==" ? equal : !equal;
   }
@@ -89,17 +102,7 @@ export function evalWhenExpression(
 }
 
 function readValueRef(ref: string, ctx: BranchEvalContext): unknown {
-  if (!ref.startsWith("$")) {
-    return undefined;
-  }
-
-  if (ref.startsWith("$input.")) {
-    return ctx.input[ref.slice("$input.".length)];
-  }
-  if (ref.startsWith("$context.")) {
-    return ctx.context[ref.slice("$context.".length)];
-  }
-  return undefined;
+  return readWorkflowValueRef(ref, ctx);
 }
 
 function parseLiteral(raw: string): unknown {
@@ -132,4 +135,39 @@ function compareLoose(a: unknown, b: unknown): boolean {
     return Number(a) === Number(b);
   }
   return String(a) === String(b);
+}
+
+function splitLogical(expression: string, operator: "&&" | "||"): string[] {
+  const parts: string[] = [];
+  let current = "";
+  let quote: "'" | '"' | null = null;
+
+  for (let index = 0; index < expression.length; index += 1) {
+    const char = expression[index];
+    const next = expression[index + 1];
+
+    if ((char === '"' || char === "'") && !quote) {
+      quote = char;
+      current += char;
+      continue;
+    }
+    if (quote && char === quote) {
+      quote = null;
+      current += char;
+      continue;
+    }
+    if (!quote && char === operator[0] && next === operator[1]) {
+      parts.push(current.trim());
+      current = "";
+      index += 1;
+      continue;
+    }
+    current += char;
+  }
+
+  if (current.trim()) {
+    parts.push(current.trim());
+  }
+
+  return parts;
 }

@@ -167,7 +167,7 @@ describe("skill structural checks (Layer 1) – global", () => {
       });
 
       it("every branch when-expression parses without throwing", () => {
-        const ctx = { input: {}, context: {} };
+        const ctx = { input: {}, context: {}, tool: {} };
         for (const stage of skill.workflow.stages) {
           for (const branch of stage.branches || []) {
             if (!branch.when) continue;

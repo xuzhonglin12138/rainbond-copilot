@@ -20,6 +20,10 @@ import {
   createSkillSummarizer,
   type WorkflowSummarizer,
 } from "./skills/skill-summarizer.js";
+import {
+  createContinuationRouter,
+  type ContinuationRouter,
+} from "./workflows/continuation-router.js";
 import { OpenAIClient } from "../llm/openai-client.js";
 import { CustomAnthropicClient } from "../llm/custom-anthropic-client.js";
 import { getLLMConfig } from "../llm/config.js";
@@ -60,11 +64,13 @@ export interface CreateCopilotApiServerOptions {
   authSubjectResolver?: AuthSubjectResolverLike;
   skillRouter?: SkillRouter;
   workflowSummarizer?: WorkflowSummarizer;
+  continuationRouter?: ContinuationRouter;
 }
 
 interface OptionalLlmIntegration {
   router?: SkillRouter;
   summarizer?: WorkflowSummarizer;
+  continuationRouter?: ContinuationRouter;
 }
 
 function buildOptionalLlmIntegration(
@@ -99,6 +105,7 @@ function buildOptionalLlmIntegration(
   return {
     router: createSkillRouter({ llmClient }),
     summarizer: createSkillSummarizer({ llmClient }),
+    continuationRouter: createContinuationRouter({ llmClient }),
   };
 }
 
@@ -191,6 +198,8 @@ export function createCopilotApiServer(
   const skillRouter = options.skillRouter || llmIntegration.router;
   const workflowSummarizer =
     options.workflowSummarizer || llmIntegration.summarizer;
+  const continuationRouter =
+    options.continuationRouter || llmIntegration.continuationRouter;
   const authSubjectResolver =
     options.authSubjectResolver ||
     new AuthSubjectResolver(
@@ -242,6 +251,7 @@ export function createCopilotApiServer(
     enableRainbondAppAssistantWorkflow: true,
     skillRouter,
     workflowSummarizer,
+    continuationRouter,
     actionAdapterFactory: async ({ actor, sessionId }) => {
       const { client, session } = await createInitializedMcpClient({
         actor,

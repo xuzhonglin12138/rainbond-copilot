@@ -108,7 +108,7 @@ describe("end-to-end skill dispatch flow (Sprint 1-5)", () => {
     });
   });
 
-  it("falls back to summary branch when LLM cannot disambiguate intent", async () => {
+  it("continues through the generic loop when LLM cannot disambiguate intent", async () => {
     const llmClient: SkillRouterClient = {
       chat: vi.fn().mockResolvedValue({
         content: null,
@@ -139,11 +139,77 @@ describe("end-to-end skill dispatch flow (Sprint 1-5)", () => {
       skillRouter,
     });
 
-    const callTool = vi.fn(async (name: string) => ({
-      isError: false,
-      structuredContent: { ok: true, _tool: name },
-      content: [],
-    }));
+    const callTool = vi.fn(async (name: string) => {
+      if (name === "rainbond_get_app_detail") {
+        return {
+          isError: false,
+          structuredContent: {
+            group_name: "demo-2048",
+            status: "closed",
+            running_service_count: 0,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_query_components") {
+        return {
+          isError: false,
+          structuredContent: {
+            items: [{ service_id: "svc-9", service_alias: "2048-game" }],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_summary") {
+        return {
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "2048-game",
+              service_source: "source_code",
+            },
+            status: {
+              status: "waiting",
+            },
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_events") {
+        return {
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                event_id: "evt-99",
+                message: "build failed while resolving package registry",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_build_logs") {
+        return {
+          isError: false,
+          structuredContent: {
+            lines: ["BUILD FAILED", "npm ERR! code EAI_AGAIN"],
+          },
+          content: [],
+        };
+      }
+      return {
+        isError: false,
+        structuredContent: { ok: true, _tool: name },
+        content: [],
+      };
+    });
 
     await executeCompiledWorkflow({
       skillId: assistantResult.selectedWorkflow!,
@@ -156,7 +222,8 @@ describe("end-to-end skill dispatch flow (Sprint 1-5)", () => {
 
     const calledTools = callTool.mock.calls.map(([name]) => name);
     expect(calledTools).toContain("rainbond_get_component_summary");
-    expect(calledTools).not.toContain("rainbond_get_component_build_logs");
+    expect(calledTools).toContain("rainbond_get_component_events");
+    expect(calledTools).toContain("rainbond_get_component_build_logs");
   });
 
   it("falls back to legacy regex routing when no LLM router is wired", async () => {

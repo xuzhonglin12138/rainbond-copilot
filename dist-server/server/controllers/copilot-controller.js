@@ -127,6 +127,25 @@ function findSuggestedWorkflowAction(continuation, message) {
     }
     return null;
 }
+function findSuggestedWorkflowActionByDecision(continuation, decision) {
+    if (!continuation ||
+        !Array.isArray(continuation.suggestedActions) ||
+        continuation.suggestedActions.length === 0 ||
+        !decision ||
+        decision.action !== "apply_suggested_action") {
+        return null;
+    }
+    const suggestions = continuation.suggestedActions;
+    if (decision.option_key) {
+        const normalizedKey = decision.option_key.toUpperCase();
+        const matched = suggestions.find((item) => (item.optionKey || "").toUpperCase() === normalizedKey);
+        if (matched) {
+            return matched;
+        }
+    }
+    return (suggestions.find((item) => item.recommended) ||
+        (suggestions.length === 1 ? suggestions[0] : null));
+}
 function requestsRollbackToPreviousSnapshot(message) {
     const normalized = (message || "").trim();
     if (!normalized || !/(回滚|rollback)/i.test(normalized)) {
@@ -846,26 +865,37 @@ export function createCopilotController(deps = {}) {
                     finishedAt: new Date().toISOString(),
                 });
                 const nextSequence = await nextRunSequence(request.actor.tenantId, run.runId);
-                await eventPublisher.publish({
-                    type: "run.error",
-                    tenantId: request.actor.tenantId,
-                    sessionId: request.params.sessionId,
-                    runId: run.runId,
-                    sequence: nextSequence,
-                    data: {
-                        message: error instanceof Error ? error.message : "Copilot run failed",
-                    },
-                });
-                await eventPublisher.publish({
-                    type: "run.status",
-                    tenantId: request.actor.tenantId,
-                    sessionId: request.params.sessionId,
-                    runId: run.runId,
-                    sequence: nextSequence + 1,
-                    data: {
-                        status: "error",
-                    },
-                });
+                try {
+                    await eventPublisher.publish({
+                        type: "run.error",
+                        tenantId: request.actor.tenantId,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        sequence: nextSequence,
+                        data: {
+                            message: error instanceof Error ? error.message : "Copilot run failed",
+                        },
+                    });
+                    await eventPublisher.publish({
+                        type: "run.status",
+                        tenantId: request.actor.tenantId,
+                        sessionId: request.params.sessionId,
+                        runId: run.runId,
+                        sequence: nextSequence + 1,
+                        data: {
+                            status: "error",
+                        },
+                    });
+                }
+                catch (publishError) {
+                    console.error("[copilot-controller] failed to persist background failure events", {
+                        runId: run.runId,
+                        originalError: error instanceof Error ? error.message : String(error),
+                        publishError: publishError instanceof Error
+                            ? publishError.message
+                            : String(publishError),
+                    });
+                }
             };
             const executeRunInBackground = async () => {
                 const session = await sessionService.getSession(request.params.sessionId, {
@@ -905,22 +935,35 @@ export function createCopilotController(deps = {}) {
                 }
                 const pendingSnapshotVersion = parseSnapshotCreateVersionInput(request.body.message);
                 const suggestedWorkflowAction = findSuggestedWorkflowAction(session.pendingWorkflowContinuation, request.body.message);
+                const continuationDecision = !suggestedWorkflowAction &&
+                    !session.pendingWorkflowAction &&
+                    session.pendingWorkflowContinuation &&
+                    deps.continuationRouter
+                    ? await deps.continuationRouter.route({
+                        message: request.body.message,
+                        continuation: session.pendingWorkflowContinuation,
+                        sessionContext: session.context,
+                    })
+                    : null;
+                const suggestedActionFromDecision = findSuggestedWorkflowActionByDecision(session.pendingWorkflowContinuation, continuationDecision);
+                const selectedWorkflowAction = suggestedWorkflowAction || suggestedActionFromDecision;
                 logWorkflowDebug("workflow.suggested_action.match", {
                     message: request.body.message,
                     hasContinuation: !!session.pendingWorkflowContinuation,
                     suggestedActionCount: session.pendingWorkflowContinuation?.suggestedActions?.length || 0,
-                    matchedAction: suggestedWorkflowAction
+                    matchedAction: selectedWorkflowAction
                         ? {
-                            optionKey: suggestedWorkflowAction.optionKey,
-                            label: suggestedWorkflowAction.label,
-                            toolName: suggestedWorkflowAction.pendingAction.toolName,
-                            requiresApproval: suggestedWorkflowAction.pendingAction.requiresApproval,
+                            optionKey: selectedWorkflowAction.optionKey,
+                            label: selectedWorkflowAction.label,
+                            toolName: selectedWorkflowAction.pendingAction.toolName,
+                            requiresApproval: selectedWorkflowAction.pendingAction.requiresApproval,
                         }
                         : null,
+                    continuationDecision,
                 });
                 if (!session.pendingWorkflowAction &&
-                    suggestedWorkflowAction) {
-                    const selectedPendingAction = suggestedWorkflowAction.pendingAction;
+                    selectedWorkflowAction) {
+                    const selectedPendingAction = selectedWorkflowAction.pendingAction;
                     await sessionStore.update({
                         ...session,
                         pendingWorkflowAction: selectedPendingAction,
@@ -934,7 +977,7 @@ export function createCopilotController(deps = {}) {
                             pendingAction: selectedPendingAction,
                             continuation: session.pendingLlmContinuation,
                             description: selectedPendingAction.description ||
-                                suggestedWorkflowAction.description,
+                                selectedWorkflowAction.description,
                             risk: selectedPendingAction.risk || "medium",
                         });
                         return;
@@ -1253,7 +1296,10 @@ export function createCopilotController(deps = {}) {
                     actor: request.actor,
                     sessionId: request.params.sessionId,
                 });
-                const llmMessage = isWorkflowContinuationReferencePrompt(request.body.message) &&
+                const shouldReuseContinuationContext = isWorkflowContinuationReferencePrompt(request.body.message) ||
+                    continuationDecision?.action === "reuse_continuation_context" ||
+                    continuationDecision?.action === "apply_suggested_action";
+                const llmMessage = shouldReuseContinuationContext &&
                     session.pendingWorkflowContinuation
                     ? buildWorkflowContinuationPrompt(session.pendingWorkflowContinuation, request.body.message)
                     : request.body.message;
@@ -1314,7 +1360,17 @@ export function createCopilotController(deps = {}) {
                 }
             };
             void executeRunInBackground().catch(async (error) => {
-                await failRunInBackground(error);
+                try {
+                    await failRunInBackground(error);
+                }
+                catch (backgroundFailureError) {
+                    console.error("[copilot-controller] background run failure handler crashed", {
+                        runId: run.runId,
+                        error: backgroundFailureError instanceof Error
+                            ? backgroundFailureError.message
+                            : String(backgroundFailureError),
+                    });
+                }
             });
             await new Promise((resolve) => {
                 setTimeout(resolve, 0);

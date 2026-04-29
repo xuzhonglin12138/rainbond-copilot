@@ -20,6 +20,7 @@ import {
 import { logWorkflowDebug } from "./workflow-debug.js";
 import type { SkillRouter } from "../skills/skill-router.js";
 import type { WorkflowSummarizer } from "../skills/skill-summarizer.js";
+import { createServerId } from "../utils/id.js";
 
 interface WorkflowExecutorDeps {
   eventPublisher: PersistedEventPublisher;
@@ -833,23 +834,29 @@ export class WorkflowExecutor {
       structuredResultPatch: subflowExecution.structuredResultPatch,
     });
     const hasSubflowTrace = subflowExecution.toolCalls.length > 0;
-    const messageSequence = hasSubflowTrace
+    const messageSequence = subflowExecution.streamedSummary
+      ? 0
+      : hasSubflowTrace
+        ? (subflowExecution.lastSequence || 5) + 1
+        : 4;
+    const completedSequence = subflowExecution.streamedSummary
       ? (subflowExecution.lastSequence || 5) + 1
-      : 4;
-    const completedSequence = messageSequence + 1;
+      : messageSequence + 1;
     const doneSequence = completedSequence + 1;
 
-    await this.deps.eventPublisher.publish({
-      type: "chat.message",
-      tenantId: params.actor.tenantId,
-      sessionId: params.sessionId,
-      runId: params.runId,
-      sequence: messageSequence,
-      data: {
-        role: "assistant",
-        content: subflowExecution.summary || result.summary,
-      },
-    });
+    if (!subflowExecution.streamedSummary) {
+      await this.deps.eventPublisher.publish({
+        type: "chat.message",
+        tenantId: params.actor.tenantId,
+        sessionId: params.sessionId,
+        runId: params.runId,
+        sequence: messageSequence,
+        data: {
+          role: "assistant",
+          content: subflowExecution.summary || result.summary,
+        },
+      });
+    }
 
     await this.deps.eventPublisher.publish({
       type: "workflow.completed",
@@ -955,6 +962,7 @@ export class WorkflowExecutor {
     lastSequence?: number;
     subflowData?: Record<string, unknown>;
     structuredResultPatch?: Record<string, unknown>;
+    streamedSummary?: boolean;
     proposedToolAction?: {
       toolName: string;
       requiresApproval: boolean;
@@ -1001,6 +1009,36 @@ export class WorkflowExecutor {
               ...(trace.output ? { output: trace.output } : {}),
             }
           );
+        },
+        publishSummaryStreamEvent: async (event) => {
+          const eventType =
+            event.type === "started"
+              ? "chat.message.started"
+              : event.type === "delta"
+                ? "chat.message.delta"
+                : "chat.message.completed";
+          await this.deps.eventPublisher.publish({
+            type: eventType,
+            tenantId: actor.tenantId,
+            sessionId,
+            runId,
+            sequence: event.sequence,
+            data:
+              event.type === "started"
+                ? {
+                    message_id: event.message_id,
+                    role: "assistant",
+                  }
+                : event.type === "delta"
+                  ? {
+                      message_id: event.message_id,
+                      delta: event.delta || "",
+                    }
+                  : {
+                      message_id: event.message_id,
+                      content: event.content || "",
+                    },
+          });
         },
       });
     }

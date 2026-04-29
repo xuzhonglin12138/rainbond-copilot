@@ -1,3 +1,4 @@
+import { readWorkflowValueRef, } from "./workflow-value-ref.js";
 /**
  * Select a single branch from a list. The first branch whose `when` expression
  * evaluates truthy wins. If no branches declare `when`, the first one is taken
@@ -43,6 +44,14 @@ export function evalWhenExpression(expression, ctx) {
     if (!expr) {
         return false;
     }
+    const orParts = splitLogical(expr, "||");
+    if (orParts.length > 1) {
+        return orParts.some((part) => evalWhenExpression(part, ctx));
+    }
+    const andParts = splitLogical(expr, "&&");
+    if (andParts.length > 1) {
+        return andParts.every((part) => evalWhenExpression(part, ctx));
+    }
     if (expr.startsWith("!")) {
         const inner = expr.slice(1).trim();
         return !readValueRef(inner, ctx);
@@ -51,7 +60,9 @@ export function evalWhenExpression(expression, ctx) {
     if (eqMatch) {
         const [, lhsRef, op, rhsRaw] = eqMatch;
         const lhs = readValueRef(lhsRef.trim(), ctx);
-        const rhs = parseLiteral(rhsRaw.trim());
+        const rhs = rhsRaw.trim().startsWith("$")
+            ? readValueRef(rhsRaw.trim(), ctx)
+            : parseLiteral(rhsRaw.trim());
         const equal = compareLoose(lhs, rhs);
         return op === "==" ? equal : !equal;
     }
@@ -61,16 +72,7 @@ export function evalWhenExpression(expression, ctx) {
     return false;
 }
 function readValueRef(ref, ctx) {
-    if (!ref.startsWith("$")) {
-        return undefined;
-    }
-    if (ref.startsWith("$input.")) {
-        return ctx.input[ref.slice("$input.".length)];
-    }
-    if (ref.startsWith("$context.")) {
-        return ctx.context[ref.slice("$context.".length)];
-    }
-    return undefined;
+    return readWorkflowValueRef(ref, ctx);
 }
 function parseLiteral(raw) {
     if (raw === "true")
@@ -99,4 +101,34 @@ function compareLoose(a, b) {
         return Number(a) === Number(b);
     }
     return String(a) === String(b);
+}
+function splitLogical(expression, operator) {
+    const parts = [];
+    let current = "";
+    let quote = null;
+    for (let index = 0; index < expression.length; index += 1) {
+        const char = expression[index];
+        const next = expression[index + 1];
+        if ((char === '"' || char === "'") && !quote) {
+            quote = char;
+            current += char;
+            continue;
+        }
+        if (quote && char === quote) {
+            quote = null;
+            current += char;
+            continue;
+        }
+        if (!quote && char === operator[0] && next === operator[1]) {
+            parts.push(current.trim());
+            current = "";
+            index += 1;
+            continue;
+        }
+        current += char;
+    }
+    if (current.trim()) {
+        parts.push(current.trim());
+    }
+    return parts;
 }

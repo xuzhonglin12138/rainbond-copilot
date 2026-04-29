@@ -12,7 +12,7 @@ export function createSkillSummarizer(opts) {
     const narrativeBudget = opts.maxNarrativeChars ?? DEFAULT_NARRATIVE_BUDGET;
     const toolOutputBudget = opts.maxToolOutputCharsPerCall ?? DEFAULT_TOOL_OUTPUT_BUDGET;
     return {
-        async summarize(input) {
+        async summarize(input, onChunk) {
             const trimmedNarrative = truncate(input.skillNarrative, narrativeBudget);
             const trimmedOutputs = input.toolOutputs.map((entry) => ({
                 name: entry.name,
@@ -37,7 +37,9 @@ export function createSkillSummarizer(opts) {
                     }),
                 },
             ];
-            const response = await opts.llmClient.chat(messages);
+            const response = onChunk && typeof opts.llmClient.streamChat === "function"
+                ? await opts.llmClient.streamChat(messages, undefined, onChunk)
+                : await opts.llmClient.chat(messages);
             const text = (response.content || "").trim();
             return text || "(LLM 未返回任何总结。请检查模型与 prompt 配置。)";
         },

@@ -12,6 +12,7 @@ const ctx = (
 ): BranchEvalContext => ({
   input: overrides.input || {},
   context: overrides.context || {},
+  tool: overrides.tool || {},
 });
 
 describe("evalWhenExpression", () => {
@@ -61,6 +62,54 @@ describe("evalWhenExpression", () => {
   it("reads from $context too", () => {
     expect(
       evalWhenExpression('$context.team == "team-a"', ctx({ context: { team: "team-a" } }))
+    ).toBe(true);
+  });
+
+  it("reads nested values from $tool", () => {
+    expect(
+      evalWhenExpression(
+        '$tool.rainbond_get_component_summary.status.status == "waiting"',
+        ctx({
+          tool: {
+            rainbond_get_component_summary: {
+              status: { status: "waiting" },
+            },
+          },
+        })
+      )
+    ).toBe(true);
+    expect(
+      evalWhenExpression(
+        "$tool.rainbond_get_component_events.items[0].event_id",
+        ctx({
+          tool: {
+            rainbond_get_component_events: {
+              items: [{ event_id: "evt-1" }],
+            },
+          },
+        })
+      )
+    ).toBe(true);
+  });
+
+  it("supports && and || composition", () => {
+    expect(
+      evalWhenExpression(
+        '$tool.a.ready == true && $context.team == "team-a"',
+        ctx({
+          context: { team: "team-a" },
+          tool: { a: { ready: true } },
+        })
+      )
+    ).toBe(true);
+    expect(
+      evalWhenExpression(
+        '$tool.a.ready == true || $input.mode == "logs"',
+        ctx({
+          input: { mode: "logs" },
+          tool: { a: { ready: false } },
+        })
+      )
     ).toBe(true);
   });
 

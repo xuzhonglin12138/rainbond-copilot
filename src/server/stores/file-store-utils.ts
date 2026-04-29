@@ -12,6 +12,9 @@ export function resolveStoreFile(dataDir: string, name: string): string {
 export async function readJsonArray<T>(filePath: string): Promise<T[]> {
   try {
     const content = await readFile(filePath, "utf-8");
+    if (!content.trim()) {
+      return [];
+    }
     const parsed = JSON.parse(content);
     return Array.isArray(parsed) ? (parsed as T[]) : [];
   } catch (error: any) {
@@ -32,7 +35,9 @@ export async function writeJsonArray<T>(
   records: T[]
 ): Promise<void> {
   await ensureParentDir(filePath);
-  const tempFilePath = `${filePath}.tmp`;
+  const tempFilePath = `${filePath}.${process.pid}.${Date.now()}.${Math.random()
+    .toString(36)
+    .slice(2, 10)}.tmp`;
   const payload = JSON.stringify(records, null, 2);
   await writeFile(tempFilePath, payload, "utf-8");
   await rename(tempFilePath, filePath);

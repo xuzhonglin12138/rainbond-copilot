@@ -991,6 +991,58 @@ stages:
           app_id: $context.app_id
           service_id: $input.service_id
           operation: summary
+  - id: auto-collect-evidence
+    kind: loop
+    while: '$input.inspection_mode == "summary" || !$input.inspection_mode'
+    max_iterations: 4
+    branches:
+      - id: inspect-component-events-for-source-build
+        when: '$tool.rainbond_get_component_summary.service.service_source == "source_code" && $tool.rainbond_get_component_summary.status.status == "waiting" && !$tool.rainbond_get_component_events'
+        tool: rainbond_get_component_events
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          page: 1
+          page_size: 20
+      - id: inspect-component-build-logs-from-events
+        when: '$tool.rainbond_get_component_events.items[0].event_id && !$tool.rainbond_get_component_build_logs'
+        tool: rainbond_get_component_build_logs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          event_id: $tool.rainbond_get_component_events.items[0].event_id
+      - id: inspect-component-pods-for-runtime-blocker
+        when: '$tool.rainbond_get_component_summary.status.status != "running" && !$tool.rainbond_get_component_build_logs && !$tool.rainbond_get_component_pods'
+        tool: rainbond_get_component_pods
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+      - id: inspect-pod-detail-from-loop
+        when: '$tool.rainbond_get_component_pods.items[0].pod_name && !$tool.rainbond_get_pod_detail'
+        tool: rainbond_get_pod_detail
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          pod_name: $tool.rainbond_get_component_pods.items[0].pod_name
+      - id: inspect-container-logs-from-loop
+        when: '$tool.rainbond_get_pod_detail.containers[0].name && !$tool.rainbond_get_component_logs'
+        tool: rainbond_get_component_logs
+        args:
+          team_name: $context.team_name
+          region_name: $context.region_name
+          app_id: $context.app_id
+          service_id: $input.service_id
+          action: container
+          pod_name: $tool.rainbond_get_pod_detail.pod_name
+          container_name: $tool.rainbond_get_pod_detail.containers[0].name
   - id: classify-and-repair
     kind: branch
     branches:

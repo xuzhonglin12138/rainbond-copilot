@@ -3,20 +3,28 @@ import type { RequestActor } from "../../shared/types.js";
 import type { McpToolResult } from "../integrations/rainbond-mcp/types.js";
 import type { ExecutionScopeCandidate } from "./types.js";
 import { logWorkflowDebug } from "./workflow-debug.js";
-import { selectBranch, type BranchEvalContext } from "./branch-selector.js";
+import {
+  evalWhenExpression,
+  selectBranch,
+  type BranchEvalContext,
+} from "./branch-selector.js";
 import type { WorkflowSummarizer } from "../skills/skill-summarizer.js";
+import { readWorkflowValueRef } from "./workflow-value-ref.js";
+import { createServerId } from "../utils/id.js";
 
 type SupportedStageKind =
   | "resolve_context"
   | "tool_call"
   | "summarize"
-  | "branch";
+  | "branch"
+  | "loop";
 
 const SUPPORTED_STAGE_KINDS = new Set<SupportedStageKind>([
   "resolve_context",
   "tool_call",
   "summarize",
   "branch",
+  "loop",
 ]);
 
 interface WorkflowToolClient {
@@ -41,6 +49,13 @@ export interface ExecuteCompiledWorkflowParams {
     input: Record<string, unknown>;
     output?: unknown;
   }) => Promise<void>;
+  publishSummaryStreamEvent?: (params: {
+    sequence: number;
+    type: "started" | "delta" | "completed";
+    message_id: string;
+    content?: string;
+    delta?: string;
+  }) => Promise<void>;
 }
 
 export interface ExecuteCompiledWorkflowResult {
@@ -49,6 +64,7 @@ export interface ExecuteCompiledWorkflowResult {
   lastSequence: number;
   subflowData: Record<string, unknown>;
   structuredResultPatch: Record<string, unknown>;
+  streamedSummary?: boolean;
 }
 
 function getCompiledSkill(skillId: string) {
@@ -91,19 +107,16 @@ export async function executeCompiledWorkflow(
     params.input || {},
     params.candidateScope
   );
-  const branchContext: BranchEvalContext = {
-    input,
-    context: {
-      team_name:
-        params.candidateScope.teamName ||
-        params.actor.tenantName ||
-        params.actor.tenantId,
-      region_name:
-        params.candidateScope.regionName || params.actor.regionName || "",
-      app_id: String(parseAppId(params.candidateScope.appId)),
-      component_id: params.candidateScope.componentId || "",
-      enterprise_id: params.actor.enterpriseId || "",
-    },
+  const contextPayload = {
+    team_name:
+      params.candidateScope.teamName ||
+      params.actor.tenantName ||
+      params.actor.tenantId,
+    region_name:
+      params.candidateScope.regionName || params.actor.regionName || "",
+    app_id: String(parseAppId(params.candidateScope.appId)),
+    component_id: params.candidateScope.componentId || "",
+    enterprise_id: params.actor.enterpriseId || "",
   };
 
   for (const stage of skill.workflow.stages) {
@@ -116,7 +129,8 @@ export async function executeCompiledWorkflow(
         stage.args || {},
         params.actor,
         params.candidateScope,
-        input
+        input,
+        toolOutputs
       ) as Record<string, unknown>;
 
       sequence = await invokeStageTool({
@@ -133,6 +147,7 @@ export async function executeCompiledWorkflow(
     }
 
     if (stage.kind === "branch" && stage.branches && stage.branches.length > 0) {
+      const branchContext = buildBranchContext(input, contextPayload, toolOutputs);
       const selection = selectBranch(stage.branches, branchContext);
       if (!selection) {
         logWorkflowDebug("compiled.execute.branch.skip", {
@@ -147,7 +162,8 @@ export async function executeCompiledWorkflow(
         selection.branch.args || {},
         params.actor,
         params.candidateScope,
-        input
+        input,
+        toolOutputs
       ) as Record<string, unknown>;
 
       logWorkflowDebug("compiled.execute.branch.selected", {
@@ -169,6 +185,69 @@ export async function executeCompiledWorkflow(
         toolCalls,
         toolOutputs,
       });
+    }
+
+    if (stage.kind === "loop" && stage.branches && stage.branches.length > 0) {
+      const maxIterations = stage.max_iterations || stage.branches.length;
+      let iterations = 0;
+
+      while (iterations < maxIterations) {
+        const branchContext = buildBranchContext(
+          input,
+          contextPayload,
+          toolOutputs
+        );
+        if (stage.while && !evaluateLoopCondition(stage.while, branchContext)) {
+          logWorkflowDebug("compiled.execute.loop.stop", {
+            skillId: params.skillId,
+            stageId: stage.id,
+            reason: "while_false",
+            iterations,
+          });
+          break;
+        }
+
+        const selection = selectBranch(stage.branches, branchContext);
+        if (!selection) {
+          logWorkflowDebug("compiled.execute.loop.stop", {
+            skillId: params.skillId,
+            stageId: stage.id,
+            reason: "no_branch_match",
+            iterations,
+          });
+          break;
+        }
+
+        const resolvedArgs = resolveTemplateArguments(
+          selection.branch.args || {},
+          params.actor,
+          params.candidateScope,
+          input,
+          toolOutputs
+        ) as Record<string, unknown>;
+
+        logWorkflowDebug("compiled.execute.loop.selected", {
+          skillId: params.skillId,
+          stageId: stage.id,
+          branchId: selection.branch.id,
+          matched: selection.matched,
+          toolName: selection.branch.tool,
+          iteration: iterations + 1,
+        });
+
+        sequence = await invokeStageTool({
+          toolName: selection.branch.tool,
+          args: resolvedArgs,
+          stageId: `${stage.id}/${selection.branch.id}`,
+          skillId: params.skillId,
+          client: params.client,
+          publishToolTrace: params.publishToolTrace,
+          sequence,
+          toolCalls,
+          toolOutputs,
+        });
+        iterations += 1;
+      }
     }
   }
 
@@ -224,6 +303,7 @@ export async function executeCompiledWorkflow(
   }
 
   let summary = buildCompiledSummary(skill.id, toolOutputs, params.candidateScope);
+  let streamedSummary = false;
   const subflowData = buildCompiledSubflowData(
     skill.id,
     toolOutputs,
@@ -235,7 +315,7 @@ export async function executeCompiledWorkflow(
   );
   if (params.summarizer && hasSummarizeStage) {
     try {
-      const llmSummary = await params.summarizer.summarize({
+      const summarizerInput = {
         skillId: skill.id,
         skillName: skill.name,
         skillNarrative: skill.narrativeBody,
@@ -245,7 +325,44 @@ export async function executeCompiledWorkflow(
           name,
           output,
         })),
-      });
+      };
+      let llmSummary = "";
+      if (params.publishSummaryStreamEvent) {
+        const messageId = createServerId("msg");
+        let streamSequence = sequence;
+        await params.publishSummaryStreamEvent({
+          sequence: streamSequence,
+          type: "started",
+          message_id: messageId,
+        });
+        streamSequence += 1;
+        llmSummary = await params.summarizer.summarize(
+          summarizerInput,
+          async (chunk) => {
+            if (!chunk) {
+              return;
+            }
+            await params.publishSummaryStreamEvent?.({
+              sequence: streamSequence,
+              type: "delta",
+              message_id: messageId,
+              delta: chunk,
+            });
+            streamSequence += 1;
+          }
+        );
+        await params.publishSummaryStreamEvent({
+          sequence: streamSequence,
+          type: "completed",
+          message_id: messageId,
+          content: llmSummary,
+        });
+        streamSequence += 1;
+        sequence = streamSequence;
+        streamedSummary = true;
+      } else {
+        llmSummary = await params.summarizer.summarize(summarizerInput);
+      }
       if (llmSummary) {
         logWorkflowDebug("compiled.execute.summarize.llm", {
           skillId: params.skillId,
@@ -277,6 +394,7 @@ export async function executeCompiledWorkflow(
       compiled_skill: true,
       compiled_workflow: skill.id,
     },
+    streamedSummary,
   };
 }
 
@@ -291,11 +409,11 @@ const UNRESOLVED_PLACEHOLDER = Symbol("unresolved-placeholder");
  * branch when-expressions and template resolution.
  *
  * Today: when the LLM router cannot extract `service_id` from a Chinese
- * component name like "2048-game组件", fall back to the component_id the
- * UI already provided in session.context (the page the user is currently
- * looking at). `service_id` and `component_id` are synonyms in MCP — the
- * former is the historical name kept in tool signatures, the latter is the
- * canonical UI identifier.
+ * component name like "2048-game组件", fall back to the component identifier
+ * the UI already provided in session context. That identifier may still be a
+ * route alias rather than a real MCP `service_id`, so later template
+ * resolution must canonicalize it against `rainbond_query_components` output
+ * before invoking component-scoped MCP tools.
  */
 function enrichInputWithContextFallbacks(
   input: Record<string, unknown>,
@@ -316,16 +434,29 @@ function resolveTemplateArguments(
   value: unknown,
   actor: RequestActor,
   candidateScope: ExecutionScopeCandidate,
-  input: Record<string, unknown>
+  input: Record<string, unknown>,
+  toolOutputs: Map<string, unknown>
 ): unknown {
   if (typeof value === "string") {
-    const resolved = resolveTemplateString(value, actor, candidateScope, input);
+    const resolved = resolveTemplateString(
+      value,
+      actor,
+      candidateScope,
+      input,
+      toolOutputs
+    );
     return resolved === UNRESOLVED_PLACEHOLDER ? undefined : resolved;
   }
   if (Array.isArray(value)) {
     const out: unknown[] = [];
     for (const item of value) {
-      const resolved = resolveTemplateArguments(item, actor, candidateScope, input);
+      const resolved = resolveTemplateArguments(
+        item,
+        actor,
+        candidateScope,
+        input,
+        toolOutputs
+      );
       if (resolved !== undefined) {
         out.push(resolved);
       }
@@ -335,7 +466,13 @@ function resolveTemplateArguments(
   if (value && typeof value === "object") {
     const out: Record<string, unknown> = {};
     for (const [key, entryValue] of Object.entries(value)) {
-      const resolved = resolveTemplateArguments(entryValue, actor, candidateScope, input);
+      const resolved = resolveTemplateArguments(
+        entryValue,
+        actor,
+        candidateScope,
+        input,
+        toolOutputs
+      );
       if (resolved !== undefined) {
         out[key] = resolved;
       }
@@ -349,7 +486,8 @@ function resolveTemplateString(
   value: string,
   actor: RequestActor,
   candidateScope: ExecutionScopeCandidate,
-  input: Record<string, unknown>
+  input: Record<string, unknown>,
+  toolOutputs: Map<string, unknown>
 ): unknown {
   if (!value.startsWith("$")) {
     return value;
@@ -371,6 +509,24 @@ function resolveTemplateString(
   if (value.startsWith("$input.")) {
     const inputKey = value.slice("$input.".length);
     const supplied = input[inputKey];
+    if (supplied === undefined || supplied === null || supplied === "") {
+      return UNRESOLVED_PLACEHOLDER;
+    }
+    if (inputKey === "service_id" && typeof supplied === "string") {
+      return resolveComponentScopedServiceId(toolOutputs, supplied);
+    }
+    if (inputKey === "dep_service_id" && typeof supplied === "string") {
+      return resolveComponentScopedServiceId(toolOutputs, supplied);
+    }
+    return supplied;
+  }
+
+  if (value.startsWith("$tool.")) {
+    const supplied = readWorkflowValueRef(value, {
+      input,
+      context: {},
+      tool: Object.fromEntries(toolOutputs.entries()),
+    });
     if (supplied === undefined || supplied === null || supplied === "") {
       return UNRESOLVED_PLACEHOLDER;
     }
@@ -592,4 +748,65 @@ function readStructuredString(
     }
   }
   return "";
+}
+
+function resolveComponentScopedServiceId(
+  toolOutputs: Map<string, unknown>,
+  candidate: string
+): string {
+  const normalizedCandidate = (candidate || "").trim();
+  if (!normalizedCandidate) {
+    return candidate;
+  }
+
+  const componentPayload = asRecord(toolOutputs.get("rainbond_query_components"));
+  const items = Array.isArray(componentPayload?.items)
+    ? (componentPayload.items as Array<Record<string, unknown>>)
+    : [];
+
+  if (items.length === 0) {
+    return candidate;
+  }
+
+  const matched =
+    items.find(
+      (item) => readStructuredString(item, "service_id") === normalizedCandidate
+    ) ||
+    items.find(
+      (item) =>
+        readStructuredString(
+          item,
+          "service_alias",
+          "service_cname",
+          "component_name",
+          "service_key"
+        ) === normalizedCandidate
+    );
+
+  if (matched) {
+    return readStructuredString(matched, "service_id") || candidate;
+  }
+
+  return items.length === 1
+    ? readStructuredString(items[0], "service_id") || candidate
+    : candidate;
+}
+
+function buildBranchContext(
+  input: Record<string, unknown>,
+  context: Record<string, unknown>,
+  toolOutputs: Map<string, unknown>
+): BranchEvalContext {
+  return {
+    input,
+    context,
+    tool: Object.fromEntries(toolOutputs.entries()),
+  };
+}
+
+function evaluateLoopCondition(
+  expression: string,
+  ctx: BranchEvalContext
+): boolean {
+  return evalWhenExpression(expression, ctx);
 }

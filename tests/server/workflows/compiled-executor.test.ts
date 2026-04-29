@@ -154,12 +154,78 @@ describe("compiled executor", () => {
     );
   });
 
-  it("falls back to the default branch (summary) when inspection_mode is unset", async () => {
-    const callTool = vi.fn(async (name: string) => ({
-      isError: false,
-      structuredContent: { ok: true, _tool: name },
-      content: [],
-    }));
+  it("continues through the generic loop when inspection_mode is unset", async () => {
+    const callTool = vi.fn(async (name: string) => {
+      if (name === "rainbond_get_app_detail") {
+        return {
+          isError: false,
+          structuredContent: {
+            group_name: "demo-2048",
+            status: "closed",
+            running_service_count: 0,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_query_components") {
+        return {
+          isError: false,
+          structuredContent: {
+            items: [{ service_id: "svc-9", service_alias: "2048-game" }],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_summary") {
+        return {
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "2048-game",
+              service_source: "source_code",
+            },
+            status: {
+              status: "waiting",
+            },
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_events") {
+        return {
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                event_id: "evt-42",
+                message: "build failed while fetching npm package",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_build_logs") {
+        return {
+          isError: false,
+          structuredContent: {
+            lines: ["BUILD FAILED", "npm ERR! exited with code 1"],
+          },
+          content: [],
+        };
+      }
+      return {
+        isError: false,
+        structuredContent: { ok: true, _tool: name },
+        content: [],
+      };
+    });
 
     await executeCompiledWorkflow({
       skillId: "rainbond-fullstack-troubleshooter",
@@ -172,8 +238,8 @@ describe("compiled executor", () => {
 
     const calledTools = callTool.mock.calls.map(([name]) => name);
     expect(calledTools).toContain("rainbond_get_component_summary");
-    expect(calledTools).not.toContain("rainbond_get_component_build_logs");
-    expect(calledTools).not.toContain("rainbond_get_component_logs");
+    expect(calledTools).toContain("rainbond_get_component_events");
+    expect(calledTools).toContain("rainbond_get_component_build_logs");
   });
 
   it("omits $input.<key> args entirely when the placeholder has no supplied value", async () => {
@@ -303,6 +369,163 @@ describe("compiled executor", () => {
       service_id: "svc-9",
       action: "service",
       lines: 200,
+    });
+  });
+
+  it("canonicalizes a routed component alias to the real service_id before component-scoped MCP calls", async () => {
+    const callTool = vi.fn(async (name: string) => {
+      if (name === "rainbond_get_app_detail") {
+        return {
+          isError: false,
+          structuredContent: {
+            group_name: "demo-2048",
+            status: "closed",
+            running_service_count: 0,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_query_components") {
+        return {
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                service_id: "8fe8f61d266de87c82d4507a0110c0cc",
+                service_alias: "gr10c0cc",
+                service_cname: "2048-game",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_summary") {
+        return {
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "2048-game",
+              service_source: "source_code",
+            },
+            status: {
+              status: "waiting",
+            },
+          },
+          content: [],
+        };
+      }
+      return {
+        isError: false,
+        structuredContent: { ok: true, _tool: name },
+        content: [],
+      };
+    });
+
+    await executeCompiledWorkflow({
+      skillId: "rainbond-fullstack-troubleshooter",
+      actor: baseActor,
+      candidateScope: baseScope,
+      input: {
+        service_id: "gr10c0cc",
+        inspection_mode: "summary",
+      },
+      client: { callTool },
+      publishToolTrace: vi.fn(async () => {}),
+    });
+
+    const summaryCall = callTool.mock.calls.find(
+      ([name]) => name === "rainbond_get_component_summary"
+    );
+    expect(summaryCall?.[1]).toMatchObject({
+      service_id: "8fe8f61d266de87c82d4507a0110c0cc",
+    });
+  });
+
+  it("preserves the original alias-like service_id in skill input while canonicalizing MCP args", async () => {
+    const callTool = vi.fn(async (name: string) => {
+      if (name === "rainbond_get_app_detail") {
+        return {
+          isError: false,
+          structuredContent: {
+            group_name: "demo-2048",
+            status: "closed",
+            running_service_count: 0,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_query_components") {
+        return {
+          isError: false,
+          structuredContent: {
+            items: [
+              {
+                service_id: "8fe8f61d266de87c82d4507a0110c0cc",
+                service_alias: "gr10c0cc",
+                service_cname: "2048-game",
+              },
+            ],
+            total: 1,
+            page: 1,
+            page_size: 20,
+          },
+          content: [],
+        };
+      }
+      if (name === "rainbond_get_component_summary") {
+        return {
+          isError: false,
+          structuredContent: {
+            service: {
+              component_name: "2048-game",
+              service_source: "source_code",
+            },
+            status: {
+              status: "waiting",
+            },
+          },
+          content: [],
+        };
+      }
+      return {
+        isError: false,
+        structuredContent: {},
+        content: [],
+      };
+    });
+
+    const summarizer = {
+      summarize: vi.fn().mockResolvedValue("ok"),
+    };
+
+    await executeCompiledWorkflow({
+      skillId: "rainbond-fullstack-troubleshooter",
+      actor: baseActor,
+      candidateScope: { ...baseScope, componentId: "gr10c0cc" },
+      input: {
+        service_id: "gr10c0cc",
+        inspection_mode: "summary",
+      },
+      summarizer,
+      client: { callTool },
+      publishToolTrace: vi.fn(async () => {}),
+    });
+
+    const summarizerInput = summarizer.summarize.mock.calls[0][0].skillInput;
+    expect(summarizerInput).toMatchObject({
+      service_id: "gr10c0cc",
+      inspection_mode: "summary",
+    });
+
+    const summaryCall = callTool.mock.calls.find(
+      ([name]) => name === "rainbond_get_component_summary"
+    );
+    expect(summaryCall?.[1]).toMatchObject({
+      service_id: "8fe8f61d266de87c82d4507a0110c0cc",
     });
   });
 });

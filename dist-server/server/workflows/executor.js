@@ -586,22 +586,28 @@ export class WorkflowExecutor {
             structuredResultPatch: subflowExecution.structuredResultPatch,
         });
         const hasSubflowTrace = subflowExecution.toolCalls.length > 0;
-        const messageSequence = hasSubflowTrace
+        const messageSequence = subflowExecution.streamedSummary
+            ? 0
+            : hasSubflowTrace
+                ? (subflowExecution.lastSequence || 5) + 1
+                : 4;
+        const completedSequence = subflowExecution.streamedSummary
             ? (subflowExecution.lastSequence || 5) + 1
-            : 4;
-        const completedSequence = messageSequence + 1;
+            : messageSequence + 1;
         const doneSequence = completedSequence + 1;
-        await this.deps.eventPublisher.publish({
-            type: "chat.message",
-            tenantId: params.actor.tenantId,
-            sessionId: params.sessionId,
-            runId: params.runId,
-            sequence: messageSequence,
-            data: {
-                role: "assistant",
-                content: subflowExecution.summary || result.summary,
-            },
-        });
+        if (!subflowExecution.streamedSummary) {
+            await this.deps.eventPublisher.publish({
+                type: "chat.message",
+                tenantId: params.actor.tenantId,
+                sessionId: params.sessionId,
+                runId: params.runId,
+                sequence: messageSequence,
+                data: {
+                    role: "assistant",
+                    content: subflowExecution.summary || result.summary,
+                },
+            });
+        }
         await this.deps.eventPublisher.publish({
             type: "workflow.completed",
             tenantId: params.actor.tenantId,
@@ -716,6 +722,34 @@ export class WorkflowExecutor {
                         tool_name: trace.tool_name,
                         input: trace.input,
                         ...(trace.output ? { output: trace.output } : {}),
+                    });
+                },
+                publishSummaryStreamEvent: async (event) => {
+                    const eventType = event.type === "started"
+                        ? "chat.message.started"
+                        : event.type === "delta"
+                            ? "chat.message.delta"
+                            : "chat.message.completed";
+                    await this.deps.eventPublisher.publish({
+                        type: eventType,
+                        tenantId: actor.tenantId,
+                        sessionId,
+                        runId,
+                        sequence: event.sequence,
+                        data: event.type === "started"
+                            ? {
+                                message_id: event.message_id,
+                                role: "assistant",
+                            }
+                            : event.type === "delta"
+                                ? {
+                                    message_id: event.message_id,
+                                    delta: event.delta || "",
+                                }
+                                : {
+                                    message_id: event.message_id,
+                                    content: event.content || "",
+                                },
                     });
                 },
             });

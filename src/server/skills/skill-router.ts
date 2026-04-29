@@ -21,6 +21,19 @@ export interface SkillRouterClient {
     }>;
     finish_reason?: string;
   }>;
+  streamChat?: (
+    messages: ChatMessage[],
+    tools?: ToolDefinition[],
+    onChunk?: (chunk: string) => void | Promise<void>
+  ) => Promise<{
+    content: string | null;
+    tool_calls?: Array<{
+      id: string;
+      type: "function";
+      function: { name: string; arguments: string };
+    }>;
+    finish_reason?: string;
+  }>;
 }
 
 export interface SkillRouter {
@@ -93,6 +106,7 @@ const ROUTER_SYSTEM_PROMPT = [
   "3. inspection_mode、source、scope 这类受限枚举值要严格匹配 schema。",
   "4. 用户表达模糊时，选最贴近场景的 skill；不要为了调用而强行选。如果实在拿不准，选 rainbond-fullstack-troubleshooter 做兜底（它对运行态问题最通用）。",
   "5. 同一句包含构建相关词（构建/编译/build/compile）应优先解读为构建场景而不是运行时。",
+  "6. 对于 generic troubleshooter 请求，不要主动填 inspection_mode=summary；只有用户明确要求看 events/pods/pod_detail/logs/build_logs/envs/dependency/probe 中某一种时才填写 inspection_mode。否则留空，让 runtime 自己继续取证。",
 ].join("\n");
 
 export interface CreateSkillRouterOptions {

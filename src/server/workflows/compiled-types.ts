@@ -18,6 +18,8 @@ export interface CompiledWorkflowStage {
   tool?: string;
   args?: Record<string, unknown>;
   branches?: CompiledWorkflowBranch[];
+  while?: string;
+  max_iterations?: number;
 }
 
 export interface CompiledWorkflowInputSchema {

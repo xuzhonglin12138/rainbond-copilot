@@ -8,17 +8,33 @@ import {
   type SessionStore,
 } from "./session-store.js";
 
-export class FileSessionStore implements SessionStore {
+abstract class SerializedFileStore {
+  private writeQueue: Promise<void> = Promise.resolve();
+
+  protected enqueueWrite<T>(work: () => Promise<T>): Promise<T> {
+    const next = this.writeQueue.then(work, work);
+    this.writeQueue = next.then(
+      () => undefined,
+      () => undefined
+    );
+    return next;
+  }
+}
+
+export class FileSessionStore extends SerializedFileStore implements SessionStore {
   private readonly filePath: string;
 
   constructor(dataDir: string) {
+    super();
     this.filePath = resolveStoreFile(dataDir, "sessions");
   }
 
   async create(session: SessionRecord): Promise<void> {
-    const sessions = await readJsonArray<SessionRecord>(this.filePath);
-    sessions.push(normalizeSessionRecord(session));
-    await writeJsonArray(this.filePath, sessions);
+    await this.enqueueWrite(async () => {
+      const sessions = await readJsonArray<SessionRecord>(this.filePath);
+      sessions.push(normalizeSessionRecord(session));
+      await writeJsonArray(this.filePath, sessions);
+    });
   }
 
   async getById(sessionId: string, tenantId: string): Promise<SessionRecord | null> {
@@ -33,29 +49,34 @@ export class FileSessionStore implements SessionStore {
   }
 
   async update(session: SessionRecord): Promise<void> {
-    const sessions = await readJsonArray<SessionRecord>(this.filePath);
-    const normalizedSession = normalizeSessionRecord(session);
-    const next = sessions.map((current) =>
-      current.sessionId === session.sessionId &&
-      current.tenantId === session.tenantId
-        ? normalizedSession
-        : current
-    );
-    await writeJsonArray(this.filePath, next);
+    await this.enqueueWrite(async () => {
+      const sessions = await readJsonArray<SessionRecord>(this.filePath);
+      const normalizedSession = normalizeSessionRecord(session);
+      const next = sessions.map((current) =>
+        current.sessionId === session.sessionId &&
+        current.tenantId === session.tenantId
+          ? normalizedSession
+          : current
+      );
+      await writeJsonArray(this.filePath, next);
+    });
   }
 }
 
-export class FileRunStore implements RunStore {
+export class FileRunStore extends SerializedFileStore implements RunStore {
   private readonly filePath: string;
 
   constructor(dataDir: string) {
+    super();
     this.filePath = resolveStoreFile(dataDir, "runs");
   }
 
   async create(run: RunRecord): Promise<void> {
-    const runs = await readJsonArray<RunRecord>(this.filePath);
-    runs.push(run);
-    await writeJsonArray(this.filePath, runs);
+    await this.enqueueWrite(async () => {
+      const runs = await readJsonArray<RunRecord>(this.filePath);
+      runs.push(run);
+      await writeJsonArray(this.filePath, runs);
+    });
   }
 
   async getById(runId: string, tenantId: string): Promise<RunRecord | null> {
@@ -67,13 +88,15 @@ export class FileRunStore implements RunStore {
   }
 
   async update(run: RunRecord): Promise<void> {
-    const runs = await readJsonArray<RunRecord>(this.filePath);
-    const next = runs.map((current) =>
-      current.runId === run.runId && current.tenantId === run.tenantId
-        ? run
-        : current
-    );
-    await writeJsonArray(this.filePath, next);
+    await this.enqueueWrite(async () => {
+      const runs = await readJsonArray<RunRecord>(this.filePath);
+      const next = runs.map((current) =>
+        current.runId === run.runId && current.tenantId === run.tenantId
+          ? run
+          : current
+      );
+      await writeJsonArray(this.filePath, next);
+    });
   }
 
   async listBySession(sessionId: string, tenantId: string): Promise<RunRecord[]> {
@@ -84,17 +107,20 @@ export class FileRunStore implements RunStore {
   }
 }
 
-export class FileEventStore implements EventStore {
+export class FileEventStore extends SerializedFileStore implements EventStore {
   private readonly filePath: string;
 
   constructor(dataDir: string) {
+    super();
     this.filePath = resolveStoreFile(dataDir, "events");
   }
 
   async append(event: EventRecord): Promise<void> {
-    const events = await readJsonArray<EventRecord>(this.filePath);
-    events.push(event);
-    await writeJsonArray(this.filePath, events);
+    await this.enqueueWrite(async () => {
+      const events = await readJsonArray<EventRecord>(this.filePath);
+      events.push(event);
+      await writeJsonArray(this.filePath, events);
+    });
   }
 
   async listByRun(
@@ -120,17 +146,20 @@ export class FileEventStore implements EventStore {
   }
 }
 
-export class FileApprovalStore implements ApprovalStore {
+export class FileApprovalStore extends SerializedFileStore implements ApprovalStore {
   private readonly filePath: string;
 
   constructor(dataDir: string) {
+    super();
     this.filePath = resolveStoreFile(dataDir, "approvals");
   }
 
   async create(approval: ApprovalRecord): Promise<void> {
-    const approvals = await readJsonArray<ApprovalRecord>(this.filePath);
-    approvals.push(approval);
-    await writeJsonArray(this.filePath, approvals);
+    await this.enqueueWrite(async () => {
+      const approvals = await readJsonArray<ApprovalRecord>(this.filePath);
+      approvals.push(approval);
+      await writeJsonArray(this.filePath, approvals);
+    });
   }
 
   async getById(
@@ -147,14 +176,16 @@ export class FileApprovalStore implements ApprovalStore {
   }
 
   async update(approval: ApprovalRecord): Promise<void> {
-    const approvals = await readJsonArray<ApprovalRecord>(this.filePath);
-    const next = approvals.map((current) =>
-      current.approvalId === approval.approvalId &&
-      current.tenantId === approval.tenantId
-        ? approval
-        : current
-    );
-    await writeJsonArray(this.filePath, next);
+    await this.enqueueWrite(async () => {
+      const approvals = await readJsonArray<ApprovalRecord>(this.filePath);
+      const next = approvals.map((current) =>
+        current.approvalId === approval.approvalId &&
+        current.tenantId === approval.tenantId
+          ? approval
+          : current
+      );
+      await writeJsonArray(this.filePath, next);
+    });
   }
 
   async listPendingBySession(

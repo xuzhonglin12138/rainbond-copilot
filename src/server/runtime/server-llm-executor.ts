@@ -1267,6 +1267,7 @@ export class ServerLlmExecutor {
       "rainbond_manage_component_probe",
       "rainbond_horizontal_scale_component",
       "rainbond_vertical_scale_component",
+      "rainbond_update_component_build_source",
       "rainbond_build_component",
       "rainbond_change_component_image",
       "rainbond_create_component",

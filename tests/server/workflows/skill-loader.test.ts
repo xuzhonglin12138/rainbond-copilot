@@ -349,6 +349,7 @@ stages:
       "inspect-app",
       "inspect-components",
       "inspect-runtime",
+      "auto-collect-evidence",
       "classify-and-repair",
       "report",
     ]);
@@ -474,6 +475,48 @@ stages:
     });
 
     expect(compiled.workflow.stages[4]).toMatchObject({
+      id: "auto-collect-evidence",
+      kind: "loop",
+      while: "!$input.inspection_mode",
+      max_iterations: 4,
+      branches: [
+        {
+          id: "inspect-component-events-for-source-build",
+          tool: "rainbond_get_component_events",
+          args: {
+            team_name: "$context.team_name",
+            region_name: "$context.region_name",
+            app_id: "$context.app_id",
+            service_id: "$input.service_id",
+            page: 1,
+            page_size: 20,
+          },
+        },
+        {
+          id: "inspect-component-build-logs-from-events",
+          tool: "rainbond_get_component_build_logs",
+          args: {
+            team_name: "$context.team_name",
+            region_name: "$context.region_name",
+            app_id: "$context.app_id",
+            service_id: "$input.service_id",
+            event_id: "$tool.rainbond_get_component_events.items[0].event_id",
+          },
+        },
+        {
+          id: "inspect-component-pods-for-runtime-blocker",
+          tool: "rainbond_get_component_pods",
+          args: {
+            team_name: "$context.team_name",
+            region_name: "$context.region_name",
+            app_id: "$context.app_id",
+            service_id: "$input.service_id",
+          },
+        },
+      ],
+    });
+
+    expect(compiled.workflow.stages[5]).toMatchObject({
       id: "classify-and-repair",
       kind: "branch",
       branches: [
@@ -553,6 +596,43 @@ stages:
         "rainbond_get_pod_detail",
         "rainbond_get_component_build_logs",
       ]),
+    });
+  });
+
+  it("accepts generic loop stages with branches and max_iterations", () => {
+    const compiled = compileSkillMarkdown({
+      sourcePath: "/tmp/loop-skill/SKILL.md",
+      rawContent: `---
+name: loop-skill
+description: loop test
+mode: embedded
+---
+
+Loop skill
+
+\`\`\`yaml workflow
+id: loop-skill
+stages:
+  - id: inspect
+    kind: loop
+    max_iterations: 3
+    branches:
+      - id: step-a
+        when: $tool.inspect.status == "waiting"
+        tool: rainbond_get_component_events
+        args:
+          team_name: foo
+          region_name: bar
+          app_id: 1
+          service_id: svc
+\`\`\`
+`,
+    });
+
+    expect(compiled.workflow.stages[0]).toMatchObject({
+      id: "inspect",
+      kind: "loop",
+      max_iterations: 3,
     });
   });
 });

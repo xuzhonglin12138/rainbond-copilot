@@ -10,6 +10,7 @@ import { createInMemoryRunResumer } from "./runtime/run-resumer.js";
 import { SessionScopedRainbondActionAdapter } from "./runtime/session-scoped-action-adapter.js";
 import { createSkillRouter, } from "./skills/skill-router.js";
 import { createSkillSummarizer, } from "./skills/skill-summarizer.js";
+import { createContinuationRouter, } from "./workflows/continuation-router.js";
 import { OpenAIClient } from "../llm/openai-client.js";
 import { CustomAnthropicClient } from "../llm/custom-anthropic-client.js";
 import { getLLMConfig } from "../llm/config.js";
@@ -40,6 +41,7 @@ function buildOptionalLlmIntegration(env) {
     return {
         router: createSkillRouter({ llmClient }),
         summarizer: createSkillSummarizer({ llmClient }),
+        continuationRouter: createContinuationRouter({ llmClient }),
     };
 }
 function json(response, statusCode, payload) {
@@ -108,6 +110,7 @@ export function createCopilotApiServer(options = {}) {
     const llmIntegration = buildOptionalLlmIntegration(options.env || process.env);
     const skillRouter = options.skillRouter || llmIntegration.router;
     const workflowSummarizer = options.workflowSummarizer || llmIntegration.summarizer;
+    const continuationRouter = options.continuationRouter || llmIntegration.continuationRouter;
     const authSubjectResolver = options.authSubjectResolver ||
         new AuthSubjectResolver(new RainbondMcpClient({
             baseUrl: config.consoleBaseUrl,
@@ -143,6 +146,7 @@ export function createCopilotApiServer(options = {}) {
         enableRainbondAppAssistantWorkflow: true,
         skillRouter,
         workflowSummarizer,
+        continuationRouter,
         actionAdapterFactory: async ({ actor, sessionId }) => {
             const { client, session } = await createInitializedMcpClient({
                 actor,
